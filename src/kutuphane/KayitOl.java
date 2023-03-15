@@ -15,6 +15,7 @@ public class KayitOl extends javax.swing.JFrame {
      */
     public KayitOl() {
         initComponents();
+        logoGizleKayitOl.setVisible(false);
     }
 
     /**
@@ -40,12 +41,12 @@ public class KayitOl extends javax.swing.JFrame {
         txtTelefon = new javax.swing.JTextArea();
         lblTelefon = new javax.swing.JLabel();
         pnlSifre = new javax.swing.JPanel();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        txtSifreTekrar = new javax.swing.JTextArea();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        txtSifreKayit = new javax.swing.JTextArea();
         lblSifre = new javax.swing.JLabel();
         lblSifreTekrar = new javax.swing.JLabel();
+        txtSifreKayitOl = new javax.swing.JPasswordField();
+        txtSifreTekrarKayitOl = new javax.swing.JPasswordField();
+        logoGosterKayitOl = new javax.swing.JLabel();
+        logoGizleKayitOl = new javax.swing.JLabel();
         pnlGuvenlik = new javax.swing.JPanel();
         jScrollPane7 = new javax.swing.JScrollPane();
         txtCevap = new javax.swing.JTextArea();
@@ -170,55 +171,76 @@ public class KayitOl extends javax.swing.JFrame {
 
         pnlSifre.setPreferredSize(new java.awt.Dimension(400, 100));
 
-        jScrollPane5.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane5.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-
-        txtSifreTekrar.setColumns(20);
-        txtSifreTekrar.setRows(5);
-        jScrollPane5.setViewportView(txtSifreTekrar);
-
-        jScrollPane6.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane6.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-
-        txtSifreKayit.setColumns(20);
-        txtSifreKayit.setRows(5);
-        jScrollPane6.setViewportView(txtSifreKayit);
-
         lblSifre.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblSifre.setText("Şifre");
 
         lblSifreTekrar.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblSifreTekrar.setText("Şifre (Tekrar)");
 
+        txtSifreKayitOl.setEchoChar('*');
+        txtSifreKayitOl.setMinimumSize(new java.awt.Dimension(232, 30));
+        txtSifreKayitOl.setPreferredSize(new java.awt.Dimension(232, 30));
+
+        txtSifreTekrarKayitOl.setEchoChar('*');
+        txtSifreTekrarKayitOl.setMinimumSize(new java.awt.Dimension(232, 30));
+        txtSifreTekrarKayitOl.setPreferredSize(new java.awt.Dimension(232, 30));
+
+        logoGosterKayitOl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/eye32.png"))); // NOI18N
+        logoGosterKayitOl.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                logoGosterKayitOlMouseClicked(evt);
+            }
+        });
+
+        logoGizleKayitOl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/hide32.png"))); // NOI18N
+        logoGizleKayitOl.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                logoGizleKayitOlMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlSifreLayout = new javax.swing.GroupLayout(pnlSifre);
         pnlSifre.setLayout(pnlSifreLayout);
         pnlSifreLayout.setHorizontalGroup(
             pnlSifreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlSifreLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23))
-            .addGroup(pnlSifreLayout.createSequentialGroup()
-                .addGap(125, 125, 125)
-                .addComponent(lblSifre)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblSifreTekrar)
-                .addGap(113, 113, 113))
+                .addGap(6, 6, 6)
+                .addGroup(pnlSifreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtSifreKayitOl, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(pnlSifreLayout.createSequentialGroup()
+                        .addGap(113, 113, 113)
+                        .addComponent(lblSifre)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlSifreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(logoGizleKayitOl, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(logoGosterKayitOl, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlSifreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlSifreLayout.createSequentialGroup()
+                        .addGap(98, 98, 98)
+                        .addComponent(lblSifreTekrar))
+                    .addComponent(txtSifreTekrarKayitOl, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         pnlSifreLayout.setVerticalGroup(
             pnlSifreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlSifreLayout.createSequentialGroup()
-                .addContainerGap(11, Short.MAX_VALUE)
-                .addGroup(pnlSifreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblSifre)
-                    .addComponent(lblSifreTekrar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlSifreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGroup(pnlSifreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(pnlSifreLayout.createSequentialGroup()
+                        .addComponent(logoGizleKayitOl)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(logoGosterKayitOl))
+                    .addGroup(pnlSifreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlSifreLayout.createSequentialGroup()
+                            .addGap(16, 16, 16)
+                            .addComponent(lblSifre)
+                            .addGap(6, 6, 6)
+                            .addComponent(txtSifreKayitOl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(pnlSifreLayout.createSequentialGroup()
+                            .addGap(18, 18, 18)
+                            .addComponent(lblSifreTekrar)
+                            .addGap(6, 6, 6)
+                            .addComponent(txtSifreTekrarKayitOl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pnlGuvenlik.setPreferredSize(new java.awt.Dimension(400, 100));
@@ -236,14 +258,14 @@ public class KayitOl extends javax.swing.JFrame {
         lblGuvenlikCevap.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblGuvenlikCevap.setText("Cevap");
 
-        cbGuvenlik.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbGuvenlik.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "İlk okul öğretmeninizin adı nedir?", "İlk evcil hayvanınızın adı nedir?", "Doğum yeriniz neresidir?", "Anne kızlık soyadınız nedir?", "En sevdiğiniz yemek nedir?" }));
 
         javax.swing.GroupLayout pnlGuvenlikLayout = new javax.swing.GroupLayout(pnlGuvenlik);
         pnlGuvenlik.setLayout(pnlGuvenlikLayout);
         pnlGuvenlikLayout.setHorizontalGroup(
             pnlGuvenlikLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlGuvenlikLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(29, Short.MAX_VALUE)
                 .addComponent(cbGuvenlik, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -286,16 +308,15 @@ public class KayitOl extends javax.swing.JFrame {
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlHesapOlusturLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(pnlHesapOlusturLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlHesapOlusturLayout.createSequentialGroup()
-                                .addComponent(btnKayitOl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(165, 165, 165))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlHesapOlusturLayout.createSequentialGroup()
-                                .addGroup(pnlHesapOlusturLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(pnlEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(pnlAdSoyad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(pnlTelefon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(85, 85, 85))))))
+                        .addComponent(btnKayitOl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(165, 165, 165))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlHesapOlusturLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnlHesapOlusturLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlAdSoyad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlTelefon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(85, 85, 85))
         );
         pnlHesapOlusturLayout.setVerticalGroup(
             pnlHesapOlusturLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -307,8 +328,8 @@ public class KayitOl extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlTelefon, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlSifre, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(pnlSifre, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
                 .addComponent(pnlGuvenlik, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnKayitOl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -339,6 +360,25 @@ public class KayitOl extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void logoGizleKayitOlMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoGizleKayitOlMouseClicked
+        txtSifreKayitOl.setEchoChar('*');
+        txtSifreTekrarKayitOl.setEchoChar('*');
+        logoGizleKayitOl.setVisible(false);
+        logoGosterKayitOl.setVisible(true);
+    }//GEN-LAST:event_logoGizleKayitOlMouseClicked
+
+    private void logoGosterKayitOlMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoGosterKayitOlMouseClicked
+        txtSifreKayitOl.setEchoChar((char)0);
+        txtSifreTekrarKayitOl.setEchoChar((char)0);
+        var gosterLocation = logoGosterKayitOl.getLocation();
+        var gizleLocation = logoGizleKayitOl.getLocation();
+        logoGosterKayitOl.setVisible(false);
+        logoGizleKayitOl.setVisible(true);
+        logoGosterKayitOl.setLocation(0,0);
+        logoGizleKayitOl.setLocation(0,0);
+        
+    }//GEN-LAST:event_logoGosterKayitOlMouseClicked
 
     /**
      * @param args the command line arguments
@@ -381,8 +421,6 @@ public class KayitOl extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JLabel lblAd;
     private javax.swing.JLabel lblEmail;
@@ -391,6 +429,8 @@ public class KayitOl extends javax.swing.JFrame {
     private javax.swing.JLabel lblSifre;
     private javax.swing.JLabel lblSifreTekrar;
     private javax.swing.JLabel lblTelefon;
+    private javax.swing.JLabel logoGizleKayitOl;
+    private javax.swing.JLabel logoGosterKayitOl;
     private javax.swing.JPanel pnlAdSoyad;
     private javax.swing.JPanel pnlEmail;
     private javax.swing.JPanel pnlGuvenlik;
@@ -400,8 +440,8 @@ public class KayitOl extends javax.swing.JFrame {
     private javax.swing.JTextArea txtAdSoyad;
     private javax.swing.JTextArea txtCevap;
     private javax.swing.JTextArea txtEmailKayit;
-    private javax.swing.JTextArea txtSifreKayit;
-    private javax.swing.JTextArea txtSifreTekrar;
+    private javax.swing.JPasswordField txtSifreKayitOl;
+    private javax.swing.JPasswordField txtSifreTekrarKayitOl;
     private javax.swing.JTextArea txtTelefon;
     // End of variables declaration//GEN-END:variables
 }
