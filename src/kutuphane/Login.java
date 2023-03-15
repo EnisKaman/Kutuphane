@@ -10,8 +10,10 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Image;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -23,27 +25,32 @@ public class Login extends javax.swing.JFrame {
 
     public Login() {
         initComponents();
+        logoGizle.setVisible(false);
     }
 
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        pnlLogin = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txtEmail = new javax.swing.JTextArea();
         jLabel3 = new javax.swing.JLabel();
         txtSifre = new javax.swing.JPasswordField();
         jPanel5 = new javax.swing.JPanel();
         chkBeniHatirla = new javax.swing.JCheckBox();
         jLabel4 = new javax.swing.JLabel();
         btnGiris = new javax.swing.JButton();
-        lblHesapOlustur = new javax.swing.JLabel();
-        pnlSifremiUnuttum = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        txtEmail = new javax.swing.JTextField();
+        chkSifreGoster = new javax.swing.JCheckBox();
+        logoGoster = new javax.swing.JLabel();
+        logoGizle = new javax.swing.JLabel();
+        pnlLoginLogo = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
         pnlHesapOlustur = new javax.swing.JPanel();
         pnlAdSoyad = new javax.swing.JPanel();
         lblAd = new javax.swing.JLabel();
@@ -71,8 +78,7 @@ public class Login extends javax.swing.JFrame {
         lblGuvenlikCevap = new javax.swing.JLabel();
         cbGuvenlik = new javax.swing.JComboBox<>();
         btnKayitOl = new javax.swing.JButton();
-        pnlStandart = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
+        pnlSifremiUnuttum = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -81,7 +87,7 @@ public class Login extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setPreferredSize(new java.awt.Dimension(400, 477));
+        pnlLogin.setPreferredSize(new java.awt.Dimension(400, 477));
 
         jPanel4.setMinimumSize(new java.awt.Dimension(150, 50));
         jPanel4.setPreferredSize(new java.awt.Dimension(400, 100));
@@ -94,43 +100,30 @@ public class Login extends javax.swing.JFrame {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(134, 134, 134)
+                .addGap(133, 133, 133)
                 .addComponent(jLabel1)
-                .addContainerGap(141, Short.MAX_VALUE))
+                .addContainerGap(142, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(27, 27, 27)
+                .addGap(24, 24, 24)
                 .addComponent(jLabel1)
-                .addContainerGap(41, Short.MAX_VALUE))
+                .addContainerGap(44, Short.MAX_VALUE))
         );
 
-        jPanel1.add(jPanel4);
+        pnlLogin.add(jPanel4);
 
         jPanel3.setMinimumSize(new java.awt.Dimension(150, 50));
         jPanel3.setPreferredSize(new java.awt.Dimension(400, 377));
-        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel2.setText("Email Adresi");
-        jPanel3.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 40, -1, -1));
-        jLabel2.getAccessibleContext().setAccessibleName("lblEmail");
-
-        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-
-        txtEmail.setColumns(20);
-        txtEmail.setRows(5);
-        jScrollPane1.setViewportView(txtEmail);
-        txtEmail.getAccessibleContext().setAccessibleName("txtEmail");
-
-        jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 60, 220, 30));
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel3.setText("Şifre");
-        jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 100, -1, -1));
-        jPanel3.add(txtSifre, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 120, 220, 30));
+
+        txtSifre.setEchoChar('*');
 
         chkBeniHatirla.setText("Beni Hatırla");
 
@@ -158,40 +151,115 @@ public class Login extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel3.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 150, 220, 30));
-
         btnGiris.setText("Giriş Yap");
-        jPanel3.add(btnGiris, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 190, 220, 30));
 
-        lblHesapOlustur.setForeground(new java.awt.Color(102, 102, 255));
-        lblHesapOlustur.setText("Hesabınız Yok Mu?");
-        lblHesapOlustur.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        lblHesapOlustur.addMouseListener(new java.awt.event.MouseAdapter() {
+        jLabel5.setForeground(new java.awt.Color(51, 204, 255));
+        jLabel5.setText("Hesabınız Yok Mu?");
+        jLabel5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel5.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblHesapOlusturMouseClicked(evt);
+                jLabel5MouseClicked(evt);
             }
         });
-        jPanel3.add(lblHesapOlustur, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 240, -1, -1));
 
-        jPanel1.add(jPanel3);
+        chkSifreGoster.setText("Göster");
+        chkSifreGoster.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkSifreGosterActionPerformed(evt);
+            }
+        });
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.WEST);
+        logoGoster.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/eye32.png"))); // NOI18N
+        logoGoster.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                logoGosterMouseClicked(evt);
+            }
+        });
 
-        pnlSifremiUnuttum.setForeground(new java.awt.Color(204, 204, 204));
-        pnlSifremiUnuttum.setPreferredSize(new java.awt.Dimension(512, 477));
+        logoGizle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/hide32.png"))); // NOI18N
+        logoGizle.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                logoGizleMouseClicked(evt);
+            }
+        });
 
-        javax.swing.GroupLayout pnlSifremiUnuttumLayout = new javax.swing.GroupLayout(pnlSifremiUnuttum);
-        pnlSifremiUnuttum.setLayout(pnlSifremiUnuttumLayout);
-        pnlSifremiUnuttumLayout.setHorizontalGroup(
-            pnlSifremiUnuttumLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(chkSifreGoster)
+                .addGap(38, 38, 38))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(80, 80, 80)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnGiris, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(56, 56, 56)
+                        .addComponent(jLabel5))
+                    .addComponent(jLabel3)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(txtSifre, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(logoGoster)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(logoGizle))
+                    .addComponent(jLabel2))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
-        pnlSifremiUnuttumLayout.setVerticalGroup(
-            pnlSifremiUnuttumLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(46, 46, 46)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtSifre, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(logoGoster))
+                    .addComponent(logoGizle))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(btnGiris, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel5)
+                .addGap(28, 28, 28)
+                .addComponent(chkSifreGoster)
+                .addGap(61, 61, 61))
         );
 
-        getContentPane().add(pnlSifremiUnuttum, java.awt.BorderLayout.CENTER);
+        jLabel2.getAccessibleContext().setAccessibleName("lblEmail");
+
+        pnlLogin.add(jPanel3);
+
+        pnlLoginLogo.setForeground(new java.awt.Color(204, 204, 204));
+
+        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/Kitap.png"))); // NOI18N
+
+        javax.swing.GroupLayout pnlLoginLogoLayout = new javax.swing.GroupLayout(pnlLoginLogo);
+        pnlLoginLogo.setLayout(pnlLoginLogoLayout);
+        pnlLoginLogoLayout.setHorizontalGroup(
+            pnlLoginLogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlLoginLogoLayout.createSequentialGroup()
+                .addContainerGap(143, Short.MAX_VALUE)
+                .addComponent(jLabel6)
+                .addGap(109, 109, 109))
+        );
+        pnlLoginLogoLayout.setVerticalGroup(
+            pnlLoginLogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlLoginLogoLayout.createSequentialGroup()
+                .addGap(72, 72, 72)
+                .addComponent(jLabel6)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         pnlHesapOlustur.setForeground(new java.awt.Color(204, 204, 204));
         pnlHesapOlustur.setPreferredSize(new java.awt.Dimension(512, 477));
@@ -400,8 +468,8 @@ public class Login extends javax.swing.JFrame {
                     .addComponent(lblGuvenlikCevap))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlGuvenlikLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(cbGuvenlik)
-                    .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
+                    .addComponent(cbGuvenlik, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -412,28 +480,30 @@ public class Login extends javax.swing.JFrame {
         pnlHesapOlustur.setLayout(pnlHesapOlusturLayout);
         pnlHesapOlusturLayout.setHorizontalGroup(
             pnlHesapOlusturLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlHesapOlusturLayout.createSequentialGroup()
-                .addGap(110, 110, 110)
-                .addGroup(pnlHesapOlusturLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnlAdSoyad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnlTelefon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(pnlHesapOlusturLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlHesapOlusturLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlSifre, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
-                    .addComponent(pnlGuvenlik, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE))
-                .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlHesapOlusturLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnKayitOl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(165, 165, 165))
+            .addGroup(pnlHesapOlusturLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlHesapOlusturLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlHesapOlusturLayout.createSequentialGroup()
+                        .addGroup(pnlHesapOlusturLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(pnlSifre, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
+                            .addComponent(pnlGuvenlik, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE))
+                        .addContainerGap())
+                    .addGroup(pnlHesapOlusturLayout.createSequentialGroup()
+                        .addGap(112, 112, 112)
+                        .addGroup(pnlHesapOlusturLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(pnlEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(pnlAdSoyad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(pnlTelefon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         pnlHesapOlusturLayout.setVerticalGroup(
             pnlHesapOlusturLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlHesapOlusturLayout.createSequentialGroup()
-                .addGap(28, 28, 28)
+                .addContainerGap()
                 .addComponent(pnlAdSoyad, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -448,30 +518,19 @@ public class Login extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        getContentPane().add(pnlHesapOlustur, java.awt.BorderLayout.CENTER);
+        pnlSifremiUnuttum.setForeground(new java.awt.Color(204, 204, 204));
+        pnlSifremiUnuttum.setPreferredSize(new java.awt.Dimension(512, 477));
 
-        pnlStandart.setForeground(new java.awt.Color(204, 204, 204));
-
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/Kitap.png"))); // NOI18N
-
-        javax.swing.GroupLayout pnlStandartLayout = new javax.swing.GroupLayout(pnlStandart);
-        pnlStandart.setLayout(pnlStandartLayout);
-        pnlStandartLayout.setHorizontalGroup(
-            pnlStandartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlStandartLayout.createSequentialGroup()
-                .addContainerGap(484, Short.MAX_VALUE)
-                .addComponent(jLabel5)
-                .addGap(128, 128, 128))
+        javax.swing.GroupLayout pnlSifremiUnuttumLayout = new javax.swing.GroupLayout(pnlSifremiUnuttum);
+        pnlSifremiUnuttum.setLayout(pnlSifremiUnuttumLayout);
+        pnlSifremiUnuttumLayout.setHorizontalGroup(
+            pnlSifremiUnuttumLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 220, Short.MAX_VALUE)
         );
-        pnlStandartLayout.setVerticalGroup(
-            pnlStandartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlStandartLayout.createSequentialGroup()
-                .addGap(86, 86, 86)
-                .addComponent(jLabel5)
-                .addContainerGap(91, Short.MAX_VALUE))
+        pnlSifremiUnuttumLayout.setVerticalGroup(
+            pnlSifremiUnuttumLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 8, Short.MAX_VALUE)
         );
-
-        getContentPane().add(pnlStandart, java.awt.BorderLayout.CENTER);
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -493,10 +552,44 @@ public class Login extends javax.swing.JFrame {
 
         setJMenuBar(jMenuBar1);
 
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(pnlHesapOlustur, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pnlSifremiUnuttum, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlLoginLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(pnlLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlHesapOlustur, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlSifremiUnuttum, javax.swing.GroupLayout.PREFERRED_SIZE, 8, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(pnlLoginLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-                    // DARK MOD TIKLAMA BAŞLANGIÇ
+        //ŞİFRE GÖSTERME BAŞLANGIÇ
+    
+    //ŞİFRE GÖSTERME BİTİŞ
+// DARK MOD TIKLAMA BAŞLANGIÇ
     private void menuDarkModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDarkModeActionPerformed
         if (menuDarkMode.isSelected()) {
             EventQueue.invokeLater(new Runnable() {
@@ -520,15 +613,36 @@ public class Login extends javax.swing.JFrame {
             });
         }
     }//GEN-LAST:event_menuDarkModeActionPerformed
-                    // DARK MOD TIKLAMA BİTİŞ      
+// DARK MOD TIKLAMA BİTİŞ 
+    private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
+         KayitOl kayitol = new KayitOl();
+        kayitol.setSize(579, 482);
+        kayitol.setVisible(true);
+    }//GEN-LAST:event_jLabel5MouseClicked
+
+    private void chkSifreGosterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkSifreGosterActionPerformed
+        if (chkSifreGoster.isSelected()) {
+            
+        } else {
+            
+        }
+    }//GEN-LAST:event_chkSifreGosterActionPerformed
+
+    private void logoGosterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoGosterMouseClicked
+        txtSifre.setEchoChar((char)0);
+        logoGoster.setVisible(false);
+        logoGizle.setLocation(logoGoster.getLocation());
+        logoGizle.setVisible(true);
+    }//GEN-LAST:event_logoGosterMouseClicked
+
+    private void logoGizleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoGizleMouseClicked
+        txtSifre.setEchoChar('*');
+        logoGizle.setVisible(false);
+        logoGoster.setVisible(true);
+    }//GEN-LAST:event_logoGizleMouseClicked
+                         
     
-                    // HESAP OLUŞTUR TIKLAMA BAŞLANGIÇ
-    private void lblHesapOlusturMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblHesapOlusturMouseClicked
-        pnlStandart.setVisible(false);
-        pnlSifremiUnuttum.setVisible(false);
-        pnlHesapOlustur.setVisible(true);
-    }//GEN-LAST:event_lblHesapOlusturMouseClicked
-                    // HESAP OLUŞTUR TIKLAMA BİTİŞ
+                   // HESAP OLUŞTUR TIKLAMA BİTİŞ
    
                     // MAİN BAŞLANGIÇ
     public static void main(String args[]) {
@@ -547,20 +661,20 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JButton btnKayitOl;
     private javax.swing.JComboBox<String> cbGuvenlik;
     private javax.swing.JCheckBox chkBeniHatirla;
+    private javax.swing.JCheckBox chkSifreGoster;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -571,22 +685,24 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel lblEmail;
     private javax.swing.JLabel lblGuvenlikCevap;
     private javax.swing.JLabel lblGuvenlikSorusu;
-    private javax.swing.JLabel lblHesapOlustur;
     private javax.swing.JLabel lblSifre;
     private javax.swing.JLabel lblSifreTekrar;
     private javax.swing.JLabel lblTelefon;
+    private javax.swing.JLabel logoGizle;
+    private javax.swing.JLabel logoGoster;
     private javax.swing.JCheckBoxMenuItem menuDarkMode;
     private javax.swing.JPanel pnlAdSoyad;
     private javax.swing.JPanel pnlEmail;
     private javax.swing.JPanel pnlGuvenlik;
     private javax.swing.JPanel pnlHesapOlustur;
+    private javax.swing.JPanel pnlLogin;
+    private javax.swing.JPanel pnlLoginLogo;
     private javax.swing.JPanel pnlSifre;
     private javax.swing.JPanel pnlSifremiUnuttum;
-    private javax.swing.JPanel pnlStandart;
     private javax.swing.JPanel pnlTelefon;
     private javax.swing.JTextArea txtAdSoyad;
     private javax.swing.JTextArea txtCevap;
-    private javax.swing.JTextArea txtEmail;
+    private javax.swing.JTextField txtEmail;
     private javax.swing.JTextArea txtEmailKayit;
     private javax.swing.JPasswordField txtSifre;
     private javax.swing.JTextArea txtSifreKayit;
