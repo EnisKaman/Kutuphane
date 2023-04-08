@@ -4,16 +4,24 @@
  */
 package kutuphane;
 
+
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
+
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Image;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -23,12 +31,17 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class Login extends javax.swing.JFrame {
 
+    Connection conn=new Baglanti().getConnection();
+    ResultSet rs = null;
+    CallableStatement proc = null;
+    PreparedStatement pst = null;
+
     public Login() {
         initComponents();
         logoGizle.setVisible(false);
+        
     }
 
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -128,6 +141,11 @@ public class Login extends javax.swing.JFrame {
         );
 
         btnGiris.setText("Giriş Yap");
+        btnGiris.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGirisActionPerformed(evt);
+            }
+        });
 
         jLabel5.setForeground(new java.awt.Color(51, 204, 255));
         jLabel5.setText("Hesabınız Yok Mu?");
@@ -186,9 +204,8 @@ public class Login extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtSifre, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(logoGoster))
+                    .addComponent(logoGoster)
+                    .addComponent(txtSifre, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(logoGizle))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -269,7 +286,7 @@ public class Login extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
         //ŞİFRE GÖSTERME BAŞLANGIÇ
-    
+
     //ŞİFRE GÖSTERME BİTİŞ
 // DARK MOD TIKLAMA BAŞLANGIÇ
     private void menuDarkModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDarkModeActionPerformed
@@ -297,14 +314,14 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_menuDarkModeActionPerformed
 // DARK MOD TIKLAMA BİTİŞ 
     private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
-        KayitOl kayitol = new KayitOl();        
+        KayitOl kayitol = new KayitOl();
         kayitol.setVisible(true);
         kayitol.setSize(590, 477);
     }//GEN-LAST:event_jLabel5MouseClicked
 
     //ŞİFRE GÖSTERME BAŞLANGIÇ
     private void logoGosterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoGosterMouseClicked
-        txtSifre.setEchoChar((char)0);
+        txtSifre.setEchoChar((char) 0);
         logoGoster.setVisible(false);
         logoGizle.setLocation(logoGoster.getLocation());
         logoGizle.setVisible(true);
@@ -315,18 +332,33 @@ public class Login extends javax.swing.JFrame {
         logoGizle.setVisible(false);
         logoGoster.setVisible(true);
     }//GEN-LAST:event_logoGizleMouseClicked
- //ŞİFRE GÖSTERME BİTİŞ 
-    
+    //ŞİFRE GÖSTERME BİTİŞ 
+
     private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
         SifremiUnuttum sifremiunuttum = new SifremiUnuttum();
         sifremiunuttum.setVisible(true);
         //sifremiunuttum.setLocation(579, 477);
     }//GEN-LAST:event_jLabel4MouseClicked
-                       
-    
-                   // HESAP OLUŞTUR TIKLAMA BİTİŞ
-   
-                    // MAİN BAŞLANGIÇ
+/////////////////////////////////// Giriş butonu sql sorgusu//////////////////////////////////////
+    private void btnGirisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGirisActionPerformed
+        try {
+            String sql = "Select * from Admin Where KullaniciAdi='" + txtEmail.getText().trim() + "' and Sifre='" + txtSifre.getText().trim() + "'";
+            pst = conn.prepareStatement(sql);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                JOptionPane.showConfirmDialog(null, "Hoşgeldiniz");
+
+            } else {
+                JOptionPane.showConfirmDialog(null, "Kullanıcı Adı Ve Şifrenizi Kontrol Ediniz!");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnGirisActionPerformed
+    /////////////////////////////////// Giriş butonu sql sorgusu//////////////////////////////////////
+
+    // HESAP OLUŞTUR TIKLAMA BİTİŞ
+    // MAİN BAŞLANGIÇ
     public static void main(String args[]) {
         FlatIntelliJLaf.setup();
 
@@ -336,8 +368,8 @@ public class Login extends javax.swing.JFrame {
             }
         });
     }
-                    // MAİN BİTİŞ
-    
+    // MAİN BİTİŞ
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGiris;
     private javax.swing.JCheckBox chkBeniHatirla;

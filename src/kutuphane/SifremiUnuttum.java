@@ -4,15 +4,21 @@
  */
 package kutuphane;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 /**
  *
  * @author Enis
  */
 public class SifremiUnuttum extends javax.swing.JFrame {
 
-    /**
-     * Creates new form SifremiUnuttum
-     */
+    Connection conn=new Baglanti().getConnection();
+    ResultSet rs = null;
+    CallableStatement proc = null;
+    PreparedStatement pst = null;
     public SifremiUnuttum() {
         initComponents();
         logoSifreGizle.setVisible(false);

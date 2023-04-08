@@ -4,15 +4,25 @@
  */
 package kutuphane;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Enis
  */
 public class KayitOl extends javax.swing.JFrame {
 
-    /**
-     * Creates new form KayitOl
-     */
+    Connection conn=new Baglanti().getConnection();
+    ResultSet rs = null;
+    CallableStatement proc = null;
+    PreparedStatement pst = null;
     public KayitOl() {
         initComponents();
         logoGizleKayitOl.setVisible(false);
@@ -293,6 +303,11 @@ public class KayitOl extends javax.swing.JFrame {
 
         btnKayitOl.setText("Kayıt Ol");
         btnKayitOl.setPreferredSize(new java.awt.Dimension(250, 30));
+        btnKayitOl.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnKayitOlActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlHesapOlusturLayout = new javax.swing.GroupLayout(pnlHesapOlustur);
         pnlHesapOlustur.setLayout(pnlHesapOlusturLayout);
@@ -379,6 +394,30 @@ public class KayitOl extends javax.swing.JFrame {
         logoGizleKayitOl.setLocation(0,0);
         
     }//GEN-LAST:event_logoGosterKayitOlMouseClicked
+
+    private void btnKayitOlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKayitOlActionPerformed
+       var adsoyad = txtAdSoyad.getText();
+       var email = txtEmailKayit.getText();
+       var telefon =Long.parseLong(txtTelefon.getText().trim().toString()) ;
+       var sifre = txtSifreKayitOl.getPassword().toString();
+       var guvenliksorusu = cbGuvenlik.getSelectedItem().toString();
+       var guvenlikcevap = txtCevap.getText();
+       
+       // "INSERT INTO public.Kullanicilar(adsoyad, email, telefon, sifre, guvenliksorusu, guvenlikcevap) VALUES ( 'Enis Kaman', 'e.kmn2002@hotmail.com', 05527464336, 'enes3349', 'abc', 'def');"
+        try {
+            String sql="INSERT INTO public.kullanicilar(adsoyad, email, sifre, telefon, guvenliksorusu, guvenlikcevap)VALUES ('"+adsoyad+"', '"+email+"', '"+sifre+"',"+telefon+", '"+guvenliksorusu+"', '"+guvenlikcevap+"');";
+            pst = conn.prepareStatement(sql);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                JOptionPane.showConfirmDialog(null, "Kayıt Başarılı");
+
+            } else {
+                JOptionPane.showConfirmDialog(null, "Kayıt Başarısız");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnKayitOlActionPerformed
 
     /**
      * @param args the command line arguments
