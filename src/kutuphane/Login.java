@@ -13,6 +13,8 @@ import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Image;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -180,9 +182,6 @@ public class Login extends javax.swing.JFrame {
                     .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnGiris, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(56, 56, 56)
-                        .addComponent(jLabel5))
                     .addComponent(jLabel3)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(txtSifre, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -190,7 +189,10 @@ public class Login extends javax.swing.JFrame {
                         .addComponent(logoGoster)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(logoGizle))
-                    .addComponent(jLabel2))
+                    .addComponent(jLabel2)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(56, 56, 56)
+                        .addComponent(jLabel5)))
                 .addContainerGap(24, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -213,7 +215,7 @@ public class Login extends javax.swing.JFrame {
                 .addComponent(btnGiris, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel5)
-                .addGap(109, 109, 109))
+                .addContainerGap(109, Short.MAX_VALUE))
         );
 
         jLabel2.getAccessibleContext().setAccessibleName("lblEmail");
@@ -285,10 +287,8 @@ public class Login extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-        //ŞİFRE GÖSTERME BAŞLANGIÇ
 
-    //ŞİFRE GÖSTERME BİTİŞ
-// DARK MOD TIKLAMA BAŞLANGIÇ
+////////////////////////////////////////// DARK MOD TIKLAMA BAŞLANGIÇ
     private void menuDarkModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDarkModeActionPerformed
         if (menuDarkMode.isSelected()) {
             EventQueue.invokeLater(new Runnable() {
@@ -312,14 +312,15 @@ public class Login extends javax.swing.JFrame {
             });
         }
     }//GEN-LAST:event_menuDarkModeActionPerformed
-// DARK MOD TIKLAMA BİTİŞ 
+/////////////////////////////////////////// DARK MOD TIKLAMA BİTİŞ 
+    /////////////////////////////////////// Kayıt Ol Başlangıç //////////////////////////////////////
     private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
         KayitOl kayitol = new KayitOl();
         kayitol.setVisible(true);
         kayitol.setSize(590, 477);
     }//GEN-LAST:event_jLabel5MouseClicked
-
-    //ŞİFRE GÖSTERME BAŞLANGIÇ
+    /////////////////////////////////////// Kayıt Ol Bitiş //////////////////////////////////////
+    /////////////////////////////////////ŞİFRE GÖSTERME BAŞLANGIÇ
     private void logoGosterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoGosterMouseClicked
         txtSifre.setEchoChar((char) 0);
         logoGoster.setVisible(false);
@@ -332,13 +333,14 @@ public class Login extends javax.swing.JFrame {
         logoGizle.setVisible(false);
         logoGoster.setVisible(true);
     }//GEN-LAST:event_logoGizleMouseClicked
-    //ŞİFRE GÖSTERME BİTİŞ 
-
+    /////////////////////////////////////////ŞİFRE GÖSTERME BİTİŞ 
+////////////////////////////////////////////Şifremi Unuttum Başlangıç /////////////////////////////////////
     private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
         SifremiUnuttum sifremiunuttum = new SifremiUnuttum();
         sifremiunuttum.setVisible(true);
         //sifremiunuttum.setLocation(579, 477);
     }//GEN-LAST:event_jLabel4MouseClicked
+////////////////////////////////////////////Şifremi Unuttum Bitiş /////////////////////////////////////
 /////////////////////////////////// Giriş butonu sql sorgusu//////////////////////////////////////
     private void btnGirisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGirisActionPerformed
         var email = txtEmail.getText().trim();
@@ -350,6 +352,7 @@ public class Login extends javax.swing.JFrame {
             pst.setString(2, sifre);
             rs = pst.executeQuery();
             if (rs.next()) {
+
                 JOptionPane.showConfirmDialog(null, "Hoşgeldiniz");
 
             } else {
@@ -358,8 +361,27 @@ public class Login extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         }
+        /////////////////////////////////// Giriş butonu sql sorgusu//////////////////////////////////////
+/////////////////////////////////////////// Giriş Log Kaydı Başlangıç/////////////////////////////////////////
+        try {
+            InetAddress ip;
+            ip = InetAddress.getLocalHost();
+            String sqllog = "INSERT INTO public.kullanici_log(adsoyad, email, ip)VALUES ((Select adsoyad from public.kullanicilar WHERE email='"+email+"'),'" + email + "', '" + ip.getHostAddress() + "');";
+            pst = conn.prepareStatement(sqllog);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
+
+            } else {
+                JOptionPane.showConfirmDialog(null, " Log Kayıt Başarısız");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnGirisActionPerformed
-    /////////////////////////////////// Giriş butonu sql sorgusu//////////////////////////////////////
+    /////////////////////////////////// Giriş Log Kaydı Bitiş//////////////////////////////////////
 
     // HESAP OLUŞTUR TIKLAMA BİTİŞ
     // MAİN BAŞLANGIÇ
