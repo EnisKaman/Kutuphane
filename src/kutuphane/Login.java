@@ -4,7 +4,7 @@
  */
 package kutuphane;
 
-
+import database.Baglanti;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLaf;
@@ -31,7 +31,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class Login extends javax.swing.JFrame {
 
-    Connection conn=new Baglanti().getConnection();
+    Connection conn = new Baglanti().getConnection();
     ResultSet rs = null;
     CallableStatement proc = null;
     PreparedStatement pst = null;
@@ -39,7 +39,7 @@ public class Login extends javax.swing.JFrame {
     public Login() {
         initComponents();
         logoGizle.setVisible(false);
-        
+
     }
 
     @SuppressWarnings("unchecked")
@@ -341,9 +341,13 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel4MouseClicked
 /////////////////////////////////// Giriş butonu sql sorgusu//////////////////////////////////////
     private void btnGirisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGirisActionPerformed
+        var email = txtEmail.getText().trim();
+        var sifre = txtSifre.getText().trim();
         try {
-            String sql = "Select * from Admin Where KullaniciAdi='" + txtEmail.getText().trim() + "' and Sifre='" + txtSifre.getText().trim() + "'";
+            String sql = "SELECT * FROM public.kullanicilar WHERE email=? AND sifre=?;";
             pst = conn.prepareStatement(sql);
+            pst.setString(1, email);
+            pst.setString(2, sifre);
             rs = pst.executeQuery();
             if (rs.next()) {
                 JOptionPane.showConfirmDialog(null, "Hoşgeldiniz");
