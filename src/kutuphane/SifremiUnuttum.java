@@ -4,10 +4,15 @@
  */
 package kutuphane;
 
+import database.Baglanti;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -15,10 +20,11 @@ import java.sql.ResultSet;
  */
 public class SifremiUnuttum extends javax.swing.JFrame {
 
-    Connection conn=new Baglanti().getConnection();
+    Connection conn = new Baglanti().getConnection();
     ResultSet rs = null;
     CallableStatement proc = null;
     PreparedStatement pst = null;
+
     public SifremiUnuttum() {
         initComponents();
         logoSifreGizle.setVisible(false);
@@ -214,6 +220,11 @@ public class SifremiUnuttum extends javax.swing.JFrame {
 
         btnSifreDegistir.setText("Şifre Değiştir");
         btnSifreDegistir.setPreferredSize(new java.awt.Dimension(256, 30));
+        btnSifreDegistir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSifreDegistirActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlSifremiUnuttumLayout = new javax.swing.GroupLayout(pnlSifremiUnuttum);
         pnlSifremiUnuttum.setLayout(pnlSifremiUnuttumLayout);
@@ -223,12 +234,9 @@ public class SifremiUnuttum extends javax.swing.JFrame {
             .addGroup(pnlSifremiUnuttumLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlSifremiUnuttumLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlSifremiUnuttumLayout.createSequentialGroup()
-                        .addComponent(pnlGuvenlik, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlSifremiUnuttumLayout.createSequentialGroup()
-                        .addComponent(pnlEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
-                        .addContainerGap())))
+                    .addComponent(pnlGuvenlik, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
+                    .addComponent(pnlEmail, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE))
+                .addContainerGap())
             .addGroup(pnlSifremiUnuttumLayout.createSequentialGroup()
                 .addGap(127, 127, 127)
                 .addComponent(btnSifreDegistir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -274,11 +282,11 @@ public class SifremiUnuttum extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 // ŞİFRE GÖSTERME BİTİŞ
     private void logoSifreGosterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoSifreGosterMouseClicked
-        txtSifreSifremiUnuttum.setEchoChar((char)0);
+        txtSifreSifremiUnuttum.setEchoChar((char) 0);
         logoSifreGoster.setVisible(false);
         logoSifreGizle.setLocation(logoSifreGoster.getLocation());
         logoSifreGizle.setVisible(true);
-        
+
     }//GEN-LAST:event_logoSifreGosterMouseClicked
 
     private void logoSifreGizleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoSifreGizleMouseClicked
@@ -287,14 +295,14 @@ public class SifremiUnuttum extends javax.swing.JFrame {
         logoSifreGoster.setVisible(true);
     }//GEN-LAST:event_logoSifreGizleMouseClicked
 // ŞİFRE GÖSTERME BİTİŞ
-    
+
 // ŞİFRE TEKRAR GÖSTERME BAŞLANGIÇ    
     private void logoSifreTekrarGosterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoSifreTekrarGosterMouseClicked
-        txtSifreTekrarSifremiUnuttum.setEchoChar((char)0);
+        txtSifreTekrarSifremiUnuttum.setEchoChar((char) 0);
         logoSifreTekrarGoster.setVisible(false);
         logoSifreTekrarGizle.setLocation(logoSifreTekrarGoster.getLocation());
         logoSifreTekrarGizle.setVisible(true);
-        
+
     }//GEN-LAST:event_logoSifreTekrarGosterMouseClicked
 
     private void logoSifreTekrarGizleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoSifreTekrarGizleMouseClicked
@@ -302,7 +310,41 @@ public class SifremiUnuttum extends javax.swing.JFrame {
         logoSifreTekrarGizle.setVisible(false);
         logoSifreTekrarGoster.setVisible(true);
     }//GEN-LAST:event_logoSifreTekrarGizleMouseClicked
+
+    private void btnSifreDegistirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSifreDegistirActionPerformed
+        var email = txtEmailSifremiUnuttum.getText().trim();
+        var sifre = txtSifreSifremiUnuttum.getText();
+        var cevap = txtCevapSifremiUnuttum.getText().trim();
+        try {
+            String sql = "UPDATE public.kullanicilar SET sifre=? WHERE email=? and guvenlikcevap=?;";
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, sifre);
+            pst.setString(2, email);
+            pst.setString(3, cevap);
+            rs = pst.executeQuery();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try {
+            String sql2 = "SELECT * FROM public.kullanicilar WHERE email=? AND sifre=?;";
+            pst = conn.prepareStatement(sql2);
+            pst.setString(1, email);
+            pst.setString(2, sifre);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                JOptionPane.showConfirmDialog(null, "Şifre Başarıyla Değiştirildi !");
+
+            } else {
+                JOptionPane.showConfirmDialog(null, "Kullanıcı Adı Ve Şifrenizi Kontrol Ediniz!");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnSifreDegistirActionPerformed
 // ŞİFRE TEKRAR GÖSTERME BİTİŞ
+
     /**
      * @param args the command line arguments
      */
