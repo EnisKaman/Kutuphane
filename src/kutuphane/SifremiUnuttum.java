@@ -4,7 +4,7 @@
  */
 package kutuphane;
 
-import database.Baglanti;
+
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -60,7 +60,7 @@ public class SifremiUnuttum extends javax.swing.JFrame {
         txtCevapSifremiUnuttum = new javax.swing.JTextField();
         btnSifreDegistir = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         pnlSifremiUnuttum.setForeground(new java.awt.Color(204, 204, 204));
         pnlSifremiUnuttum.setPreferredSize(new java.awt.Dimension(512, 477));

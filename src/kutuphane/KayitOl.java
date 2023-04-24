@@ -65,7 +65,7 @@ public class KayitOl extends javax.swing.JFrame {
         cbGuvenlik = new javax.swing.JComboBox<>();
         btnKayitOl = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(512, 300));
 
         pnlHesapOlustur.setForeground(new java.awt.Color(204, 204, 204));
@@ -399,7 +399,7 @@ public class KayitOl extends javax.swing.JFrame {
        var adsoyad = txtAdSoyad.getText();
        var email = txtEmailKayit.getText();
        var telefon =Long.parseLong(txtTelefon.getText().trim().toString()) ;
-       var sifre = txtSifreKayitOl.getPassword().toString();
+       var sifre = txtSifreKayitOl.getText();
        var guvenliksorusu = cbGuvenlik.getSelectedItem().toString();
        var guvenlikcevap = txtCevap.getText();
        
