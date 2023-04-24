@@ -87,6 +87,7 @@ public class Login extends javax.swing.JFrame {
         txtEmail = new javax.swing.JTextField();
         logoGoster = new javax.swing.JLabel();
         logoGizle = new javax.swing.JLabel();
+        btnDarkMod = new javax.swing.JButton();
         pnlLoginLogo = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         pnlHesapOlustur = new javax.swing.JPanel();
@@ -252,6 +253,13 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
+        btnDarkMod.setText("Karanlık Mod");
+        btnDarkMod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDarkModActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -272,7 +280,9 @@ public class Login extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(56, 56, 56)
-                        .addComponent(jLabel5)))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnDarkMod)
+                            .addComponent(jLabel5))))
                 .addContainerGap(24, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -295,7 +305,9 @@ public class Login extends javax.swing.JFrame {
                 .addComponent(btnGiris, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel5)
-                .addContainerGap(109, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
+                .addComponent(btnDarkMod)
+                .addGap(30, 30, 30))
         );
 
         jLabel2.getAccessibleContext().setAccessibleName("lblEmail");
@@ -620,7 +632,7 @@ public class Login extends javax.swing.JFrame {
                 .addComponent(pnlGuvenlik, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnKayitOl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(44, Short.MAX_VALUE))
         );
 
         pnlSifremiUnuttum.setForeground(new java.awt.Color(204, 204, 204));
@@ -653,7 +665,7 @@ public class Login extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlEmail1Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblEmail1)
-                        .addGap(171, 171, 171)))
+                        .addGap(218, 218, 218)))
                 .addComponent(lblSifremiUnuttumKapat)
                 .addContainerGap())
         );
@@ -733,7 +745,7 @@ public class Login extends javax.swing.JFrame {
                                 .addComponent(logoSifreGoster)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(logoSifreGizle)))))
-                .addGap(38, 54, Short.MAX_VALUE))
+                .addGap(38, 102, Short.MAX_VALUE))
         );
         pnlSifre1Layout.setVerticalGroup(
             pnlSifre1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -812,12 +824,12 @@ public class Login extends javax.swing.JFrame {
         pnlSifremiUnuttum.setLayout(pnlSifremiUnuttumLayout);
         pnlSifremiUnuttumLayout.setHorizontalGroup(
             pnlSifremiUnuttumLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlSifre1, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)
+            .addComponent(pnlSifre1, javax.swing.GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE)
             .addGroup(pnlSifremiUnuttumLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlSifremiUnuttumLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlGuvenlik1, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
-                    .addComponent(pnlEmail1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE))
+                    .addComponent(pnlGuvenlik1, javax.swing.GroupLayout.DEFAULT_SIZE, 548, Short.MAX_VALUE)
+                    .addComponent(pnlEmail1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 548, Short.MAX_VALUE))
                 .addContainerGap())
             .addGroup(pnlSifremiUnuttumLayout.createSequentialGroup()
                 .addGap(127, 127, 127)
@@ -835,7 +847,7 @@ public class Login extends javax.swing.JFrame {
                 .addComponent(pnlGuvenlik1, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnSifreDegistir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(50, Short.MAX_VALUE))
         );
 
         jMenu1.setText("File");
@@ -926,6 +938,7 @@ public class Login extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_menuDarkModeActionPerformed
 /////////////////////////////////////////// DARK MOD TIKLAMA BİTİŞ 
+    
     /////////////////////////////////////// Kayıt Ol Başlangıç //////////////////////////////////////
     private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
 
@@ -940,6 +953,7 @@ public class Login extends javax.swing.JFrame {
          */
     }//GEN-LAST:event_jLabel5MouseClicked
     /////////////////////////////////////// Kayıt Ol Bitiş //////////////////////////////////////
+    
     /////////////////////////////////////ŞİFRE GÖSTERME BAŞLANGIÇ
     private void logoGosterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoGosterMouseClicked
         txtSifre.setEchoChar((char) 0);
@@ -954,6 +968,7 @@ public class Login extends javax.swing.JFrame {
         logoGoster.setVisible(true);
     }//GEN-LAST:event_logoGizleMouseClicked
     /////////////////////////////////////////ŞİFRE GÖSTERME BİTİŞ 
+    
 ////////////////////////////////////////////Şifremi Unuttum Başlangıç /////////////////////////////////////
     private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
         pnlLoginLogo.setVisible(false);
@@ -965,6 +980,7 @@ public class Login extends javax.swing.JFrame {
         //sifremiunuttum.setLocation(579, 477);
     }//GEN-LAST:event_jLabel4MouseClicked
 ////////////////////////////////////////////Şifremi Unuttum Bitiş /////////////////////////////////////
+    
 /////////////////////////////////// Giriş butonu Başlangıç//////////////////////////////////////
     private void btnGirisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGirisActionPerformed
 
@@ -1040,6 +1056,7 @@ public class Login extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnGirisActionPerformed
 /////////////////////////////////////////// Giriş Log Kaydı Bitiş/////////////////////////////////////////
+    
 /////////////////////////////////////////// Kayıt Ol Logo Gizleme Başlangıç/////////////////////////////////////////
     private void logoGosterKayitOlMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoGosterKayitOlMouseClicked
         txtSifreKayitOl.setEchoChar((char) 0);
@@ -1060,6 +1077,7 @@ public class Login extends javax.swing.JFrame {
         logoGosterKayitOl.setVisible(true);
     }//GEN-LAST:event_logoGizleKayitOlMouseClicked
 /////////////////////////////////////////// Kayıt Ol Logo Gizleme Bitiş/////////////////////////////////////////
+    
 /////////////////////////////////////////// Kayıt Ol Başlangıç/////////////////////////////////////////
     private void btnKayitOlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKayitOlActionPerformed
         var adsoyad = txtAdSoyad.getText();
@@ -1085,6 +1103,7 @@ public class Login extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnKayitOlActionPerformed
 /////////////////////////////////////////// Kayıt Ol Bitiş/////////////////////////////////////////
+    
 /////////////////////////////////////////// Şifremi Unuttum Logo Gizleme Başlangıç/////////////////////////////////////////
     private void logoSifreGosterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoSifreGosterMouseClicked
         txtSifreSifremiUnuttum.setEchoChar((char) 0);
@@ -1112,6 +1131,7 @@ public class Login extends javax.swing.JFrame {
         logoSifreTekrarGoster.setVisible(true);
     }//GEN-LAST:event_logoSifreTekrarGizleMouseClicked
 /////////////////////////////////////////// Şifremi Unuttum Logo Gizleme Bitiş/////////////////////////////////////////
+    
 /////////////////////////////////////////// Şifremi Unuttum Başlangıç/////////////////////////////////////////
     private void btnSifreDegistirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSifreDegistirActionPerformed
         var email = txtEmailSifremiUnuttum.getText().trim();
@@ -1193,6 +1213,7 @@ public class Login extends javax.swing.JFrame {
 
     }//GEN-LAST:event_formWindowClosing
 /////////////////////////////////////////// Çıkış Log Bitiş///////////////////////////////////////// 
+    
 /////////////////////////////////////////// Hesap Oluştur Kapat Başlangıç///////////////////////////////////////// 
     private void lblHesapOlusturKapatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblHesapOlusturKapatMouseClicked
         pnlHesapOlustur.setVisible(false);
@@ -1200,12 +1221,41 @@ public class Login extends javax.swing.JFrame {
         pnlLoginLogo.setVisible(true);
     }//GEN-LAST:event_lblHesapOlusturKapatMouseClicked
 /////////////////////////////////////////// Hesap Oluştur Kapat Bitiş///////////////////////////////////////// 
+    
 /////////////////////////////////////////// Şifremi Unuttum Kapat Başlangıç///////////////////////////////////////// 
     private void lblSifremiUnuttumKapatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSifremiUnuttumKapatMouseClicked
         pnlHesapOlustur.setVisible(false);
         pnlSifremiUnuttum.setVisible(false);
         pnlLoginLogo.setVisible(true);    }//GEN-LAST:event_lblSifremiUnuttumKapatMouseClicked
-/////////////////////////////////////////// Şifremi Unuttum Kapat Bitiş///////////////////////////////////////// 
+/////////////////////////////////////////// Şifremi Unuttum Kapat Bitiş/////////////////////////////////////////
+    
+/////////////////////////////////////////// Karanlık Mod Başlangıç/////////////////////////////////////////    
+    private void btnDarkModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDarkModActionPerformed
+        if (btnDarkMod.getText() == "Karanlık Mod") {
+            btnDarkMod.setText("Aydınlık Mod");
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    FlatAnimatedLafChange.showSnapshot();
+                    FlatDarkLaf.setup();
+                    FlatLaf.updateUI();
+                    FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                }
+            });
+        } else {
+            btnDarkMod.setText("Karanlık Mod");
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    FlatAnimatedLafChange.showSnapshot();
+                    FlatIntelliJLaf.setup();
+                    FlatLaf.updateUI();
+                    FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                }
+            });
+        }
+    }//GEN-LAST:event_btnDarkModActionPerformed
+ /////////////////////////////////////////// Karanlık Mod Başlangıç///////////////////////////////////////// 
 
     // MAİN BAŞLANGIÇ
     public static void main(String args[]) {
@@ -1224,6 +1274,7 @@ public class Login extends javax.swing.JFrame {
     // MAİN BİTİŞ
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDarkMod;
     private javax.swing.JButton btnGiris;
     private javax.swing.JButton btnKayitOl;
     private javax.swing.JButton btnSifreDegistir;

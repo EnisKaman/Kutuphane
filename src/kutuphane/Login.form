@@ -188,7 +188,10 @@
                           <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
-                              <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="btnDarkMod" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                       </Group>
                       <EmptySpace pref="24" max="32767" attributes="0"/>
@@ -216,7 +219,9 @@
                       <Component id="btnGiris" min="-2" pref="30" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="109" max="32767" attributes="0"/>
+                      <EmptySpace pref="56" max="32767" attributes="0"/>
+                      <Component id="btnDarkMod" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -340,6 +345,14 @@
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="logoGizleMouseClicked"/>
               </Events>
             </Component>
+            <Component class="javax.swing.JButton" name="btnDarkMod">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Karanl&#x131;k Mod"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDarkModActionPerformed"/>
+              </Events>
+            </Component>
           </SubComponents>
         </Container>
       </SubComponents>
@@ -450,7 +463,7 @@
                   <Component id="pnlGuvenlik" min="-2" pref="69" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="btnKayitOl" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="48" max="32767" attributes="0"/>
+                  <EmptySpace pref="44" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -924,12 +937,12 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="pnlSifre1" alignment="0" pref="512" max="32767" attributes="0"/>
+              <Component id="pnlSifre1" alignment="0" pref="560" max="32767" attributes="0"/>
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="pnlGuvenlik1" alignment="0" pref="500" max="32767" attributes="0"/>
-                      <Component id="pnlEmail1" alignment="1" pref="500" max="32767" attributes="0"/>
+                      <Component id="pnlGuvenlik1" alignment="0" pref="548" max="32767" attributes="0"/>
+                      <Component id="pnlEmail1" alignment="1" pref="548" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -951,7 +964,7 @@
                   <Component id="pnlGuvenlik1" min="-2" pref="148" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="btnSifreDegistir" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="48" max="32767" attributes="0"/>
+                  <EmptySpace pref="50" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -977,7 +990,7 @@
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="lblEmail1" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="171" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="218" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <Component id="lblSifremiUnuttumKapat" min="-2" max="-2" attributes="0"/>
@@ -1069,7 +1082,7 @@
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace min="38" pref="54" max="32767" attributes="0"/>
+                      <EmptySpace min="38" pref="102" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
