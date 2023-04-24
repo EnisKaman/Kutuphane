@@ -4,7 +4,6 @@
  */
 package kutuphane;
 
-
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLaf;
@@ -13,6 +12,11 @@ import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Image;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.CallableStatement;
@@ -37,14 +41,25 @@ public class Login extends javax.swing.JFrame {
     ResultSet rs = null;
     CallableStatement proc = null;
     PreparedStatement pst = null;
+    File file = new File("C:/Users/ekmn2/OneDrive/Belgeler/New Folder/Kutuphane/src/kutuphane/BeniHatirla.txt");
+    FileWriter writer;
+    FileReader fileReader = new FileReader(file);
+    String line;
 
-    public Login() {
+    BufferedReader br = new BufferedReader(fileReader);
+
+    public Login() throws IOException {
+        this.writer = new FileWriter(file);
         initComponents();
         logoGizle.setVisible(false);
         logoGizleKayitOl.setVisible(false);
         logoSifreGizle.setVisible(false);
         logoSifreTekrarGizle.setVisible(false);
-
+        
+        while ((line = br.readLine()) != null) {
+            txtEmail.setText(line);
+        }
+        br.close();
     }
 
     @SuppressWarnings("unchecked")
@@ -864,12 +879,11 @@ public class Login extends javax.swing.JFrame {
         pnlSifremiUnuttum.setVisible(false);
         pnlHesapOlustur.setVisible(true);
         pnlHesapOlustur.setBounds(pnlLoginLogo.getBounds());
-        
-        
-       /* KayitOl kayitol = new KayitOl();
+
+        /* KayitOl kayitol = new KayitOl();
         kayitol.setVisible(true);
         kayitol.setSize(590, 477);
-        */
+         */
     }//GEN-LAST:event_jLabel5MouseClicked
     /////////////////////////////////////// Kayıt Ol Bitiş //////////////////////////////////////
     /////////////////////////////////////ŞİFRE GÖSTERME BAŞLANGIÇ
@@ -897,57 +911,70 @@ public class Login extends javax.swing.JFrame {
         //sifremiunuttum.setLocation(579, 477);
     }//GEN-LAST:event_jLabel4MouseClicked
 ////////////////////////////////////////////Şifremi Unuttum Bitiş /////////////////////////////////////
-/////////////////////////////////// Giriş butonu sql sorgusu//////////////////////////////////////
+/////////////////////////////////// Giriş butonu Başlangıç//////////////////////////////////////
     private void btnGirisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGirisActionPerformed
-        var email = txtEmail.getText().trim();
-        var sifre = txtSifre.getText().trim();
+        
         try {
-            String sql = "SELECT * FROM public.kullanicilar WHERE email=? AND sifre=?;";
-            pst = conn.prepareStatement(sql);
-            pst.setString(1, email);
-            pst.setString(2, sifre);
-            rs = pst.executeQuery();
-            if (rs.next()) {
-
-                JOptionPane.showConfirmDialog(null, "Hoşgeldiniz");
-
-            } else {
-                JOptionPane.showConfirmDialog(null, "Kullanıcı Adı Ve Şifrenizi Kontrol Ediniz!");
+            String metin = txtEmail.getText();
+            try {
+                writer.write(metin);
+            } catch (IOException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        /////////////////////////////////// Giriş butonu sql sorgusu//////////////////////////////////////
+            writer.close();
+            
+            var email = txtEmail.getText().trim();
+            var sifre = txtSifre.getText().trim();
+            try {
+                String sql = "SELECT * FROM public.kullanicilar WHERE email=? AND sifre=?;";
+                pst = conn.prepareStatement(sql);
+                pst.setString(1, email);
+                pst.setString(2, sifre);
+                rs = pst.executeQuery();
+                if (rs.next()) {
+
+                    JOptionPane.showConfirmDialog(null, "Hoşgeldiniz");
+
+                } else {
+                    JOptionPane.showConfirmDialog(null, "Kullanıcı Adı Ve Şifrenizi Kontrol Ediniz!");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            /////////////////////////////////// Giriş butonu Bitiş//////////////////////////////////////
 /////////////////////////////////////////// Giriş Log Kaydı Başlangıç/////////////////////////////////////////
-        try {
-            InetAddress ip;
-            ip = InetAddress.getLocalHost();
-            String sqllog = "INSERT INTO public.kullanici_log(adsoyad, email, ip)VALUES ((Select adsoyad from public.kullanicilar WHERE email='"+email+"'),'" + email + "', '" + ip.getHostAddress() + "');";
-            pst = conn.prepareStatement(sqllog);
-            rs = pst.executeQuery();
-            if (rs.next()) {
-                JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
+            try {
+                InetAddress ip;
+                ip = InetAddress.getLocalHost();
+                String sqllog = "INSERT INTO public.kullanici_log(adsoyad, email, ip)VALUES ((Select adsoyad from public.kullanicilar WHERE email='" + email + "'),'" + email + "', '" + ip.getHostAddress() + "');";
+                pst = conn.prepareStatement(sqllog);
+                rs = pst.executeQuery();
+                if (rs.next()) {
+                    JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
 
-            } else {
-                JOptionPane.showConfirmDialog(null, " Log Kayıt Başarısız");
+                } else {
+                    JOptionPane.showConfirmDialog(null, " Log Kayıt Başarısız");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (UnknownHostException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnGirisActionPerformed
 /////////////////////////////////////////// Giriş Log Kaydı Bitiş/////////////////////////////////////////
 /////////////////////////////////////////// Kayıt Ol Logo Gizleme Başlangıç/////////////////////////////////////////
     private void logoGosterKayitOlMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoGosterKayitOlMouseClicked
-        txtSifreKayitOl.setEchoChar((char)0);
-        txtSifreTekrarKayitOl.setEchoChar((char)0);
+        txtSifreKayitOl.setEchoChar((char) 0);
+        txtSifreTekrarKayitOl.setEchoChar((char) 0);
         var gosterLocation = logoGosterKayitOl.getLocation();
         var gizleLocation = logoGizleKayitOl.getLocation();
         logoGosterKayitOl.setVisible(false);
         logoGizleKayitOl.setVisible(true);
-        logoGosterKayitOl.setLocation(0,0);
-        logoGizleKayitOl.setLocation(0,0);
+        logoGosterKayitOl.setLocation(0, 0);
+        logoGizleKayitOl.setLocation(0, 0);
 
     }//GEN-LAST:event_logoGosterKayitOlMouseClicked
 
@@ -962,14 +989,14 @@ public class Login extends javax.swing.JFrame {
     private void btnKayitOlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKayitOlActionPerformed
         var adsoyad = txtAdSoyad.getText();
         var email = txtEmailKayit.getText();
-        var telefon =Long.parseLong(txtTelefon.getText().trim().toString()) ;
+        var telefon = Long.parseLong(txtTelefon.getText().trim().toString());
         var sifre = txtSifreKayitOl.getText();
         var guvenliksorusu = cbGuvenlik.getSelectedItem().toString();
         var guvenlikcevap = txtCevap.getText();
 
         // "INSERT INTO public.Kullanicilar(adsoyad, email, telefon, sifre, guvenliksorusu, guvenlikcevap) VALUES ( 'Enis Kaman', 'e.kmn2002@hotmail.com', 05527464336, 'enes3349', 'abc', 'def');"
         try {
-            String sql="INSERT INTO public.kullanicilar(adsoyad, email, sifre, telefon, guvenliksorusu, guvenlikcevap)VALUES ('"+adsoyad+"', '"+email+"', '"+sifre+"',"+telefon+", '"+guvenliksorusu+"', '"+guvenlikcevap+"');";
+            String sql = "INSERT INTO public.kullanicilar(adsoyad, email, sifre, telefon, guvenliksorusu, guvenlikcevap)VALUES ('" + adsoyad + "', '" + email + "', '" + sifre + "'," + telefon + ", '" + guvenliksorusu + "', '" + guvenlikcevap + "');";
             pst = conn.prepareStatement(sql);
             rs = pst.executeQuery();
             if (rs.next()) {
@@ -1043,7 +1070,7 @@ public class Login extends javax.swing.JFrame {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnSifreDegistirActionPerformed
- /////////////////////////////////////////// Şifremi Unuttum Başlangıç/////////////////////////////////////////    
+    /////////////////////////////////////////// Şifremi Unuttum Başlangıç/////////////////////////////////////////    
 
     // MAİN BAŞLANGIÇ
     public static void main(String args[]) {
@@ -1051,7 +1078,11 @@ public class Login extends javax.swing.JFrame {
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Login().setVisible(true);
+                try {
+                    new Login().setVisible(true);
+                } catch (IOException ex) {
+                    Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
