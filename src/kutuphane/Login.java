@@ -43,6 +43,7 @@ public class Login extends javax.swing.JFrame {
     PreparedStatement pst = null;
     String email = "";
     String sifre = "";
+    Boolean GirisDurum = false;
 
     File file = new File("C:/Users/ekmn2/OneDrive/Belgeler/New Folder/Kutuphane/src/kutuphane/BeniHatirla.txt");
     FileWriter writer;
@@ -985,33 +986,54 @@ public class Login extends javax.swing.JFrame {
                 pst.setString(2, sifre);
                 rs = pst.executeQuery();
                 if (rs.next()) {
-
+                    GirisDurum = true;
                     JOptionPane.showConfirmDialog(null, "Hoşgeldiniz");
 
                 } else {
                     JOptionPane.showConfirmDialog(null, "Kullanıcı Adı Ve Şifrenizi Kontrol Ediniz!");
+                    /////////////////////////////////// Kullanıcı Adı ya da Şifre Yanlış Başlangıç//////////////////////////////////////                    
+                    try {
+                        InetAddress ip;
+                        ip = InetAddress.getLocalHost();
+                        String sqllog = "INSERT INTO public.kullanici_log(adsoyad, email, ip, islem)VALUES ((Select adsoyad from public.kullanicilar WHERE email='" + email + "'),'" + email + "', '" + ip.getHostAddress() + "','Kullanıcı Adı ya da Şifre Yanlış');";
+                        pst = conn.prepareStatement(sqllog);
+                        rs = pst.executeQuery();
+                        if (rs.next()) {
+                            JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
+
+                        } else {
+                            JOptionPane.showConfirmDialog(null, " Log Kayıt Başarısız");
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (UnknownHostException ex) {
+                        Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    /////////////////////////////////// Kullanıcı Adı ya da Şifre Yanlış Bitiş//////////////////////////////////////                       
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
             }
             /////////////////////////////////// Giriş butonu Bitiş//////////////////////////////////////
 /////////////////////////////////////////// Giriş Log Kaydı Başlangıç/////////////////////////////////////////
-            try {
-                InetAddress ip;
-                ip = InetAddress.getLocalHost();
-                String sqllog = "INSERT INTO public.kullanici_log(adsoyad, email, ip, islem)VALUES ((Select adsoyad from public.kullanicilar WHERE email='" + email + "'),'" + email + "', '" + ip.getHostAddress() + "','Giriş');";
-                pst = conn.prepareStatement(sqllog);
-                rs = pst.executeQuery();
-                if (rs.next()) {
-                    JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
+            if (GirisDurum == true) {
+                try {
+                    InetAddress ip;
+                    ip = InetAddress.getLocalHost();
+                    String sqllog = "INSERT INTO public.kullanici_log(adsoyad, email, ip, islem)VALUES ((Select adsoyad from public.kullanicilar WHERE email='" + email + "'),'" + email + "', '" + ip.getHostAddress() + "','Giriş');";
+                    pst = conn.prepareStatement(sqllog);
+                    rs = pst.executeQuery();
+                    if (rs.next()) {
+                        JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
 
-                } else {
-                    JOptionPane.showConfirmDialog(null, " Log Kayıt Başarısız");
+                    } else {
+                        JOptionPane.showConfirmDialog(null, " Log Kayıt Başarısız");
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (UnknownHostException ex) {
+                    Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } catch (SQLException ex) {
-                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (UnknownHostException ex) {
-                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
             }
         } catch (IOException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
@@ -1130,23 +1152,44 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosed
 /////////////////////////////////////////// Çıkış Log Başlangıç///////////////////////////////////////// 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        try {
-            InetAddress ip;
-            ip = InetAddress.getLocalHost();
-            String sqllog = "INSERT INTO public.kullanici_log(adsoyad, email, ip, islem)VALUES ((Select adsoyad from public.kullanicilar WHERE email='" + email + "'),'" + email + "', '" + ip.getHostAddress() + "','Çıkış');";
-            pst = conn.prepareStatement(sqllog);
-            rs = pst.executeQuery();
-            if (rs.next()) {
-                JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
+        if (GirisDurum == false) {
+            try {
+                InetAddress ip;
+                ip = InetAddress.getLocalHost();
+                String sqllog = "INSERT INTO public.kullanici_log(adsoyad, email, ip, islem)VALUES ((Select adsoyad from public.kullanicilar WHERE email='" + email + "'),'" + email + "', '" + ip.getHostAddress() + "','Giriş Yapılmadan Çıkış Yapıldı');";
+                pst = conn.prepareStatement(sqllog);
+                rs = pst.executeQuery();
+                if (rs.next()) {
+                    JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
 
-            } else {
-                JOptionPane.showConfirmDialog(null, " Log Kayıt Başarısız");
+                } else {
+                    JOptionPane.showConfirmDialog(null, " Log Kayıt Başarısız");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        } else {
+            try {
+                InetAddress ip;
+                ip = InetAddress.getLocalHost();
+                String sqllog = "INSERT INTO public.kullanici_log(adsoyad, email, ip, islem)VALUES ((Select adsoyad from public.kullanicilar WHERE email='" + email + "'),'" + email + "', '" + ip.getHostAddress() + "','Çıkış');";
+                pst = conn.prepareStatement(sqllog);
+                rs = pst.executeQuery();
+                if (rs.next()) {
+                    JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
+
+                } else {
+                    JOptionPane.showConfirmDialog(null, " Log Kayıt Başarısız");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+
 
     }//GEN-LAST:event_formWindowClosing
 /////////////////////////////////////////// Çıkış Log Bitiş///////////////////////////////////////// 
