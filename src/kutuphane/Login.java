@@ -923,7 +923,7 @@ public class Login extends javax.swing.JFrame {
 
 ////////////////////////////////////////// DARK MOD TIKLAMA BİTİŞ 
     
-    /////////////////////////////////////// Kayıt Ol Başlangıç //////////////////////////////////////
+    /////////////////////////////////////// Kayıt Ol Tıklama Başlangıç //////////////////////////////////////
     private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
 
         pnlLoginLogo.setVisible(false);
@@ -937,7 +937,7 @@ public class Login extends javax.swing.JFrame {
         kayitol.setSize(590, 477);
          */
     }//GEN-LAST:event_jLabel5MouseClicked
-    /////////////////////////////////////// Kayıt Ol Bitiş //////////////////////////////////////
+    /////////////////////////////////////// Kayıt Ol Tıklama Bitiş //////////////////////////////////////
     
     /////////////////////////////////////ŞİFRE GÖSTERME BAŞLANGIÇ
     private void logoGosterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoGosterMouseClicked
@@ -954,7 +954,7 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_logoGizleMouseClicked
     /////////////////////////////////////////ŞİFRE GÖSTERME BİTİŞ 
     
-////////////////////////////////////////////Şifremi Unuttum Başlangıç /////////////////////////////////////
+////////////////////////////////////////////Şifremi Unuttum Tıklama Başlangıç /////////////////////////////////////
     private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
         pnlLoginLogo.setVisible(false);
         pnlHesapOlustur.setVisible(false);
@@ -965,7 +965,7 @@ public class Login extends javax.swing.JFrame {
         //sifremiunuttum.setVisible(true);
         //sifremiunuttum.setLocation(579, 477);
     }//GEN-LAST:event_jLabel4MouseClicked
-////////////////////////////////////////////Şifremi Unuttum Bitiş /////////////////////////////////////
+////////////////////////////////////////////Şifremi Unuttum Tıklama Bitiş /////////////////////////////////////
     
 /////////////////////////////////// Giriş butonu Başlangıç//////////////////////////////////////
     private void btnGirisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGirisActionPerformed

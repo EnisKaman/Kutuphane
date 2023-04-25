@@ -10,6 +10,7 @@
   </SyntheticProperties>
   <Events>
     <EventHandler event="windowActivated" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowActivated"/>
+    <EventHandler event="windowClosing" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowClosing"/>
   </Events>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -72,27 +73,39 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lblYazarAdSoyad" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblKitapAdi" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblKitapKodu" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblYayinEvi" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblKitapTuru" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblKitapResmi" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="txtYazarAdSoyad" max="32767" attributes="0"/>
-                              <Component id="txtKitapAdi" max="32767" attributes="0"/>
-                              <Component id="txtKitapKodu" max="32767" attributes="0"/>
-                              <Component id="txtYayinEvi" pref="600" max="32767" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="95" max="-2" attributes="0"/>
+                              <Component id="btnKaydet" min="-2" pref="113" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="cbKitapTuru" min="-2" pref="300" max="-2" attributes="0"/>
-                          <Component id="jButton1" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="lblYazarAdSoyad" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblKitapAdi" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblKitapKodu" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblYayinEvi" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblKitapTuru" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblKitapResmi" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
-                      <EmptySpace pref="31" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="cbKitapTuru" min="-2" pref="300" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Component id="btnGoruntuSec" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="pnlResim" min="-2" pref="263" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="txtYazarAdSoyad" alignment="0" max="32767" attributes="0"/>
+                              <Component id="txtKitapAdi" alignment="0" max="32767" attributes="0"/>
+                              <Component id="txtKitapKodu" alignment="0" max="32767" attributes="0"/>
+                              <Component id="txtYayinEvi" alignment="0" pref="600" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -125,11 +138,18 @@
                           <Component id="cbKitapTuru" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="lblKitapResmi" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButton1" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="pnlResim" alignment="0" min="-2" pref="261" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="lblKitapResmi" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnGoruntuSec" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="80" max="-2" attributes="0"/>
+                              <Component id="btnKaydet" min="-2" pref="30" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="356" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -211,10 +231,36 @@
                 <Property name="text" type="java.lang.String" value="Kitap Kapa&#x11f;&#x131;"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="jButton1">
+            <Component class="javax.swing.JButton" name="btnGoruntuSec">
               <Properties>
                 <Property name="text" type="java.lang.String" value="G&#xf6;r&#xfc;nt&#xfc; Se&#xe7;iniz"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGoruntuSecActionPerformed"/>
+              </Events>
+            </Component>
+            <Container class="javax.swing.JPanel" name="pnlResim">
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
+                <Property name="useNullLayout" type="boolean" value="false"/>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="lblResim">
+                  <Constraints>
+                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+                      <AbsoluteConstraints x="0" y="0" width="260" height="250"/>
+                    </Constraint>
+                  </Constraints>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Component class="javax.swing.JButton" name="btnKaydet">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Kaydet"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnKaydetActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -410,12 +456,12 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="javax.swing.JButton" name="btnKaydet">
+        <Component class="javax.swing.JButton" name="btnSettingsKaydet">
           <Properties>
             <Property name="text" type="java.lang.String" value="Kaydet"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnKaydetActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSettingsKaydetActionPerformed"/>
           </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
