@@ -1005,10 +1005,10 @@ public class Login extends javax.swing.JFrame {
                         pst = conn.prepareStatement(sqllog);
                         rs = pst.executeQuery();
                         if (rs.next()) {
-                            JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
+                            //JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
 
                         } else {
-                            JOptionPane.showConfirmDialog(null, " Log Kayıt Başarısız");
+                            //JOptionPane.showConfirmDialog(null, " Log Kayıt Başarısız");
                         }
                     } catch (SQLException ex) {
                         Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
@@ -1030,10 +1030,10 @@ public class Login extends javax.swing.JFrame {
                     pst = conn.prepareStatement(sqllog);
                     int sonuc = pst.executeUpdate();
                     if (sonuc == 1) {
-                        JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
+                        //JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
 
                     } else {
-                        JOptionPane.showConfirmDialog(null, " Log Kayıt Başarısız");
+                        //JOptionPane.showConfirmDialog(null, " Log Kayıt Başarısız");
                     }
                 } catch (SQLException ex) {
                     Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);

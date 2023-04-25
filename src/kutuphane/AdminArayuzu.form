@@ -338,6 +338,7 @@
                         <Column editable="true" title="Okunma Say&#x131;s&#x131;" type="java.lang.Object"/>
                       </Table>
                     </Property>
+                    <Property name="toolTipText" type="java.lang.String" value=""/>
                   </Properties>
                 </Component>
               </SubComponents>

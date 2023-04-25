@@ -55,7 +55,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     int tema = 0;
     String dosyaadi = null;
     FileInputStream fis;
-    DefaultTableModel model = null;
+    
 
     public void TabloVerileri() {
         try {
@@ -63,7 +63,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             pst = conn.prepareStatement(sql);
             rs = pst.executeQuery();
 
-            model = new DefaultTableModel();
+            DefaultTableModel model = new DefaultTableModel();
             model.addColumn("Kitap Kodu");
             model.addColumn("Litap Adı");
             model.addColumn("Yazar");
@@ -72,7 +72,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             model.addColumn("Okuma Sayısı");
 
             while (rs.next()) {
-                Object[] row = new Object[3];
+                Object[] row = new Object[6];
                 row[0] = rs.getInt("kitap_kodu");
                 row[1] = rs.getString("kitap_adi");
                 row[2] = rs.getString("yazar_adsoyad");
@@ -81,6 +81,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 row[5] = rs.getInt("okuma_sayisi");
                 model.addRow(row);
             }
+            
             tblKitaplar.setModel(model);
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
@@ -95,9 +96,10 @@ public class AdminArayuzu extends javax.swing.JFrame {
         this.email = email;
         this.sifre = sifre;
         this.tema = tema;
-        TabloVerileri();
+        
         
         initComponents();
+        TabloVerileri();
         pnlSettings.setVisible(false);
     }
 
@@ -292,6 +294,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 "Kitap Kodu", "Kitap Adı", "Yazar", "Yayın Evi", "Türü", "Okunma Sayısı"
             }
         ));
+        tblKitaplar.setToolTipText("");
         jScrollPane2.setViewportView(tblKitaplar);
 
         javax.swing.GroupLayout pnlKitaplarLayout = new javax.swing.GroupLayout(pnlKitaplar);
@@ -771,6 +774,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             if (sonuc == 1) {
                 fis.close();
                 ps.close();
+                TabloVerileri();
                 JOptionPane.showMessageDialog(null, "Kitap Eklendi");
             } else {
                 JOptionPane.showMessageDialog(null, "Kitap Eklenmedi");
