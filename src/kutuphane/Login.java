@@ -1028,8 +1028,8 @@ public class Login extends javax.swing.JFrame {
                     ip = InetAddress.getLocalHost();
                     String sqllog = "INSERT INTO public.kullanici_log(adsoyad, email, ip, islem)VALUES ((Select adsoyad from public.kullanicilar WHERE email='" + email + "'),'" + email + "', '" + ip.getHostAddress() + "','Giriş');";
                     pst = conn.prepareStatement(sqllog);
-                    rs = pst.executeQuery();
-                    if (rs.next()) {
+                    int sonuc = pst.executeUpdate();
+                    if (sonuc == 1) {
                         JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
 
                     } else {
