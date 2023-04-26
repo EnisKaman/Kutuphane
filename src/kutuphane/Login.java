@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Image;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -55,18 +56,15 @@ public class Login extends javax.swing.JFrame {
     String email = "";
     String sifre = "";
     Boolean GirisDurum = false;
+    String dosyayolu = "C:/Users/ekmn2/OneDrive/Belgeler/New Folder/Kutuphane/src/kutuphane/BeniHatirla.txt";
 
     ///////////////////////////DOSYA OKUMA TANIMLAMALAR BAŞLANGIÇ//////////////////////////
-    File file = new File("C:/Users/ekmn2/OneDrive/Belgeler/New Folder/Kutuphane/src/kutuphane/BeniHatirla.txt");
-    FileWriter writer;
-    FileReader fileReader = new FileReader(file);
-    String line;
-    BufferedReader br = new BufferedReader(fileReader);
-    ///////////////////////////DOSYA OKUMA TANIMLAMALAR BİTİŞ//////////////////////////
     
+    ///////////////////////////DOSYA OKUMA TANIMLAMALAR BİTİŞ//////////////////////////
+
     public Login() throws IOException {
+
         
-        this.writer = new FileWriter(file);
         initComponents();
         logoGizle.setVisible(false);
         logoGizleKayitOl.setVisible(false);
@@ -77,10 +75,22 @@ public class Login extends javax.swing.JFrame {
         pnlSettings.setVisible(false);
 
         ////////////////////////////////METİN BELGESİ OKUMA BAŞLANGIÇ///////////////////////////
-        while ((line = br.readLine()) != null) {
-            txtEmail.setText(line);
+        try {
+            File dosya = new File(dosyayolu);
+            if (dosya.exists()) {
+                BufferedReader reader = new BufferedReader(new FileReader(dosya));
+                String satir = reader.readLine();
+                if (satir != null) {
+                    txtEmail.setText(satir);
+                }
+                reader.close();
+            }
+        } catch (IOException e) {
+            System.out.println("Dosya okuma hatası.");
         }
-        br.close();
+        if (!txtEmail.getText().isEmpty()) {
+            txtSifre.requestFocus(true);
+        }
         ////////////////////////////////METİN BELGESİ OKUMA BİTİŞ///////////////////////////
     }
 
@@ -185,6 +195,7 @@ public class Login extends javax.swing.JFrame {
 
         txtSifre.setEchoChar('*');
 
+        chkBeniHatirla.setSelected(true);
         chkBeniHatirla.setText("Beni Hatırla");
 
         jLabel4.setForeground(new java.awt.Color(255, 102, 153));
@@ -691,11 +702,11 @@ public class Login extends javax.swing.JFrame {
             .addGroup(pnlEmail1Layout.createSequentialGroup()
                 .addGap(120, 120, 120)
                 .addComponent(txtEmailSifremiUnuttum, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(110, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlEmail1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblEmail1)
-                .addGap(169, 169, 169))
+                .addGap(227, 227, 227))
         );
         pnlEmail1Layout.setVerticalGroup(
             pnlEmail1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -921,8 +932,24 @@ public class Login extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-////////////////////////////////////////// DARK MOD TIKLAMA BİTİŞ 
-    
+    public static void BeniHatirla(String icerik, String dosyaAdi) {
+        try {
+            File dosya = new File(dosyaAdi);
+
+            // Dosya yoksa oluştur
+            if (!dosya.exists()) {
+                dosya.createNewFile();
+            }
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(dosya, false));
+            writer.write(icerik);
+            writer.newLine();
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Dosya yazdırma hatası.");
+        }
+    }
+
     /////////////////////////////////////// Kayıt Ol Tıklama Başlangıç //////////////////////////////////////
     private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
 
@@ -938,7 +965,7 @@ public class Login extends javax.swing.JFrame {
          */
     }//GEN-LAST:event_jLabel5MouseClicked
     /////////////////////////////////////// Kayıt Ol Tıklama Bitiş //////////////////////////////////////
-    
+
     /////////////////////////////////////ŞİFRE GÖSTERME BAŞLANGIÇ
     private void logoGosterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoGosterMouseClicked
         txtSifre.setEchoChar((char) 0);
@@ -953,7 +980,7 @@ public class Login extends javax.swing.JFrame {
         logoGoster.setVisible(true);
     }//GEN-LAST:event_logoGizleMouseClicked
     /////////////////////////////////////////ŞİFRE GÖSTERME BİTİŞ 
-    
+
 ////////////////////////////////////////////Şifremi Unuttum Tıklama Başlangıç /////////////////////////////////////
     private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
         pnlLoginLogo.setVisible(false);
@@ -966,70 +993,42 @@ public class Login extends javax.swing.JFrame {
         //sifremiunuttum.setLocation(579, 477);
     }//GEN-LAST:event_jLabel4MouseClicked
 ////////////////////////////////////////////Şifremi Unuttum Tıklama Bitiş /////////////////////////////////////
-    
+
 /////////////////////////////////// Giriş butonu Başlangıç//////////////////////////////////////
     private void btnGirisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGirisActionPerformed
 
+        //////////////////////////////METİN BELGESİ KAYIT BAŞLANGIÇ////////////////////////////////
+        String metin = txtEmail.getText();
+        if (chkBeniHatirla.isSelected()) {
+            BeniHatirla("", dosyayolu);
+            BeniHatirla(metin, dosyayolu);
+        }
+        
+        //////////////////////////////METİN BELGESİ KAYIT BİTİŞ////////////////////////////////
+        email = txtEmail.getText().trim();
+        sifre = txtSifre.getText().trim();
         try {
-            //////////////////////////////METİN BELGESİ KAYIT BAŞLANGIÇ////////////////////////////////
-            String metin = txtEmail.getText();
-            try {
-                writer.write(metin);
-            } catch (IOException ex) {
-                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            writer.close();
-            //////////////////////////////METİN BELGESİ KAYIT BİTİŞ////////////////////////////////
-            
-            email = txtEmail.getText().trim();
-            sifre = txtSifre.getText().trim();
-            try {
-                String sql = "SELECT * FROM public.kullanicilar WHERE email=? AND sifre=?;";
-                pst = conn.prepareStatement(sql);
-                pst.setString(1, email);
-                pst.setString(2, sifre);
-                rs = pst.executeQuery();
-                if (rs.next()) {
-                    GirisDurum = true;
-                    int temarengi = rs.getInt("temarengi");
-                    AdminArayuzu adm = new AdminArayuzu(email, sifre, temarengi);
-                    this.setVisible(false);
-                    adm.setVisible(true);
-                 } else {
-                    JOptionPane.showConfirmDialog(null, "Kullanıcı Adı Ve Şifrenizi Kontrol Ediniz!");
-                    /////////////////////////////////// Kullanıcı Adı ya da Şifre Yanlış Başlangıç//////////////////////////////////////                    
-                    try {
-                        InetAddress ip;
-                        ip = InetAddress.getLocalHost();
-                        String sqllog = "INSERT INTO public.kullanici_log(adsoyad, email, ip, islem)VALUES ((Select adsoyad from public.kullanicilar WHERE email='" + email + "'),'" + email + "', '" + ip.getHostAddress() + "','Kullanıcı Adı ya da Şifre Yanlış');";
-                        pst = conn.prepareStatement(sqllog);
-                        rs = pst.executeQuery();
-                        if (rs.next()) {
-                            //JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
-
-                        } else {
-                            //JOptionPane.showConfirmDialog(null, " Log Kayıt Başarısız");
-                        }
-                    } catch (SQLException ex) {
-                        Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (UnknownHostException ex) {
-                        Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    /////////////////////////////////// Kullanıcı Adı ya da Şifre Yanlış Bitiş//////////////////////////////////////                       
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            /////////////////////////////////// Giriş butonu Bitiş//////////////////////////////////////
-/////////////////////////////////////////// Giriş Log Kaydı Başlangıç/////////////////////////////////////////
-            if (GirisDurum == true) {
+            String sql = "SELECT * FROM public.kullanicilar WHERE email=? AND sifre=?;";
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, email);
+            pst.setString(2, sifre);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                GirisDurum = true;
+                int temarengi = rs.getInt("temarengi");
+                AdminArayuzu adm = new AdminArayuzu(email, sifre, temarengi);
+                this.setVisible(false);
+                adm.setVisible(true);
+            } else {
+                JOptionPane.showConfirmDialog(null, "Kullanıcı Adı Ve Şifrenizi Kontrol Ediniz!");
+                /////////////////////////////////// Kullanıcı Adı ya da Şifre Yanlış Başlangıç//////////////////////////////////////
                 try {
                     InetAddress ip;
                     ip = InetAddress.getLocalHost();
-                    String sqllog = "INSERT INTO public.kullanici_log(adsoyad, email, ip, islem)VALUES ((Select adsoyad from public.kullanicilar WHERE email='" + email + "'),'" + email + "', '" + ip.getHostAddress() + "','Giriş');";
+                    String sqllog = "INSERT INTO public.kullanici_log(adsoyad, email, ip, islem)VALUES ((Select adsoyad from public.kullanicilar WHERE email='" + email + "'),'" + email + "', '" + ip.getHostAddress() + "','Kullanıcı Adı ya da Şifre Yanlış');";
                     pst = conn.prepareStatement(sqllog);
-                    int sonuc = pst.executeUpdate();
-                    if (sonuc == 1) {
+                    rs = pst.executeQuery();
+                    if (rs.next()) {
                         //JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
 
                     } else {
@@ -1040,13 +1039,35 @@ public class Login extends javax.swing.JFrame {
                 } catch (UnknownHostException ex) {
                     Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                /////////////////////////////////// Kullanıcı Adı ya da Şifre Yanlış Bitiş//////////////////////////////////////
             }
-        } catch (IOException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        /////////////////////////////////// Giriş butonu Bitiş//////////////////////////////////////
+/////////////////////////////////////////// Giriş Log Kaydı Başlangıç/////////////////////////////////////////
+        if (GirisDurum == true) {
+            try {
+                InetAddress ip;
+                ip = InetAddress.getLocalHost();
+                String sqllog = "INSERT INTO public.kullanici_log(adsoyad, email, ip, islem)VALUES ((Select adsoyad from public.kullanicilar WHERE email='" + email + "'),'" + email + "', '" + ip.getHostAddress() + "','Giriş');";
+                pst = conn.prepareStatement(sqllog);
+                int sonuc = pst.executeUpdate();
+                if (sonuc == 1) {
+                    //JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
+
+                } else {
+                    //JOptionPane.showConfirmDialog(null, " Log Kayıt Başarısız");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_btnGirisActionPerformed
 /////////////////////////////////////////// Giriş Log Kaydı Bitiş/////////////////////////////////////////
-    
+
 /////////////////////////////////////////// Kayıt Ol Logo Gizleme Başlangıç/////////////////////////////////////////
     private void logoGosterKayitOlMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoGosterKayitOlMouseClicked
         txtSifreKayitOl.setEchoChar((char) 0);
@@ -1067,7 +1088,7 @@ public class Login extends javax.swing.JFrame {
         logoGosterKayitOl.setVisible(true);
     }//GEN-LAST:event_logoGizleKayitOlMouseClicked
 /////////////////////////////////////////// Kayıt Ol Logo Gizleme Bitiş/////////////////////////////////////////
-    
+
 /////////////////////////////////////////// Kayıt Ol Başlangıç/////////////////////////////////////////
     private void btnKayitOlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKayitOlActionPerformed
         var adsoyad = txtAdSoyad.getText();
@@ -1083,21 +1104,21 @@ public class Login extends javax.swing.JFrame {
             pst = conn.prepareStatement(sql);
             //rs = pst.executeQuery();
             int sonuc = pst.executeUpdate();
-            System.out.println("sonuç: "+ sonuc);
+            System.out.println("sonuç: " + sonuc);
             if (sonuc == 1) {
                 JOptionPane.showConfirmDialog(null, "Kayıt Başarılı");
 
             } else {
                 JOptionPane.showConfirmDialog(null, "Kayıt Başarısız");
             }
-            
+
         } catch (SQLException ex) {
             //Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("deneme: " + ex.toString());
         }
     }//GEN-LAST:event_btnKayitOlActionPerformed
 /////////////////////////////////////////// Kayıt Ol Bitiş/////////////////////////////////////////
-    
+
 /////////////////////////////////////////// Şifremi Unuttum Logo Gizleme Başlangıç/////////////////////////////////////////
     private void logoSifreGosterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoSifreGosterMouseClicked
         txtSifreSifremiUnuttum.setEchoChar((char) 0);
@@ -1125,7 +1146,7 @@ public class Login extends javax.swing.JFrame {
         logoSifreTekrarGoster.setVisible(true);
     }//GEN-LAST:event_logoSifreTekrarGizleMouseClicked
 /////////////////////////////////////////// Şifremi Unuttum Logo Gizleme Bitiş/////////////////////////////////////////
-    
+
 /////////////////////////////////////////// Şifremi Unuttum Başlangıç/////////////////////////////////////////
     private void btnSifreDegistirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSifreDegistirActionPerformed
         var email = txtEmailSifremiUnuttum.getText().trim();
@@ -1140,13 +1161,13 @@ public class Login extends javax.swing.JFrame {
             int sonuc = pst.executeUpdate();
             if (sonuc == 1) {
                 JOptionPane.showMessageDialog(rootPane, "Şifre Başarıyla Değişti");
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(rootPane, "Şifre Değişmedi");
             }
 
         } catch (SQLException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-        }        
+        }
     }//GEN-LAST:event_btnSifreDegistirActionPerformed
 /////////////////////////////////////////// Şifremi Unuttum Bitiş///////////////////////////////////////// 
 
@@ -1161,12 +1182,12 @@ public class Login extends javax.swing.JFrame {
                 ip = InetAddress.getLocalHost();
                 String sqllog = "INSERT INTO public.kullanici_log(adsoyad, email, ip, islem)VALUES ((Select adsoyad from public.kullanicilar WHERE email='" + email + "'),'" + email + "', '" + ip.getHostAddress() + "','Giriş Yapılmadan Çıkış Yapıldı');";
                 pst = conn.prepareStatement(sqllog);
-                rs = pst.executeQuery();
-                if (rs.next()) {
-                    JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
+                int sonuc = pst.executeUpdate();
+                if (sonuc == 1) {
+                   // JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
 
                 } else {
-                    JOptionPane.showConfirmDialog(null, " Log Kayıt Başarısız");
+                    //JOptionPane.showConfirmDialog(null, " Log Kayıt Başarısız");
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
@@ -1196,7 +1217,7 @@ public class Login extends javax.swing.JFrame {
 
     }//GEN-LAST:event_formWindowClosing
 /////////////////////////////////////////// Çıkış Log Bitiş///////////////////////////////////////// 
-    
+
 /////////////////////////////////////////// Hesap Oluştur Kapat Başlangıç///////////////////////////////////////// 
     private void lblHesapOlusturKapatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblHesapOlusturKapatMouseClicked
         pnlHesapOlustur.setVisible(false);
@@ -1205,7 +1226,7 @@ public class Login extends javax.swing.JFrame {
         pnlLoginLogo.setVisible(true);
     }//GEN-LAST:event_lblHesapOlusturKapatMouseClicked
 /////////////////////////////////////////// Hesap Oluştur Kapat Bitiş///////////////////////////////////////// 
-    
+
 /////////////////////////////////////////// Şifremi Unuttum Kapat Başlangıç///////////////////////////////////////// 
     private void lblSifremiUnuttumKapatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSifremiUnuttumKapatMouseClicked
         pnlHesapOlustur.setVisible(false);
@@ -1213,7 +1234,7 @@ public class Login extends javax.swing.JFrame {
         pnlSettings.setVisible(false);
         pnlLoginLogo.setVisible(true);    }//GEN-LAST:event_lblSifremiUnuttumKapatMouseClicked
 /////////////////////////////////////////// Şifremi Unuttum Kapat Bitiş/////////////////////////////////////////
-    
+
 /////////////////////////////////////////// Karanlık Mod Başlangıç/////////////////////////////////////////    
     private void btnDarkModActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDarkModActionPerformed
         if (btnDarkMod.getText() == "Karanlık Mod") {
@@ -1234,7 +1255,7 @@ public class Login extends javax.swing.JFrame {
                 public void run() {
                     FlatAnimatedLafChange.showSnapshot();
                     FlatGitHubIJTheme.setup();
-                    
+
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
                 }
@@ -1242,8 +1263,8 @@ public class Login extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnDarkModActionPerformed
 /////////////////////////////////////////// Karanlık Mod Bitiş///////////////////////////////////////// 
-    
- /////////////////////////////////////////// Settings Butonu Başlangıç///////////////////////////////////////// 
+
+    /////////////////////////////////////////// Settings Butonu Başlangıç///////////////////////////////////////// 
     private void lblSettingsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSettingsMouseClicked
         pnlHesapOlustur.setVisible(false);
         pnlSifremiUnuttum.setVisible(false);
@@ -1251,7 +1272,7 @@ public class Login extends javax.swing.JFrame {
         pnlSettings.setVisible(true);
     }//GEN-LAST:event_lblSettingsMouseClicked
 /////////////////////////////////////////// Settings Butonu Bitiş///////////////////////////////////////// 
-    
+
 /////////////////////////////////////////// Settings Panel Kapanış Başlangıç///////////////////////////////////////// 
     private void pnlSettingsKapatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlSettingsKapatMouseClicked
         pnlHesapOlustur.setVisible(false);
@@ -1260,156 +1281,155 @@ public class Login extends javax.swing.JFrame {
         pnlLoginLogo.setVisible(true);
     }//GEN-LAST:event_pnlSettingsKapatMouseClicked
 /////////////////////////////////////////// Settings Panel Kapanış Başlangıç///////////////////////////////////////// 
-    public void RenkSecmeListe(){
+
+    public void RenkSecmeListe() {
         if (lstRenk.isSelectedIndex(0)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     FlatAnimatedLafChange.showSnapshot();
-                    FlatIntelliJLaf.setup();                    
+                    FlatIntelliJLaf.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
                 }
             });
-        }else if (lstRenk.isSelectedIndex(1)) {
+        } else if (lstRenk.isSelectedIndex(1)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     FlatAnimatedLafChange.showSnapshot();
-                    FlatDarkLaf.setup();                    
+                    FlatDarkLaf.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
                 }
             });
-        }else if (lstRenk.isSelectedIndex(2)) {
+        } else if (lstRenk.isSelectedIndex(2)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     FlatAnimatedLafChange.showSnapshot();
-                    FlatMacLightLaf.setup();                    
+                    FlatMacLightLaf.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
                 }
             });
-        }else if (lstRenk.isSelectedIndex(3)) {
+        } else if (lstRenk.isSelectedIndex(3)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     FlatAnimatedLafChange.showSnapshot();
-                    FlatMacDarkLaf.setup();                    
+                    FlatMacDarkLaf.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
                 }
             });
-        }else if (lstRenk.isSelectedIndex(4)) {
+        } else if (lstRenk.isSelectedIndex(4)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     FlatAnimatedLafChange.showSnapshot();
-                    FlatArcOrangeIJTheme.setup();                    
+                    FlatArcOrangeIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
                 }
             });
-        }else if (lstRenk.isSelectedIndex(5)) {
+        } else if (lstRenk.isSelectedIndex(5)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     FlatAnimatedLafChange.showSnapshot();
-                    FlatArcDarkOrangeIJTheme.setup();                    
+                    FlatArcDarkOrangeIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
                 }
             });
-        }else if (lstRenk.isSelectedIndex(6)) {
+        } else if (lstRenk.isSelectedIndex(6)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     FlatAnimatedLafChange.showSnapshot();
-                    FlatSolarizedLightIJTheme.setup();                    
+                    FlatSolarizedLightIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
                 }
             });
-        }else if (lstRenk.isSelectedIndex(7)) {
+        } else if (lstRenk.isSelectedIndex(7)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     FlatAnimatedLafChange.showSnapshot();
-                    FlatSolarizedDarkIJTheme.setup();                    
+                    FlatSolarizedDarkIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
                 }
             });
-        }else if (lstRenk.isSelectedIndex(8)) {
+        } else if (lstRenk.isSelectedIndex(8)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     FlatAnimatedLafChange.showSnapshot();
-                    FlatCyanLightIJTheme.setup();                    
+                    FlatCyanLightIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
                 }
             });
-        }else if (lstRenk.isSelectedIndex(9)) {
+        } else if (lstRenk.isSelectedIndex(9)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     FlatAnimatedLafChange.showSnapshot();
-                    FlatCarbonIJTheme.setup();                    
+                    FlatCarbonIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
                 }
             });
-        }else if (lstRenk.isSelectedIndex(10)) {
+        } else if (lstRenk.isSelectedIndex(10)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     FlatAnimatedLafChange.showSnapshot();
-                    FlatGitHubIJTheme.setup();                    
+                    FlatGitHubIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
                 }
             });
-        }else if (lstRenk.isSelectedIndex(11)) {
+        } else if (lstRenk.isSelectedIndex(11)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     FlatAnimatedLafChange.showSnapshot();
-                    FlatGitHubDarkIJTheme.setup();                    
+                    FlatGitHubDarkIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
                 }
             });
-        }
-        else if (lstRenk.isSelectedIndex(12)) {
+        } else if (lstRenk.isSelectedIndex(12)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     FlatAnimatedLafChange.showSnapshot();
-                    FlatMonokaiProIJTheme.setup();                    
+                    FlatMonokaiProIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
                 }
             });
         }
     }
-   
+
     private void lstRenkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstRenkMouseClicked
         RenkSecmeListe();
     }//GEN-LAST:event_lstRenkMouseClicked
- /////////////////////////////////////////// Settings Panel Kapanış Bitiş///////////////////////////////////////// 
+    /////////////////////////////////////////// Settings Panel Kapanış Bitiş///////////////////////////////////////// 
 
     // MAİN BAŞLANGIÇ
-   
     public static void main(String args[]) {
         FlatIntelliJLaf.setup();
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-               
+
                 try {
-                    
+
                     new Login().setVisible(true);
                 } catch (IOException ex) {
                     Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
