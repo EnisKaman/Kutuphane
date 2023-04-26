@@ -1016,9 +1016,18 @@ public class Login extends javax.swing.JFrame {
             if (rs.next()) {
                 GirisDurum = true;
                 int temarengi = rs.getInt("temarengi");
-                AdminArayuzu adm = new AdminArayuzu(email, sifre, temarengi);
-                this.setVisible(false);
-                adm.setVisible(true);
+                String yetki = rs.getString("yetkituru");
+                if (yetki == "admin") {
+                    AdminArayuzu adm = new AdminArayuzu(email, sifre, temarengi);
+                    this.setVisible(false);
+                    adm.setVisible(true);
+                }else{
+                    KullaniciArayuz kul = new KullaniciArayuz(email, sifre, temarengi);
+                    this.setVisible(false);
+                    kul.setVisible(true);
+                }
+                
+                
             } else {
                 JOptionPane.showConfirmDialog(null, "Kullanıcı Adı Ve Şifrenizi Kontrol Ediniz!");
                 /////////////////////////////////// Kullanıcı Adı ya da Şifre Yanlış Başlangıç//////////////////////////////////////
