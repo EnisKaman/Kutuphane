@@ -28,10 +28,15 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 public class KullaniciArayuz extends javax.swing.JFrame {
 
@@ -45,6 +50,123 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     String tarih;
     String saat;
 
+    public void BekleyenRandevuTabloVerileri() {
+        try {
+            String sql = "SELECT * FROM public.randevu where randevu_isteyen_email = ?";
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, email);
+            rs = pst.executeQuery();
+
+            DefaultTableModel model = new DefaultTableModel();
+            model.addColumn("Randevu Eden Kişi");
+            model.addColumn("Randevu Konusu");
+            model.addColumn("Randevu Tarihi");
+            model.addColumn("Randevu Durumu");
+            model.addColumn("Güncelleme Tarihi");
+
+            while (rs.next()) {
+                Object[] row = new Object[5];
+                row[0] = rs.getString("randevu_veren_adsoyad");
+                row[1] = rs.getString("randevu_konusu");
+                String randevutaleptarih = rs.getString("randevu_talep_tarihi");
+                LocalDateTime dateTime = LocalDateTime.parse(randevutaleptarih, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                String yeniDateTime = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+                row[2] = yeniDateTime;
+                row[3] = rs.getString("randevu_durum");
+                String originalDateTime = rs.getString("randevu_olusturma_tarih");
+                LocalDateTime dateTime2 = LocalDateTime.parse(originalDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
+                String newDateTime = dateTime2.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+                row[4] = newDateTime;
+                model.addRow(row);
+            }
+            DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+            centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            tblBekleyenRandevu.setDefaultRenderer(Object.class, centerRenderer);
+            tblBekleyenRandevu.setModel(model);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void KabulRandevuTabloVerileri() {
+        try {
+            String sql = "SELECT * FROM public.randevu_kabul where randevu_kabul_isteyen_email = ?";
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, email);
+            rs = pst.executeQuery();
+
+            DefaultTableModel model = new DefaultTableModel();
+            model.addColumn("Randevu Veren Kişi");
+            model.addColumn("Randevu Konusu");
+            model.addColumn("Randevu Tarihi");
+            model.addColumn("Randevu Durumu");
+            model.addColumn("Güncelleme Tarihi");
+
+            while (rs.next()) {
+                Object[] row = new Object[5];
+                row[0] = rs.getString("randevu_kabul_isteyen_adsoyad");
+                row[1] = rs.getString("randevu_kabul_konusu");
+                String randevutaleptarih = rs.getString("randevu_kabul_talep_tarihi");
+                LocalDateTime dateTime = LocalDateTime.parse(randevutaleptarih, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                String yeniDateTime = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+                row[2] = yeniDateTime;
+                row[3] = rs.getString("randevu_kabul_durum");
+                String originalDateTime = rs.getString("randevu_kabul_olusturma_tarih");
+                LocalDateTime dateTime2 = LocalDateTime.parse(originalDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
+                String newDateTime = dateTime2.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+                row[4] = newDateTime;
+                model.addRow(row);
+            }
+            DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+            centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            tblKabulRandevu.setDefaultRenderer(Object.class, centerRenderer);
+            tblKabulRandevu.setModel(model);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void RetRandevuTabloVerileri() {
+        try {
+            String sql = "SELECT * FROM public.randevu_ret where randevu_ret_isteyen_email = ?";
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, email);
+            rs = pst.executeQuery();
+
+            DefaultTableModel model = new DefaultTableModel();
+            model.addColumn("Randevu Veren Kişi");
+            model.addColumn("Randevu Konusu");
+            model.addColumn("Randevu Tarihi");
+            model.addColumn("Randevu Durumu");
+            model.addColumn("Reddedilme Sebebi");
+            model.addColumn("Güncelleme Tarihi");
+
+            while (rs.next()) {
+                Object[] row = new Object[6];
+                row[0] = rs.getString("randevu_ret_isteyen_adsoyad");
+                row[1] = rs.getString("randevu_ret_konusu");
+                String randevutaleptarih = rs.getString("randevu_ret_talep_tarihi");
+                LocalDateTime dateTime = LocalDateTime.parse(randevutaleptarih, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                String yeniDateTime = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+                row[2] = yeniDateTime;
+                row[3] = rs.getString("randevu_ret_durum");
+                row[4] = rs.getString("randevu_ret_sebep");
+                String originalDateTime = rs.getString("randevu_ret_olusturma_tarih");
+                LocalDateTime dateTime2 = LocalDateTime.parse(originalDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
+                String newDateTime = dateTime2.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+                row[5] = newDateTime;
+                model.addRow(row);
+            }
+            DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+            centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            tblRetRandevu.setDefaultRenderer(Object.class, centerRenderer);
+            tblRetRandevu.setModel(model);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public KullaniciArayuz() {
         initComponents();
     }
@@ -56,6 +178,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         initComponents();
         pnlSettings.setVisible(false);
         AdminCekme();
+        BekleyenRandevuTabloVerileri();
+        KabulRandevuTabloVerileri();
+        RetRandevuTabloVerileri();
     }
 
     @SuppressWarnings("unchecked")
@@ -78,7 +203,18 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         btnRandevuAl = new javax.swing.JButton();
-        pnlRandevuGecmisi = new javax.swing.JPanel();
+        pnlBekleyenRandevu = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tblBekleyenRandevu = new javax.swing.JTable();
+        pnlKabulEdilenRandevu = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tblKabulRandevu = new javax.swing.JTable();
+        pnlReddedilenRandevu = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        tblRetRandevu = new javax.swing.JTable();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        txtRetSebep = new javax.swing.JTextArea();
+        jLabel6 = new javax.swing.JLabel();
         lblSettings = new javax.swing.JLabel();
         pnlSettings = new javax.swing.JPanel();
         pnlSettingsKapat = new javax.swing.JLabel();
@@ -117,6 +253,8 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         );
 
         jTabbedPane1.addTab("Aldığım Kitaplar", pnlAldigimKitaplar);
+
+        pnlRandevu.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         txtRandevuAlKonu.setColumns(20);
         txtRandevuAlKonu.setRows(5);
@@ -204,34 +342,83 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnRandevuAl, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(81, Short.MAX_VALUE))
+                .addContainerGap(83, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Randevu Al", pnlRandevuAl);
 
-        javax.swing.GroupLayout pnlRandevuGecmisiLayout = new javax.swing.GroupLayout(pnlRandevuGecmisi);
-        pnlRandevuGecmisi.setLayout(pnlRandevuGecmisiLayout);
-        pnlRandevuGecmisiLayout.setHorizontalGroup(
-            pnlRandevuGecmisiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
-        );
-        pnlRandevuGecmisiLayout.setVerticalGroup(
-            pnlRandevuGecmisiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 468, Short.MAX_VALUE)
-        );
+        pnlBekleyenRandevu.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jTabbedPane2.addTab("Randevu Geçmişi", pnlRandevuGecmisi);
+        tblBekleyenRandevu.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(tblBekleyenRandevu);
 
-        javax.swing.GroupLayout pnlRandevuLayout = new javax.swing.GroupLayout(pnlRandevu);
-        pnlRandevu.setLayout(pnlRandevuLayout);
-        pnlRandevuLayout.setHorizontalGroup(
-            pnlRandevuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane2)
-        );
-        pnlRandevuLayout.setVerticalGroup(
-            pnlRandevuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane2)
-        );
+        pnlBekleyenRandevu.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 470));
+
+        jTabbedPane2.addTab("Bekleyen Randevularım", pnlBekleyenRandevu);
+
+        pnlKabulEdilenRandevu.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tblKabulRandevu.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane4.setViewportView(tblKabulRandevu);
+
+        pnlKabulEdilenRandevu.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 470));
+
+        jTabbedPane2.addTab("Kabul Edilen Randevularım", pnlKabulEdilenRandevu);
+
+        pnlReddedilenRandevu.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tblRetRandevu.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tblRetRandevu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblRetRandevuMouseClicked(evt);
+            }
+        });
+        jScrollPane5.setViewportView(tblRetRandevu);
+
+        pnlReddedilenRandevu.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 320));
+
+        txtRetSebep.setColumns(20);
+        txtRetSebep.setRows(5);
+        jScrollPane6.setViewportView(txtRetSebep);
+
+        pnlReddedilenRandevu.add(jScrollPane6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 346, 800, 110));
+
+        jLabel6.setText("Randevunun Reddedilme Sebebi");
+        pnlReddedilenRandevu.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 330, -1, -1));
+
+        jTabbedPane2.addTab("Reddedilen Randevularım", pnlReddedilenRandevu);
+
+        pnlRandevu.add(jTabbedPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         jTabbedPane1.addTab("Randevu", pnlRandevu);
 
@@ -339,8 +526,6 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     private void btnRandevuAlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRandevuAlActionPerformed
         try {
             String randevuverenkisiadsoyad = cbRandevuKisi.getSelectedItem().toString();
-            String randevuverenkisiemail = "(Select email from public.kullanicilar where adsoyad = ?;)";
-            String randevuisteyenkisiadsoyad = "(Select adsoyad from public.kullanicilar where email = ?;)";
             String tarihsaat = "" + tarih + " " + saat + ":00";
             SimpleDateFormat inputFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
             SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -370,6 +555,14 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnRandevuAlActionPerformed
+
+    private void tblRetRandevuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblRetRandevuMouseClicked
+        int retindex = tblRetRandevu.getSelectedRow();
+        if (retindex >= 0) {
+            txtRetSebep.setText((String) tblRetRandevu.getValueAt(retindex, 4));
+        }
+        
+    }//GEN-LAST:event_tblRetRandevuMouseClicked
 
     public void TemaRengi() {
         if (tema == 0) {
@@ -656,7 +849,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         try {
             String sql = "SELECT adsoyad FROM public.kullanicilar WHERE yetkituru = ?;";
             pst = conn.prepareStatement(sql);
-            pst.setString(1, "admin");
+            pst.setInt(1, 1);
             rs = pst.executeQuery();
             if (rs.next()) {
                 cbRandevuKisi.addItem(rs.getString("adsoyad"));
@@ -711,19 +904,30 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JLabel lblSettings;
     private javax.swing.JList<String> lstRenk;
     private javax.swing.JPanel pnlAldigimKitaplar;
+    private javax.swing.JPanel pnlBekleyenRandevu;
+    private javax.swing.JPanel pnlKabulEdilenRandevu;
     private javax.swing.JPanel pnlKitapAlma;
     private javax.swing.JPanel pnlRandevu;
     private javax.swing.JPanel pnlRandevuAl;
-    private javax.swing.JPanel pnlRandevuGecmisi;
+    private javax.swing.JPanel pnlReddedilenRandevu;
     private javax.swing.JPanel pnlSettings;
     private javax.swing.JLabel pnlSettingsKapat;
+    private javax.swing.JTable tblBekleyenRandevu;
+    private javax.swing.JTable tblKabulRandevu;
+    private javax.swing.JTable tblRetRandevu;
     private javax.swing.JTextArea txtRandevuAlKonu;
+    private javax.swing.JTextArea txtRetSebep;
     // End of variables declaration//GEN-END:variables
 }
