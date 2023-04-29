@@ -1016,8 +1016,9 @@ public class Login extends javax.swing.JFrame {
             if (rs.next()) {
                 GirisDurum = true;
                 int temarengi = rs.getInt("temarengi");
-                String yetki = rs.getString("yetkituru");
-                if (yetki == "admin") {
+                int yetki ;
+                yetki = rs.getInt("yetkituru");
+                if (yetki == 1) {
                     AdminArayuzu adm = new AdminArayuzu(email, sifre, temarengi);
                     this.setVisible(false);
                     adm.setVisible(true);
