@@ -50,6 +50,39 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     String tarih;
     String saat;
 
+    public void KitaplarTabloVerileri() {
+        try {
+            String sql = "SELECT DISTINCT kitap_adi,kitap_kodu,yazar_adsoyad,yayin_evi,kitap_turu,okuma_sayisi FROM public.kitaplik;";
+            pst = conn.prepareStatement(sql);
+            rs = pst.executeQuery();
+
+            DefaultTableModel model = new DefaultTableModel();
+            model.addColumn("Kitap Kodu");
+            model.addColumn("Kitap Adı");
+            model.addColumn("Yazar");
+            model.addColumn("Yayın Evi");
+            model.addColumn("Kitap Türü");
+            model.addColumn("Okuma Sayısı");
+
+            while (rs.next()) {
+                Object[] row = new Object[6];
+                row[0] = rs.getInt("kitap_kodu");
+                row[1] = rs.getString("kitap_adi");
+                row[2] = rs.getString("yazar_adsoyad");
+                row[3] = rs.getString("yayin_evi");
+                row[4] = rs.getString("kitap_turu");
+                row[5] = rs.getInt("okuma_sayisi");
+                model.addRow(row);
+            }
+            DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+            centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            tblKitapAl.setDefaultRenderer(Object.class, centerRenderer);
+            tblKitapAl.setModel(model);
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public void BekleyenRandevuTabloVerileri() {
         try {
             String sql = "SELECT * FROM public.randevu where randevu_isteyen_email = ?";
@@ -74,9 +107,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                 row[2] = yeniDateTime;
                 row[3] = rs.getString("randevu_durum");
                 String originalDateTime = rs.getString("randevu_olusturma_tarih");
-                LocalDateTime dateTime2 = LocalDateTime.parse(originalDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
-                String newDateTime = dateTime2.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-                row[4] = newDateTime;
+                //LocalDateTime dateTime2 = LocalDateTime.parse(originalDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
+                //String newDateTime = dateTime2.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+                row[4] = originalDateTime;
                 model.addRow(row);
             }
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -88,6 +121,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     public void KabulRandevuTabloVerileri() {
         try {
             String sql = "SELECT * FROM public.randevu_kabul where randevu_kabul_isteyen_email = ?";
@@ -126,6 +160,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     public void RetRandevuTabloVerileri() {
         try {
             String sql = "SELECT * FROM public.randevu_ret where randevu_ret_isteyen_email = ?";
@@ -166,7 +201,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public KullaniciArayuz() {
         initComponents();
     }
@@ -181,6 +216,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         BekleyenRandevuTabloVerileri();
         KabulRandevuTabloVerileri();
         RetRandevuTabloVerileri();
+        KitaplarTabloVerileri();
     }
 
     @SuppressWarnings("unchecked")
@@ -189,6 +225,13 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
         pnlKitapAlma = new javax.swing.JPanel();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        tblKitapAl = new javax.swing.JTable();
+        txtKitapAdi = new javax.swing.JTextField();
+        txtKitapKodu = new javax.swing.JTextField();
+        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        cbKutuphaneci = new javax.swing.JComboBox<>();
+        btnKitapAl = new javax.swing.JButton();
         pnlAldigimKitaplar = new javax.swing.JPanel();
         pnlRandevu = new javax.swing.JPanel();
         jTabbedPane2 = new javax.swing.JTabbedPane();
@@ -197,12 +240,12 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         txtRandevuAlKonu = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
         cbRandevuKisi = new javax.swing.JComboBox<>();
         cbSaat = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         btnRandevuAl = new javax.swing.JButton();
+        jDateChooser2 = new com.toedter.calendar.JDateChooser();
         pnlBekleyenRandevu = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblBekleyenRandevu = new javax.swing.JTable();
@@ -224,19 +267,63 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         btnSettingsKaydet = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(800, 600));
         setSize(new java.awt.Dimension(800, 600));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tblKitapAl.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tblKitapAl.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblKitapAlMouseClicked(evt);
+            }
+        });
+        jScrollPane7.setViewportView(tblKitapAl);
+
+        btnKitapAl.setText("Kitap Al");
 
         javax.swing.GroupLayout pnlKitapAlmaLayout = new javax.swing.GroupLayout(pnlKitapAlma);
         pnlKitapAlma.setLayout(pnlKitapAlmaLayout);
         pnlKitapAlmaLayout.setHorizontalGroup(
             pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+            .addComponent(jScrollPane7)
+            .addGroup(pnlKitapAlmaLayout.createSequentialGroup()
+                .addGroup(pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlKitapAlmaLayout.createSequentialGroup()
+                        .addGap(71, 71, 71)
+                        .addComponent(txtKitapAdi, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtKitapKodu, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(cbKutuphaneci, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlKitapAlmaLayout.createSequentialGroup()
+                        .addGap(339, 339, 339)
+                        .addComponent(btnKitapAl, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(75, Short.MAX_VALUE))
         );
         pnlKitapAlmaLayout.setVerticalGroup(
             pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 499, Short.MAX_VALUE)
+            .addGroup(pnlKitapAlmaLayout.createSequentialGroup()
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
+                .addGroup(pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtKitapAdi)
+                    .addComponent(txtKitapKodu)
+                    .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cbKutuphaneci, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(28, 28, 28)
+                .addComponent(btnKitapAl, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 41, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Kitap Alma", pnlKitapAlma);
@@ -264,12 +351,6 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
         jLabel3.setText("Saat Seçiniz");
 
-        jDateChooser1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                jDateChooser1PropertyChange(evt);
-            }
-        });
-
         cbSaat.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30" }));
         cbSaat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -289,6 +370,12 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             }
         });
 
+        jDateChooser2.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jDateChooser2PropertyChange(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlRandevuAlLayout = new javax.swing.GroupLayout(pnlRandevuAl);
         pnlRandevuAl.setLayout(pnlRandevuAlLayout);
         pnlRandevuAlLayout.setHorizontalGroup(
@@ -296,31 +383,29 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             .addGroup(pnlRandevuAlLayout.createSequentialGroup()
                 .addGap(51, 51, 51)
                 .addGroup(pnlRandevuAlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlRandevuAlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel5)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 700, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlRandevuAlLayout.createSequentialGroup()
+                    .addGroup(pnlRandevuAlLayout.createSequentialGroup()
                         .addGroup(pnlRandevuAlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(pnlRandevuAlLayout.createSequentialGroup()
                                 .addGap(35, 35, 35)
-                                .addComponent(jLabel2)))
+                                .addComponent(jLabel2))
+                            .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(pnlRandevuAlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(pnlRandevuAlLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel3)
                                 .addGap(170, 170, 170)
                                 .addComponent(jLabel4))
                             .addGroup(pnlRandevuAlLayout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(cbSaat, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(150, 150, 150)
-                                .addComponent(cbRandevuKisi, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(cbRandevuKisi, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jLabel5)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 700, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(49, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlRandevuAlLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnRandevuAl, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(341, 341, 341))
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btnRandevuAl, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(323, 323, 323))
         );
         pnlRandevuAlLayout.setVerticalGroup(
             pnlRandevuAlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -331,11 +416,11 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                     .addComponent(jLabel3)
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlRandevuAlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(pnlRandevuAlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnlRandevuAlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(pnlRandevuAlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
                         .addComponent(cbRandevuKisi, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
                         .addComponent(cbSaat, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
-                    .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
+                    .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(25, 25, 25)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -510,14 +595,6 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         pnlSettings.setVisible(true);
     }//GEN-LAST:event_lblSettingsMouseClicked
 
-    private void jDateChooser1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooser1PropertyChange
-        if (evt.getPropertyName().equals("date")) {
-            Date date = (Date) evt.getNewValue();
-            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-            tarih = format.format(date);
-        }
-    }//GEN-LAST:event_jDateChooser1PropertyChange
-
     private void cbSaatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbSaatActionPerformed
         saat = cbSaat.getSelectedItem().toString();
         System.out.println("" + tarih + " " + saat + "");
@@ -561,8 +638,24 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         if (retindex >= 0) {
             txtRetSebep.setText((String) tblRetRandevu.getValueAt(retindex, 4));
         }
-        
+
     }//GEN-LAST:event_tblRetRandevuMouseClicked
+
+    private void jDateChooser2PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooser2PropertyChange
+        if (evt.getPropertyName().equals("date")) {
+            Date date = (Date) evt.getNewValue();
+            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+            tarih = format.format(date);
+        }
+    }//GEN-LAST:event_jDateChooser2PropertyChange
+
+    private void tblKitapAlMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblKitapAlMouseClicked
+        int kitapindex = tblKitapAl.getSelectedRow();
+        if (kitapindex >=0) {
+            txtKitapKodu.setText((String) tblKitapAl.getValueAt(kitapindex, 0));
+            txtKitapKodu.setText((String) tblKitapAl.getValueAt(kitapindex, 1));
+        }
+    }//GEN-LAST:event_tblKitapAlMouseClicked
 
     public void TemaRengi() {
         if (tema == 0) {
@@ -853,6 +946,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             rs = pst.executeQuery();
             if (rs.next()) {
                 cbRandevuKisi.addItem(rs.getString("adsoyad"));
+                cbKutuphaneci.addItem(rs.getString("adsoyad"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
@@ -894,11 +988,14 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnKitapAl;
     private javax.swing.JButton btnRandevuAl;
     private javax.swing.JButton btnSettingsKaydet;
+    private javax.swing.JComboBox<String> cbKutuphaneci;
     private javax.swing.JComboBox<String> cbRandevuKisi;
     private javax.swing.JComboBox<String> cbSaat;
     private com.toedter.calendar.JDateChooser jDateChooser1;
+    private com.toedter.calendar.JDateChooser jDateChooser2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -911,6 +1008,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JLabel lblSettings;
@@ -926,7 +1024,10 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     private javax.swing.JLabel pnlSettingsKapat;
     private javax.swing.JTable tblBekleyenRandevu;
     private javax.swing.JTable tblKabulRandevu;
+    private javax.swing.JTable tblKitapAl;
     private javax.swing.JTable tblRetRandevu;
+    private javax.swing.JTextField txtKitapAdi;
+    private javax.swing.JTextField txtKitapKodu;
     private javax.swing.JTextArea txtRandevuAlKonu;
     private javax.swing.JTextArea txtRetSebep;
     // End of variables declaration//GEN-END:variables

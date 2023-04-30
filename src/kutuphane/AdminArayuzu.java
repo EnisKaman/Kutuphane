@@ -19,6 +19,7 @@ import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTh
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Image;
 import java.io.File;
@@ -41,6 +42,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javaswingdev.chart.ModelPieChart;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -120,9 +122,9 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 row[2] = yeniDateTime;
                 row[3] = rs.getString("randevu_durum");
                 String originalDateTime = rs.getString("randevu_olusturma_tarih");
-                LocalDateTime dateTime2 = LocalDateTime.parse(originalDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
-                String newDateTime = dateTime2.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-                row[4] = newDateTime;
+                //LocalDateTime dateTime2 = LocalDateTime.parse(originalDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
+                //String newDateTime = dateTime2.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+                row[4] = originalDateTime;
                 model2.addRow(row);
             }
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -133,6 +135,40 @@ public class AdminArayuzu extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public void PastaGrafik(){
+        try {
+            pieChart1.clearData();
+            String sql = "SELECT Distinct islem, COUNT(islem) FROM public.kullanici_log group by islem;;";
+            pst = conn.prepareStatement(sql);
+            rs = pst.executeQuery();
+            int index = 0;
+            String islem = "";
+            while (rs.next()) {
+                islem = rs.getString(1);
+                int cikis = rs.getInt(2);
+                pieChart1.addData(new ModelPieChart(islem, cikis,Renkler(index++)));
+                //lblRenk1.setBackground(Renkler(index++));
+                //lblRenk1Adı.setText(islem);
+            }
+            
+            pnlRenk1.setBackground(Renkler(0));
+            lblRenk1Adı.setText("Çıkış");
+            pnlRenk2.setBackground(Renkler(1));
+            lblRenk2Adı.setText("Giriş");
+            pnlRenk3.setBackground(Renkler(2));
+            lblRenk3Adı.setText("Giriş Yapmadan Çıkış");
+            pnlRenk4.setBackground(Renkler(3));
+            lblRenk4Adı.setText("Kullanıcı Adı ya da Şifre Yanlış");
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public Color Renkler(int index){
+        Color[] color = new Color[]{new Color(255,102,102),new Color(29,184,80),new Color(206,215,33),new Color(55,55,227)};
+        return color[index];
     }
 
     public AdminArayuzu() {
@@ -147,6 +183,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         initComponents();
         KitaplarTabloVerileri();
         RandevuTabloVerileri();
+        PastaGrafik();
         pnlSettings.setVisible(false);
     }
 
@@ -176,6 +213,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
         pnlKitaplar = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblKitaplar = new javax.swing.JTable();
+        jTextField1 = new javax.swing.JTextField();
+        btnKitapAra = new javax.swing.JButton();
         pnlUyeIslemleri = new javax.swing.JPanel();
         pnlRandevular = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -190,6 +229,16 @@ public class AdminArayuzu extends javax.swing.JFrame {
         jScrollPane5 = new javax.swing.JScrollPane();
         txtKonu = new javax.swing.JTextArea();
         pnlDuyurular = new javax.swing.JPanel();
+        pnlDashboard = new javax.swing.JPanel();
+        pieChart1 = new javaswingdev.chart.PieChart();
+        lblRenk4Adı = new javax.swing.JLabel();
+        pnlRenk1 = new javax.swing.JPanel();
+        pnlRenk2 = new javax.swing.JPanel();
+        lblRenk1Adı = new javax.swing.JLabel();
+        pnlRenk3 = new javax.swing.JPanel();
+        pnlRenk4 = new javax.swing.JPanel();
+        lblRenk2Adı = new javax.swing.JLabel();
+        lblRenk3Adı = new javax.swing.JLabel();
         pnlSettings = new javax.swing.JPanel();
         pnlSettingsKapat = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -355,20 +404,32 @@ public class AdminArayuzu extends javax.swing.JFrame {
         tblKitaplar.setToolTipText("");
         jScrollPane2.setViewportView(tblKitaplar);
 
+        btnKitapAra.setText("Ara");
+
         javax.swing.GroupLayout pnlKitaplarLayout = new javax.swing.GroupLayout(pnlKitaplar);
         pnlKitaplar.setLayout(pnlKitaplarLayout);
         pnlKitaplarLayout.setHorizontalGroup(
             pnlKitaplarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlKitaplarLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 776, Short.MAX_VALUE)
+                .addGroup(pnlKitaplarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 776, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitaplarLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnKitapAra, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         pnlKitaplarLayout.setVerticalGroup(
             pnlKitaplarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlKitaplarLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitaplarLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnlKitaplarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnKitapAra, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -458,12 +519,11 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlRandevularLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlRandevularLayout.createSequentialGroup()
-                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 6, Short.MAX_VALUE))
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(pnlRandevularLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtRandevuTarih, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(txtRandevuIsteyenKisi, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(pnlRandevularLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlRandevularLayout.createSequentialGroup()
                         .addGap(8, 8, 8)
@@ -491,6 +551,93 @@ public class AdminArayuzu extends javax.swing.JFrame {
         );
 
         jTabbedPane1.addTab("Duyurular", pnlDuyurular);
+
+        lblRenk4Adı.setText("2");
+        pieChart1.add(lblRenk4Adı);
+        lblRenk4Adı.setBounds(620, 120, 170, 20);
+
+        javax.swing.GroupLayout pnlRenk1Layout = new javax.swing.GroupLayout(pnlRenk1);
+        pnlRenk1.setLayout(pnlRenk1Layout);
+        pnlRenk1Layout.setHorizontalGroup(
+            pnlRenk1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 20, Short.MAX_VALUE)
+        );
+        pnlRenk1Layout.setVerticalGroup(
+            pnlRenk1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 20, Short.MAX_VALUE)
+        );
+
+        pieChart1.add(pnlRenk1);
+        pnlRenk1.setBounds(590, 30, 20, 20);
+
+        javax.swing.GroupLayout pnlRenk2Layout = new javax.swing.GroupLayout(pnlRenk2);
+        pnlRenk2.setLayout(pnlRenk2Layout);
+        pnlRenk2Layout.setHorizontalGroup(
+            pnlRenk2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 20, Short.MAX_VALUE)
+        );
+        pnlRenk2Layout.setVerticalGroup(
+            pnlRenk2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 20, Short.MAX_VALUE)
+        );
+
+        pieChart1.add(pnlRenk2);
+        pnlRenk2.setBounds(590, 60, 20, 20);
+
+        lblRenk1Adı.setText("2");
+        pieChart1.add(lblRenk1Adı);
+        lblRenk1Adı.setBounds(620, 30, 140, 20);
+
+        javax.swing.GroupLayout pnlRenk3Layout = new javax.swing.GroupLayout(pnlRenk3);
+        pnlRenk3.setLayout(pnlRenk3Layout);
+        pnlRenk3Layout.setHorizontalGroup(
+            pnlRenk3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 20, Short.MAX_VALUE)
+        );
+        pnlRenk3Layout.setVerticalGroup(
+            pnlRenk3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 20, Short.MAX_VALUE)
+        );
+
+        pieChart1.add(pnlRenk3);
+        pnlRenk3.setBounds(590, 90, 20, 20);
+
+        javax.swing.GroupLayout pnlRenk4Layout = new javax.swing.GroupLayout(pnlRenk4);
+        pnlRenk4.setLayout(pnlRenk4Layout);
+        pnlRenk4Layout.setHorizontalGroup(
+            pnlRenk4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 20, Short.MAX_VALUE)
+        );
+        pnlRenk4Layout.setVerticalGroup(
+            pnlRenk4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 20, Short.MAX_VALUE)
+        );
+
+        pieChart1.add(pnlRenk4);
+        pnlRenk4.setBounds(590, 120, 20, 20);
+
+        lblRenk2Adı.setText("2");
+        pieChart1.add(lblRenk2Adı);
+        lblRenk2Adı.setBounds(620, 60, 140, 20);
+
+        lblRenk3Adı.setText("2");
+        pieChart1.add(lblRenk3Adı);
+        lblRenk3Adı.setBounds(620, 90, 140, 20);
+
+        javax.swing.GroupLayout pnlDashboardLayout = new javax.swing.GroupLayout(pnlDashboard);
+        pnlDashboard.setLayout(pnlDashboardLayout);
+        pnlDashboardLayout.setHorizontalGroup(
+            pnlDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pieChart1, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+        );
+        pnlDashboardLayout.setVerticalGroup(
+            pnlDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlDashboardLayout.createSequentialGroup()
+                .addComponent(pieChart1, javax.swing.GroupLayout.PREFERRED_SIZE, 492, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 17, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Dashboard", pnlDashboard);
 
         getContentPane().add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 74, 788, 540));
         jTabbedPane1.getAccessibleContext().setAccessibleName("Kütüphaneci Paneli");
@@ -1103,6 +1250,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JButton btnGoruntuSec;
     private javax.swing.JButton btnKabul;
     private javax.swing.JButton btnKaydet;
+    private javax.swing.JButton btnKitapAra;
     private javax.swing.JButton btnRet;
     private javax.swing.JButton btnSettingsKaydet;
     private javax.swing.JComboBox<String> cbKitapTuru;
@@ -1114,20 +1262,31 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblKitapAdi;
     private javax.swing.JLabel lblKitapKodu;
     private javax.swing.JLabel lblKitapResmi;
     private javax.swing.JLabel lblKitapTuru;
+    private javax.swing.JLabel lblRenk1Adı;
+    private javax.swing.JLabel lblRenk2Adı;
+    private javax.swing.JLabel lblRenk3Adı;
+    private javax.swing.JLabel lblRenk4Adı;
     private javax.swing.JLabel lblResim;
     private javax.swing.JLabel lblSettings;
     private javax.swing.JLabel lblYayinEvi;
     private javax.swing.JLabel lblYazarAdSoyad;
     private javax.swing.JList<String> lstRenk;
+    private javaswingdev.chart.PieChart pieChart1;
+    private javax.swing.JPanel pnlDashboard;
     private javax.swing.JPanel pnlDuyurular;
     private javax.swing.JPanel pnlKitapEkleme;
     private javax.swing.JPanel pnlKitapOnaylama;
     private javax.swing.JPanel pnlKitaplar;
     private javax.swing.JPanel pnlRandevular;
+    private javax.swing.JPanel pnlRenk1;
+    private javax.swing.JPanel pnlRenk2;
+    private javax.swing.JPanel pnlRenk3;
+    private javax.swing.JPanel pnlRenk4;
     private javax.swing.JPanel pnlResim;
     private javax.swing.JPanel pnlSettings;
     private javax.swing.JLabel pnlSettingsKapat;
