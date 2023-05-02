@@ -721,7 +721,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         if (evt.getPropertyName().equals("date")) {
             Date date = (Date) evt.getNewValue();
             SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-            tarihkitap = format.format(date) + " 23:59:59";
+            tarihkitap = format.format(date) + " 18:00:00";
             System.out.println(tarihkitap);
         }
     }//GEN-LAST:event_KitapAlTarihSeciciPropertyChange

@@ -36,6 +36,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -1052,6 +1053,8 @@ public class Login extends javax.swing.JFrame {
                 /////////////////////////////////// Kullanıcı Adı ya da Şifre Yanlış Bitiş//////////////////////////////////////
             }
         } catch (SQLException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         }
         /////////////////////////////////// Giriş butonu Bitiş//////////////////////////////////////

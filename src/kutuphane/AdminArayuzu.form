@@ -57,7 +57,7 @@
       </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="6" y="74" width="788" height="540"/>
+          <AbsoluteConstraints x="6" y="74" width="788" height="530"/>
         </Constraint>
       </Constraints>
 
@@ -279,27 +279,34 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane6" alignment="0" max="32767" attributes="0"/>
-                  <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jScrollPane6" alignment="0" pref="788" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="jLabel3" max="32767" attributes="0"/>
-                          <Component id="cbKitapKodları" max="32767" attributes="0"/>
+                          <Component id="cbKitapKodları" min="-2" pref="124" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="68" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="txtToplamKitap" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
+                          <Component id="txtToplamKitap" min="-2" pref="100" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
                               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace min="-2" pref="54" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="txtEnvanterdeKalan" max="32767" attributes="0"/>
-                          <Component id="jLabel5" pref="100" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="txtEnvanterdeKalan" min="-2" pref="100" max="-2" attributes="0"/>
+                          <Component id="jLabel5" min="-2" pref="100" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="336" max="32767" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="btnKitapOnayla" max="32767" attributes="0"/>
+                          <Component id="btnKitapReddet" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="jScrollPane7" min="-2" pref="179" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -307,19 +314,36 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="jScrollPane6" min="-2" pref="330" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel5" alignment="0" min="-2" pref="16" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                                      <Component id="jLabel5" alignment="3" min="-2" pref="16" max="-2" attributes="0"/>
+                                      <Component id="btnKitapOnayla" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                                      <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="cbKitapKodları" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                                      <Component id="txtToplamKitap" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="txtEnvanterdeKalan" min="-2" pref="30" max="-2" attributes="0"/>
+                                  <Component id="btnKitapReddet" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="0" pref="49" max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jScrollPane7" max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="txtEnvanterdeKalan" pref="30" max="32767" attributes="0"/>
-                          <Component id="txtToplamKitap" max="32767" attributes="0"/>
-                          <Component id="cbKitapKodları" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="0" pref="105" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -367,6 +391,7 @@
             <Component class="javax.swing.JTextField" name="txtToplamKitap">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="0"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel4">
@@ -377,12 +402,51 @@
             <Component class="javax.swing.JTextField" name="txtEnvanterdeKalan">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="0"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel5">
               <Properties>
                 <Property name="text" type="java.lang.String" value=" Envanterde Kalan "/>
               </Properties>
+            </Component>
+            <Container class="javax.swing.JScrollPane" name="jScrollPane7">
+              <AuxValues>
+                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+              </AuxValues>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+              <SubComponents>
+                <Component class="javax.swing.JTextArea" name="txtKitapReddetmeSebep">
+                  <Properties>
+                    <Property name="columns" type="int" value="20"/>
+                    <Property name="rows" type="int" value="5"/>
+                    <Property name="name" type="java.lang.String" value="Sebep" noResource="true"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Component class="javax.swing.JButton" name="btnKitapOnayla">
+              <Properties>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="99" green="ff" red="99" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Onayla"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnKitapOnaylaActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnKitapReddet">
+              <Properties>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="33" green="33" red="ff" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Reddet"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnKitapReddetActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -479,7 +543,7 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="509" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="499" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -615,8 +679,14 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtRandevuIsteyenKisi">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="0"/>
+              </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtRandevuTarih">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="0"/>
+              </Properties>
             </Component>
             <Container class="javax.swing.JScrollPane" name="jScrollPane5">
               <AuxValues>
@@ -652,7 +722,7 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="509" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="499" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -676,7 +746,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="pieChart1" min="-2" pref="492" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="17" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
