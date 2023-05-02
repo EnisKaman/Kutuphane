@@ -48,7 +48,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     String sifre = null;
     int tema = 0;
     String tarih;
+    String tarihkitap;
     String saat;
+    String kitapal_yayinevi;
 
     public void KitaplarTabloVerileri() {
         try {
@@ -227,9 +229,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         pnlKitapAlma = new javax.swing.JPanel();
         jScrollPane7 = new javax.swing.JScrollPane();
         tblKitapAl = new javax.swing.JTable();
-        txtKitapAdi = new javax.swing.JTextField();
         txtKitapKodu = new javax.swing.JTextField();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        txtKitapAdi = new javax.swing.JTextField();
+        KitapAlTarihSecici = new com.toedter.calendar.JDateChooser();
         cbKutuphaneci = new javax.swing.JComboBox<>();
         btnKitapAl = new javax.swing.JButton();
         pnlAldigimKitaplar = new javax.swing.JPanel();
@@ -288,7 +290,18 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         });
         jScrollPane7.setViewportView(tblKitapAl);
 
+        KitapAlTarihSecici.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                KitapAlTarihSeciciPropertyChange(evt);
+            }
+        });
+
         btnKitapAl.setText("Kitap Al");
+        btnKitapAl.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnKitapAlActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlKitapAlmaLayout = new javax.swing.GroupLayout(pnlKitapAlma);
         pnlKitapAlma.setLayout(pnlKitapAlmaLayout);
@@ -296,20 +309,19 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane7)
             .addGroup(pnlKitapAlmaLayout.createSequentialGroup()
-                .addGroup(pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlKitapAlmaLayout.createSequentialGroup()
-                        .addGap(71, 71, 71)
-                        .addComponent(txtKitapAdi, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtKitapKodu, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(cbKutuphaneci, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlKitapAlmaLayout.createSequentialGroup()
-                        .addGap(339, 339, 339)
-                        .addComponent(btnKitapAl, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(75, Short.MAX_VALUE))
+                .addGap(0, 6, Short.MAX_VALUE)
+                .addComponent(txtKitapKodu, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(txtKitapAdi, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addComponent(KitapAlTarihSecici, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(cbKutuphaneci, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitapAlmaLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btnKitapAl, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(323, 323, 323))
         );
         pnlKitapAlmaLayout.setVerticalGroup(
             pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -317,13 +329,13 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                 .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32)
                 .addGroup(pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(KitapAlTarihSecici, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cbKutuphaneci, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
                     .addComponent(txtKitapAdi)
-                    .addComponent(txtKitapKodu)
-                    .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cbKutuphaneci, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28)
+                    .addComponent(txtKitapKodu))
+                .addGap(32, 32, 32)
                 .addComponent(btnKitapAl, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 41, Short.MAX_VALUE))
+                .addGap(0, 37, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Kitap Alma", pnlKitapAlma);
@@ -651,11 +663,63 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
     private void tblKitapAlMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblKitapAlMouseClicked
         int kitapindex = tblKitapAl.getSelectedRow();
-        if (kitapindex >=0) {
-            txtKitapKodu.setText((String) tblKitapAl.getValueAt(kitapindex, 0));
-            txtKitapKodu.setText((String) tblKitapAl.getValueAt(kitapindex, 1));
+        if (kitapindex >= 0) {
+            txtKitapKodu.setText(tblKitapAl.getValueAt(kitapindex, 0).toString());
+            txtKitapAdi.setText((String) tblKitapAl.getValueAt(kitapindex, 1));
+            kitapal_yayinevi = (String) tblKitapAl.getValueAt(kitapindex, 3);
         }
     }//GEN-LAST:event_tblKitapAlMouseClicked
+
+    private void btnKitapAlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKitapAlActionPerformed
+        try {
+            String kitapal_kitapadi = txtKitapAdi.getText();
+            int kitapal_kitapkodu = Integer.parseInt(txtKitapKodu.getText());
+            String kutuphaneciadi = cbKutuphaneci.getSelectedItem().toString();
+            String adcekmesql = "(SELECT adsoyad FROM public.kullanicilar where email = ?)";
+            String emailcekmesql = "(SELECT email FROM public.kullanicilar where adsoyad = ?)";
+            SimpleDateFormat inputFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+            SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = inputFormat.parse(tarihkitap);
+            String formattedDate = outputFormat.format(date);
+            Timestamp timestamp = Timestamp.valueOf(formattedDate);
+
+            String sql = "INSERT INTO public.kitap_al_istek( kitap_al_istek_kitap_adi, kitap_al_istek_kitap_kodu, kitap_al_istek_kitap_yayinevi, kitap_al_istek_isteyen_ad_soyad, kitap_al_istek_isteyen_email, kitap_al_istek_veren_ad_soyad, kitap_al_istek_veren_email, kitap_al_istek_geri_verme_tarihi, kitap_al_istek_durum) VALUES (?, ?, ?, " + adcekmesql + ", ?, ?, " + emailcekmesql + ", ?, 'Beklemede');";
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, kitapal_kitapadi);
+            pst.setInt(2, kitapal_kitapkodu);
+            pst.setString(3, kitapal_yayinevi);
+            pst.setString(4, email);
+            pst.setString(5, email);
+            pst.setString(6, kutuphaneciadi);
+            pst.setString(7, kutuphaneciadi);
+            pst.setTimestamp(8, timestamp);
+            int sonuc = pst.executeUpdate();
+            if (sonuc == 1) {
+                JOptionPane.showMessageDialog(null, "İstek Başarılı");
+                txtKitapAdi.setText("");
+                txtKitapKodu.setText("");
+                KitapAlTarihSecici.setDate(null);
+                tblKitapAl.clearSelection();
+            } else {
+                JOptionPane.showMessageDialog(null, "İstek Başarısız");
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }//GEN-LAST:event_btnKitapAlActionPerformed
+
+    private void KitapAlTarihSeciciPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_KitapAlTarihSeciciPropertyChange
+        if (evt.getPropertyName().equals("date")) {
+            Date date = (Date) evt.getNewValue();
+            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+            tarihkitap = format.format(date) + " 23:59:59";
+            System.out.println(tarihkitap);
+        }
+    }//GEN-LAST:event_KitapAlTarihSeciciPropertyChange
 
     public void TemaRengi() {
         if (tema == 0) {
@@ -988,13 +1052,13 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.toedter.calendar.JDateChooser KitapAlTarihSecici;
     private javax.swing.JButton btnKitapAl;
     private javax.swing.JButton btnRandevuAl;
     private javax.swing.JButton btnSettingsKaydet;
     private javax.swing.JComboBox<String> cbKutuphaneci;
     private javax.swing.JComboBox<String> cbRandevuKisi;
     private javax.swing.JComboBox<String> cbSaat;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
     private com.toedter.calendar.JDateChooser jDateChooser2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

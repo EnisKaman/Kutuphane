@@ -1051,13 +1051,13 @@ public class AdminArayuzu extends javax.swing.JFrame {
 ///////////////////////////////////////////////// Resim Seçme Bitiş /////////////////////////////////////////////////  
 
 ///////////////////////////////////////////////// Envantere Kaydetme Başlangıç /////////////////////////////////////////////////  
-    public void EnvantereEkle(String kitapadi, int kitapkodu, int count) {
+    public void EnvantereEkle(String kitapadi, int kitapkodu, int count, String yayinevi) {
         if (count == 1) {
             try {
-                PreparedStatement ps = conn.prepareStatement("INSERT INTO kitap_envanter (kitap_adi, kitap_kodu, kitap_sayisi) VALUES (?, ?, ?)");
+                PreparedStatement ps = conn.prepareStatement("INSERT INTO kitap_envanter (kitap_adi, kitap_sayisi, kitap_yayinevi) VALUES (?, ?, ?)");
                 ps.setString(1, kitapadi);
-                ps.setInt(2, kitapkodu);
-                ps.setInt(3, 1);
+                ps.setInt(2, 1);
+                ps.setString(3, yayinevi);
                 int sonuc = ps.executeUpdate();
                 if (sonuc == 1) {
                     JOptionPane.showMessageDialog(null, "Kitap Envantere Eklendi");
@@ -1069,9 +1069,10 @@ public class AdminArayuzu extends javax.swing.JFrame {
             }
         } else if (count > 1) {
             try {
-                PreparedStatement ps = conn.prepareStatement("UPDATE public.kitap_envanter SET kitap_sayisi=? WHERE kitap_kodu =?;");
+                PreparedStatement ps = conn.prepareStatement("UPDATE public.kitap_envanter SET kitap_sayisi=? WHERE kitap_yayinevi =? and kitap_adi =?;");
                 ps.setInt(1, count);
-                ps.setInt(2, kitapkodu);
+                ps.setString(2, yayinevi);
+                ps.setString(3, kitapadi);
                 int sonuc = ps.executeUpdate();
                 if (sonuc == 1) {
                     JOptionPane.showMessageDialog(null, "Kitap Envantere Güncellendi");
@@ -1088,44 +1089,63 @@ public class AdminArayuzu extends javax.swing.JFrame {
 
 ///////////////////////////////////////////////// Kitap Veritabanına Kaydetme Başlangıç /////////////////////////////////////////////////      
     private void btnKaydetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKaydetActionPerformed
-        String yazaradsoyad = txtYazarAdSoyad.getText();
-        String kitapadi = txtKitapAdi.getText();
-        String yayinevi = txtYayinEvi.getText();
-        int kitapkodu = Integer.parseInt(txtKitapKodu.getText());
-        String kitapturu = cbKitapTuru.getSelectedItem().toString();
-
-        try {
-            fis = new FileInputStream(dosyaadi);
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO kitaplik (yazar_adsoyad, kitap_adi, kitap_resim, kitap_kodu, yayin_evi, kitap_turu) VALUES (?, ?, ?, ?, ?, ?)");
-            ps.setString(1, yazaradsoyad);
-            ps.setString(2, kitapadi);
-            ps.setBinaryStream(3, fis, dosyaadi.length());
-            ps.setInt(4, kitapkodu);
-            ps.setString(5, yayinevi);
-            ps.setString(6, kitapturu);
-            int sonuc = ps.executeUpdate();
-            if (sonuc == 1) {
-                fis.close();
-                ps.close();
-                PreparedStatement ps2 = conn.prepareStatement("SELECT Count(kitap_kodu) FROM public.kitaplik where kitap_kodu =?;");
-                ps2.setInt(1, kitapkodu);
-                rs = ps2.executeQuery();
-
-                if (rs.next()) {
-                    int count = rs.getInt("count");
-                    EnvantereEkle(kitapadi, kitapkodu, count);
+        try {                                          
+            String yazaradsoyad = txtYazarAdSoyad.getText();
+            String kitapadi = txtKitapAdi.getText();
+            String yayinevi = txtYayinEvi.getText();
+            int kitapkodu = Integer.parseInt(txtKitapKodu.getText());
+            String kitapturu = cbKitapTuru.getSelectedItem().toString();
+            
+            String sqlkitapkodu = "Select COUNT(kitap_kodu) from public.kitaplik where kitap_kodu = ?;";
+            pst =conn.prepareStatement(sqlkitapkodu);
+            pst.setInt(1, kitapkodu);
+            rs = pst.executeQuery();
+            int sayi = 0 ;
+            if (rs.next()) {
+                sayi = rs.getInt("count");
+            }            
+            if (sayi == 1) {
+                JOptionPane.showMessageDialog(null, "Kitap Zaten Envantere Eklenmiş");
+            }else{
+                try {
+                fis = new FileInputStream(dosyaadi);
+                PreparedStatement ps = conn.prepareStatement("INSERT INTO kitaplik (yazar_adsoyad, kitap_adi, kitap_resim, kitap_kodu, yayin_evi, kitap_turu) VALUES (?, ?, ?, ?, ?, ?)");
+                ps.setString(1, yazaradsoyad);
+                ps.setString(2, kitapadi);
+                ps.setBinaryStream(3, fis, dosyaadi.length());
+                ps.setInt(4, kitapkodu);
+                ps.setString(5, yayinevi);
+                ps.setString(6, kitapturu);
+                int sonuc = ps.executeUpdate();
+                if (sonuc == 1) {
+                    fis.close();
+                    ps.close();
+                    PreparedStatement ps2 = conn.prepareStatement("SELECT Count(kitap_adi) FROM public.kitaplik where kitap_adi =? and yayin_evi =?;");
+                    ps2.setString(1, kitapadi);
+                    ps2.setString(2, yayinevi);
+                    rs = ps2.executeQuery();
+                    
+                    if (rs.next()) {
+                        int count = rs.getInt("count");
+                        EnvantereEkle(kitapadi, kitapkodu, count, yayinevi);
+                    }
+                    
+                    KitaplarTabloVerileri();
+                    JOptionPane.showMessageDialog(null, "Kitap Eklendi");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Kitap Eklenmedi");
                 }
-
-                KitaplarTabloVerileri();
-                JOptionPane.showMessageDialog(null, "Kitap Eklendi");
-            } else {
-                JOptionPane.showMessageDialog(null, "Kitap Eklenmedi");
+                
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(ResimKoyma.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(ResimKoyma.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(ResimKoyma.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(ResimKoyma.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
