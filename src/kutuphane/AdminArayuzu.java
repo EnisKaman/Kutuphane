@@ -99,6 +99,44 @@ public class AdminArayuzu extends javax.swing.JFrame {
         }
     }
 
+    public void KitapOnayTabloVerileri() throws ParseException {
+        try {
+            String sql = "SELECT * FROM public.kitap_al_istek;";
+            pst = conn.prepareStatement(sql);
+            rs = pst.executeQuery();
+
+            DefaultTableModel model = new DefaultTableModel();
+            model.addColumn("Kitap Adı");
+            model.addColumn("Yayın Evi");
+            model.addColumn("İsteyen Ad Soyad");
+            model.addColumn("İsteyen Email");
+            model.addColumn("Getirme Tarihi");
+            model.addColumn("Güncelleme Tarihi");
+
+            while (rs.next()) {
+                Object[] row = new Object[6];
+                row[0] = rs.getString("kitap_al_istek_kitap_adi");
+                row[1] = rs.getString("kitap_al_istek_kitap_yayinevi");
+                row[2] = rs.getString("kitap_al_istek_isteyen_ad_soyad");
+                row[3] = rs.getString("kitap_al_istek_isteyen_email");
+                row[4] = rs.getString("kitap_al_istek_geri_verme_tarihi");
+                String tarihkitap = rs.getString("kitap_al_istek_guncelleme_tarihi");
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
+                SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = inputFormat.parse(tarihkitap);
+                String formattedDate = outputFormat.format(date);
+                row[5] = formattedDate;
+                model.addRow(row);
+            }
+            DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+            centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            tblKitapOnay.setDefaultRenderer(Object.class, centerRenderer);
+            tblKitapOnay.setModel(model);
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public void RandevuTabloVerileri() {
         try {
             String sql = "SELECT * FROM public.randevu";
@@ -136,8 +174,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void PastaGrafik(){
+
+    public void PastaGrafik() {
         try {
             pieChart1.clearData();
             String sql = "SELECT Distinct islem, COUNT(islem) FROM public.kullanici_log group by islem;;";
@@ -148,11 +186,11 @@ public class AdminArayuzu extends javax.swing.JFrame {
             while (rs.next()) {
                 islem = rs.getString(1);
                 int cikis = rs.getInt(2);
-                pieChart1.addData(new ModelPieChart(islem, cikis,Renkler(index++)));
+                pieChart1.addData(new ModelPieChart(islem, cikis, Renkler(index++)));
                 //lblRenk1.setBackground(Renkler(index++));
                 //lblRenk1Adı.setText(islem);
             }
-            
+
             pnlRenk1.setBackground(Renkler(0));
             lblRenk1Adı.setText("Çıkış");
             pnlRenk2.setBackground(Renkler(1));
@@ -165,9 +203,9 @@ public class AdminArayuzu extends javax.swing.JFrame {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public Color Renkler(int index){
-        Color[] color = new Color[]{new Color(255,102,102),new Color(29,184,80),new Color(206,215,33),new Color(55,55,227)};
+
+    public Color Renkler(int index) {
+        Color[] color = new Color[]{new Color(255, 102, 102), new Color(29, 184, 80), new Color(206, 215, 33), new Color(55, 55, 227)};
         return color[index];
     }
 
@@ -175,7 +213,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         initComponents();
     }
 
-    public AdminArayuzu(String email, String sifre, int tema) {
+    public AdminArayuzu(String email, String sifre, int tema) throws ParseException {
         this.email = email;
         this.sifre = sifre;
         this.tema = tema;
@@ -184,6 +222,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         KitaplarTabloVerileri();
         RandevuTabloVerileri();
         PastaGrafik();
+        KitapOnayTabloVerileri();
         pnlSettings.setVisible(false);
     }
 
@@ -212,6 +251,12 @@ public class AdminArayuzu extends javax.swing.JFrame {
         pnlKitapOnaylama = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         tblKitapOnay = new javax.swing.JTable();
+        cbKitapKodları = new javax.swing.JComboBox<>();
+        jLabel3 = new javax.swing.JLabel();
+        txtToplamKitap = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        txtEnvanterdeKalan = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
         pnlKitaplar = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblKitaplar = new javax.swing.JTable();
@@ -393,19 +438,60 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblKitapOnay.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblKitapOnayMouseClicked(evt);
+            }
+        });
         jScrollPane6.setViewportView(tblKitapOnay);
+
+        jLabel3.setText("Eldeki Kitapların Kodları");
+
+        txtToplamKitap.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+
+        jLabel4.setText("Toplam Kitap");
+
+        txtEnvanterdeKalan.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+
+        jLabel5.setText(" Envanterde Kalan ");
 
         javax.swing.GroupLayout pnlKitapOnaylamaLayout = new javax.swing.GroupLayout(pnlKitapOnaylama);
         pnlKitapOnaylama.setLayout(pnlKitapOnaylamaLayout);
         pnlKitapOnaylamaLayout.setHorizontalGroup(
             pnlKitapOnaylamaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+            .addComponent(jScrollPane6)
+            .addGroup(pnlKitapOnaylamaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlKitapOnaylamaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cbKitapKodları, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(68, 68, 68)
+                .addGroup(pnlKitapOnaylamaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtToplamKitap, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(pnlKitapOnaylamaLayout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(jLabel4)))
+                .addGap(54, 54, 54)
+                .addGroup(pnlKitapOnaylamaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtEnvanterdeKalan)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
+                .addContainerGap(336, Short.MAX_VALUE))
         );
         pnlKitapOnaylamaLayout.setVerticalGroup(
             pnlKitapOnaylamaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlKitapOnaylamaLayout.createSequentialGroup()
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 179, Short.MAX_VALUE))
+                .addGap(16, 16, 16)
+                .addGroup(pnlKitapOnaylamaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnlKitapOnaylamaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtEnvanterdeKalan, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                    .addComponent(txtToplamKitap)
+                    .addComponent(cbKitapKodları))
+                .addGap(0, 105, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Kitap Onaylama", pnlKitapOnaylama);
@@ -1071,10 +1157,11 @@ public class AdminArayuzu extends javax.swing.JFrame {
     public void EnvantereEkle(String kitapadi, int kitapkodu, int count, String yayinevi) {
         if (count == 1) {
             try {
-                PreparedStatement ps = conn.prepareStatement("INSERT INTO kitap_envanter (kitap_adi, kitap_sayisi, kitap_yayinevi) VALUES (?, ?, ?)");
+                PreparedStatement ps = conn.prepareStatement("INSERT INTO kitap_envanter (kitap_adi, kitap_sayisi, kitap_yayinevi,elde_olan) VALUES (?, ?, ?, ?)");
                 ps.setString(1, kitapadi);
                 ps.setInt(2, 1);
                 ps.setString(3, yayinevi);
+                ps.setInt(4, 1);
                 int sonuc = ps.executeUpdate();
                 if (sonuc == 1) {
                     JOptionPane.showMessageDialog(null, "Kitap Envantere Eklendi");
@@ -1086,7 +1173,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             }
         } else if (count > 1) {
             try {
-                PreparedStatement ps = conn.prepareStatement("UPDATE public.kitap_envanter SET kitap_sayisi=? WHERE kitap_yayinevi =? and kitap_adi =?;");
+                PreparedStatement ps = conn.prepareStatement("UPDATE public.kitap_envanter SET kitap_sayisi=?,elde_olan = elde_olan + 1 WHERE kitap_yayinevi =? and kitap_adi =?;");
                 ps.setInt(1, count);
                 ps.setString(2, yayinevi);
                 ps.setString(3, kitapadi);
@@ -1106,63 +1193,62 @@ public class AdminArayuzu extends javax.swing.JFrame {
 
 ///////////////////////////////////////////////// Kitap Veritabanına Kaydetme Başlangıç /////////////////////////////////////////////////      
     private void btnKaydetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKaydetActionPerformed
-        try {                                          
+        try {
             String yazaradsoyad = txtYazarAdSoyad.getText();
             String kitapadi = txtKitapAdi.getText();
             String yayinevi = txtYayinEvi.getText();
             int kitapkodu = Integer.parseInt(txtKitapKodu.getText());
             String kitapturu = cbKitapTuru.getSelectedItem().toString();
-            
+
             String sqlkitapkodu = "Select COUNT(kitap_kodu) from public.kitaplik where kitap_kodu = ?;";
-            pst =conn.prepareStatement(sqlkitapkodu);
+            pst = conn.prepareStatement(sqlkitapkodu);
             pst.setInt(1, kitapkodu);
             rs = pst.executeQuery();
-            int sayi = 0 ;
+            int sayi = 0;
             if (rs.next()) {
                 sayi = rs.getInt("count");
-            }            
+            }
             if (sayi == 1) {
                 JOptionPane.showMessageDialog(null, "Kitap Zaten Envantere Eklenmiş");
-            }else{
+            } else {
                 try {
-                fis = new FileInputStream(dosyaadi);
-                PreparedStatement ps = conn.prepareStatement("INSERT INTO kitaplik (yazar_adsoyad, kitap_adi, kitap_resim, kitap_kodu, yayin_evi, kitap_turu) VALUES (?, ?, ?, ?, ?, ?)");
-                ps.setString(1, yazaradsoyad);
-                ps.setString(2, kitapadi);
-                ps.setBinaryStream(3, fis, dosyaadi.length());
-                ps.setInt(4, kitapkodu);
-                ps.setString(5, yayinevi);
-                ps.setString(6, kitapturu);
-                int sonuc = ps.executeUpdate();
-                if (sonuc == 1) {
-                    fis.close();
-                    ps.close();
-                    PreparedStatement ps2 = conn.prepareStatement("SELECT Count(kitap_adi) FROM public.kitaplik where kitap_adi =? and yayin_evi =?;");
-                    ps2.setString(1, kitapadi);
-                    ps2.setString(2, yayinevi);
-                    rs = ps2.executeQuery();
-                    
-                    if (rs.next()) {
-                        int count = rs.getInt("count");
-                        EnvantereEkle(kitapadi, kitapkodu, count, yayinevi);
+                    fis = new FileInputStream(dosyaadi);
+                    PreparedStatement ps = conn.prepareStatement("INSERT INTO kitaplik (yazar_adsoyad, kitap_adi, kitap_resim, kitap_kodu, yayin_evi, kitap_turu) VALUES (?, ?, ?, ?, ?, ?)");
+                    ps.setString(1, yazaradsoyad);
+                    ps.setString(2, kitapadi);
+                    ps.setBinaryStream(3, fis, dosyaadi.length());
+                    ps.setInt(4, kitapkodu);
+                    ps.setString(5, yayinevi);
+                    ps.setString(6, kitapturu);
+                    int sonuc = ps.executeUpdate();
+                    if (sonuc == 1) {
+                        fis.close();
+                        ps.close();
+                        PreparedStatement ps2 = conn.prepareStatement("SELECT Count(kitap_adi) FROM public.kitaplik where kitap_adi =? and yayin_evi =?;");
+                        ps2.setString(1, kitapadi);
+                        ps2.setString(2, yayinevi);
+                        rs = ps2.executeQuery();
+
+                        if (rs.next()) {
+                            int count = rs.getInt("count");
+                            EnvantereEkle(kitapadi, kitapkodu, count, yayinevi);
+                        }
+
+                        KitaplarTabloVerileri();
+                        JOptionPane.showMessageDialog(null, "Kitap Eklendi");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Kitap Eklenmedi");
                     }
-                    
-                    KitaplarTabloVerileri();
-                    JOptionPane.showMessageDialog(null, "Kitap Eklendi");
-                } else {
-                    JOptionPane.showMessageDialog(null, "Kitap Eklenmedi");
+
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(ResimKoyma.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(ResimKoyma.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(ResimKoyma.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(ResimKoyma.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SQLException ex) {
-                Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
             }
-            }
-            
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1279,6 +1365,31 @@ public class AdminArayuzu extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnRetActionPerformed
 
+    private void tblKitapOnayMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblKitapOnayMouseClicked
+        try {
+            int kitaponayindex = tblKitapOnay.getSelectedRow();
+            String kitapadi = (String) tblKitapOnay.getValueAt(kitaponayindex, 0);
+            String kitapkodu = (String) tblKitapOnay.getValueAt(kitaponayindex, 1);
+            
+            String sql ="SELECT k.kitap_kodu,(Select e.kitap_sayisi from public.kitap_envanter e where k.kitap_adi = e.kitap_adi and k.yayin_evi = e.kitap_yayinevi),(Select e.elde_olan from public.kitap_envanter e where k.kitap_adi = e.kitap_adi and k.yayin_evi = e.kitap_yayinevi) FROM public.kitaplik k where k.kitap_adi = ? and k.yayin_evi = ?;";
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, kitapadi);
+            pst.setString(2, kitapkodu);
+            rs = pst.executeQuery();
+            
+            while (rs.next()) {
+                cbKitapKodları.addItem(rs.getString("kitap_kodu"));
+                 txtEnvanterdeKalan.setText(rs.getString("elde_olan"));
+                txtToplamKitap.setText(rs.getString("kitap_sayisi"));
+            }
+            if (rs.next()) {
+               
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_tblKitapOnayMouseClicked
+
     public static void main(String args[]) {
 
     }
@@ -1290,9 +1401,13 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JButton btnKitapAra;
     private javax.swing.JButton btnRet;
     private javax.swing.JButton btnSettingsKaydet;
+    private javax.swing.JComboBox<String> cbKitapKodları;
     private javax.swing.JComboBox<String> cbKitapTuru;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -1332,12 +1447,14 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JTable tblKitapOnay;
     private javax.swing.JTable tblKitaplar;
     private javax.swing.JTable tblRandevular;
+    private javax.swing.JTextField txtEnvanterdeKalan;
     private javax.swing.JTextField txtKitapAdi;
     private javax.swing.JTextField txtKitapKodu;
     private javax.swing.JTextArea txtKonu;
     private javax.swing.JTextField txtRandevuIsteyenKisi;
     private javax.swing.JTextField txtRandevuTarih;
     private javax.swing.JTextArea txtSebep;
+    private javax.swing.JTextField txtToplamKitap;
     private javax.swing.JTextField txtYayinEvi;
     private javax.swing.JTextField txtYazarAdSoyad;
     // End of variables declaration//GEN-END:variables

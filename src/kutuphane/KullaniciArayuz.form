@@ -50,19 +50,19 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jScrollPane7" alignment="0" max="32767" attributes="0"/>
-                  <Group type="102" attributes="0">
-                      <EmptySpace min="0" pref="6" max="32767" attributes="0"/>
-                      <Component id="txtKitapKodu" min="-2" pref="150" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="txtKitapAdi" min="-2" pref="260" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="txtKitapAdi" min="-2" pref="284" max="-2" attributes="0"/>
-                      <EmptySpace pref="18" max="32767" attributes="0"/>
+                      <Component id="txtYayinEvi" pref="174" max="32767" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="KitapAlTarihSecici" min="-2" pref="150" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="cbKutuphaneci" min="-2" pref="150" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Component id="btnKitapAl" min="-2" pref="120" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="323" max="-2" attributes="0"/>
                   </Group>
@@ -75,9 +75,11 @@
                       <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="KitapAlTarihSecici" max="32767" attributes="0"/>
-                          <Component id="cbKutuphaneci" pref="30" max="32767" attributes="0"/>
-                          <Component id="txtKitapAdi" alignment="0" max="32767" attributes="0"/>
-                          <Component id="txtKitapKodu" alignment="0" max="32767" attributes="0"/>
+                          <Component id="cbKutuphaneci" max="32767" attributes="0"/>
+                          <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                              <Component id="txtKitapAdi" alignment="3" max="32767" attributes="0"/>
+                              <Component id="txtYayinEvi" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
                       <Component id="btnKitapAl" min="-2" pref="30" max="-2" attributes="0"/>
@@ -111,7 +113,7 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JTextField" name="txtKitapKodu">
+            <Component class="javax.swing.JTextField" name="txtYayinEvi">
               <Properties>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
