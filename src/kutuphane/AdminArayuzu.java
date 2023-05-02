@@ -210,6 +210,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
         lblResim = new javax.swing.JLabel();
         btnKaydet = new javax.swing.JButton();
         pnlKitapOnaylama = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        tblKitapOnay = new javax.swing.JTable();
         pnlKitaplar = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblKitaplar = new javax.swing.JTable();
@@ -380,15 +382,30 @@ public class AdminArayuzu extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Kitap Ekleme", pnlKitapEkleme);
 
+        tblKitapOnay.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane6.setViewportView(tblKitapOnay);
+
         javax.swing.GroupLayout pnlKitapOnaylamaLayout = new javax.swing.GroupLayout(pnlKitapOnaylama);
         pnlKitapOnaylama.setLayout(pnlKitapOnaylamaLayout);
         pnlKitapOnaylamaLayout.setHorizontalGroup(
             pnlKitapOnaylamaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 788, Short.MAX_VALUE)
+            .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
         );
         pnlKitapOnaylamaLayout.setVerticalGroup(
             pnlKitapOnaylamaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 509, Short.MAX_VALUE)
+            .addGroup(pnlKitapOnaylamaLayout.createSequentialGroup()
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 179, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Kitap Onaylama", pnlKitapOnaylama);
@@ -1281,6 +1298,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblKitapAdi;
@@ -1311,6 +1329,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JPanel pnlSettings;
     private javax.swing.JLabel pnlSettingsKapat;
     private javax.swing.JPanel pnlUyeIslemleri;
+    private javax.swing.JTable tblKitapOnay;
     private javax.swing.JTable tblKitaplar;
     private javax.swing.JTable tblRandevular;
     private javax.swing.JTextField txtKitapAdi;

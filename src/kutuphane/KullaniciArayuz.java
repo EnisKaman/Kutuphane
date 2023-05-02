@@ -54,12 +54,11 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
     public void KitaplarTabloVerileri() {
         try {
-            String sql = "SELECT DISTINCT kitap_adi,kitap_kodu,yazar_adsoyad,yayin_evi,kitap_turu,okuma_sayisi FROM public.kitaplik;";
+            String sql = "SELECT DISTINCT k.kitap_adi ,k.yazar_adsoyad, k.yayin_evi,k.kitap_turu,(Select e.okuma_sayisi from public.kitap_envanter e where e.kitap_adi = k.kitap_adi and e.kitap_yayinevi = k.yayin_evi),(Select e.kitap_sayisi from public.kitap_envanter e where e.kitap_adi = k.kitap_adi and e.kitap_yayinevi = k.yayin_evi) FROM public.kitaplik k;";
             pst = conn.prepareStatement(sql);
             rs = pst.executeQuery();
 
             DefaultTableModel model = new DefaultTableModel();
-            model.addColumn("Kitap Kodu");
             model.addColumn("Kitap Adı");
             model.addColumn("Yazar");
             model.addColumn("Yayın Evi");
@@ -67,14 +66,17 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             model.addColumn("Okuma Sayısı");
 
             while (rs.next()) {
-                Object[] row = new Object[6];
-                row[0] = rs.getInt("kitap_kodu");
-                row[1] = rs.getString("kitap_adi");
-                row[2] = rs.getString("yazar_adsoyad");
-                row[3] = rs.getString("yayin_evi");
-                row[4] = rs.getString("kitap_turu");
-                row[5] = rs.getInt("okuma_sayisi");
-                model.addRow(row);
+                int kitapsayisi = rs.getInt("kitap_sayisi");
+                if (kitapsayisi > 0) {
+                    Object[] row = new Object[5];
+                    row[0] = rs.getString("kitap_adi");
+                    row[1] = rs.getString("yazar_adsoyad");
+                    row[2] = rs.getString("yayin_evi");
+                    row[3] = rs.getString("kitap_turu");
+                    row[4] = rs.getInt("okuma_sayisi");
+                    model.addRow(row);
+                }
+
             }
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
             centerRenderer.setHorizontalAlignment(JLabel.CENTER);
@@ -289,6 +291,10 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             }
         });
         jScrollPane7.setViewportView(tblKitapAl);
+
+        txtKitapKodu.setEnabled(false);
+
+        txtKitapAdi.setEnabled(false);
 
         KitapAlTarihSecici.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
