@@ -23,6 +23,7 @@ import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -39,6 +40,8 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -59,13 +62,23 @@ public class Login extends javax.swing.JFrame {
     Boolean GirisDurum = false;
     String dosyayolu = "C:/Users/ekmn2/OneDrive/Belgeler/New Folder/Kutuphane/src/kutuphane/BeniHatirla.txt";
 
-    ///////////////////////////DOSYA OKUMA TANIMLAMALAR BAŞLANGIÇ//////////////////////////
-    
-    ///////////////////////////DOSYA OKUMA TANIMLAMALAR BİTİŞ//////////////////////////
+    Action action = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            btnGiris.doClick();
+        }
+    };
+    Action action2 = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            txtSifre.requestFocus();
+        }
+    };
 
+    ///////////////////////////DOSYA OKUMA TANIMLAMALAR BAŞLANGIÇ//////////////////////////
+    ///////////////////////////DOSYA OKUMA TANIMLAMALAR BİTİŞ//////////////////////////
     public Login() throws IOException {
 
-        
         initComponents();
         logoGizle.setVisible(false);
         logoGizleKayitOl.setVisible(false);
@@ -74,6 +87,8 @@ public class Login extends javax.swing.JFrame {
         pnlHesapOlustur.setVisible(false);
         pnlSifremiUnuttum.setVisible(false);
         pnlSettings.setVisible(false);
+        txtSifre.addActionListener(action);
+        txtEmail.addActionListener(action2);
 
         ////////////////////////////////METİN BELGESİ OKUMA BAŞLANGIÇ///////////////////////////
         try {
@@ -195,6 +210,11 @@ public class Login extends javax.swing.JFrame {
         jLabel3.setText("Şifre");
 
         txtSifre.setEchoChar('*');
+        txtSifre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtSifreKeyPressed(evt);
+            }
+        });
 
         chkBeniHatirla.setSelected(true);
         chkBeniHatirla.setText("Beni Hatırla");
@@ -1004,7 +1024,7 @@ public class Login extends javax.swing.JFrame {
             BeniHatirla("", dosyayolu);
             BeniHatirla(metin, dosyayolu);
         }
-        
+
         //////////////////////////////METİN BELGESİ KAYIT BİTİŞ////////////////////////////////
         email = txtEmail.getText().trim();
         sifre = txtSifre.getText().trim();
@@ -1017,19 +1037,18 @@ public class Login extends javax.swing.JFrame {
             if (rs.next()) {
                 GirisDurum = true;
                 int temarengi = rs.getInt("temarengi");
-                int yetki ;
+                int yetki;
                 yetki = rs.getInt("yetkituru");
                 if (yetki == 1) {
                     AdminArayuzu adm = new AdminArayuzu(email, sifre, temarengi);
                     this.setVisible(false);
                     adm.setVisible(true);
-                }else{
+                } else {
                     KullaniciArayuz kul = new KullaniciArayuz(email, sifre, temarengi);
                     this.setVisible(false);
                     kul.setVisible(true);
                 }
-                
-                
+
             } else {
                 JOptionPane.showConfirmDialog(null, "Kullanıcı Adı Ve Şifrenizi Kontrol Ediniz!");
                 /////////////////////////////////// Kullanıcı Adı ya da Şifre Yanlış Başlangıç//////////////////////////////////////
@@ -1197,7 +1216,7 @@ public class Login extends javax.swing.JFrame {
                 pst = conn.prepareStatement(sqllog);
                 int sonuc = pst.executeUpdate();
                 if (sonuc == 1) {
-                   // JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
+                    // JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
 
                 } else {
                     //JOptionPane.showConfirmDialog(null, " Log Kayıt Başarısız");
@@ -1432,8 +1451,12 @@ public class Login extends javax.swing.JFrame {
     private void lstRenkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstRenkMouseClicked
         RenkSecmeListe();
     }//GEN-LAST:event_lstRenkMouseClicked
-    /////////////////////////////////////////// Settings Panel Kapanış Bitiş///////////////////////////////////////// 
 
+    private void txtSifreKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSifreKeyPressed
+
+    }//GEN-LAST:event_txtSifreKeyPressed
+
+/////////////////////////////////////////// Settings Panel Kapanış Bitiş///////////////////////////////////////// 
     // MAİN BAŞLANGIÇ
     public static void main(String args[]) {
         FlatIntelliJLaf.setup();

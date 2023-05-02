@@ -152,6 +152,9 @@
                   <Connection code="&apos;*&apos;" type="code"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtSifreKeyPressed"/>
+              </Events>
             </Component>
             <Container class="javax.swing.JPanel" name="jPanel5">
 
