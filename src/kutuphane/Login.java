@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package kutuphane;
+import entity.Kullanicilar;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
@@ -57,6 +58,9 @@ public class Login extends javax.swing.JFrame {
     ResultSet rs = null;
     CallableStatement proc = null;
     PreparedStatement pst = null;
+    
+    Kullanicilar kullanicilar = new Kullanicilar();
+    
     String email = "";
     String sifre = "";
     Boolean GirisDurum = false;

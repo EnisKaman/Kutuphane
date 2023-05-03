@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="KutuphanePU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>veritabani.RandevuRet</class>
+    <class>veritabani.Kullanicilar</class>
+    <class>veritabani.Randevu</class>
+    <class>veritabani.Kitaplik</class>
+    <class>veritabani.RandevuKabul</class>
+    <class>veritabani.KitapEnvanter</class>
+    <class>veritabani.KitapAlRet</class>
+    <class>veritabani.KullaniciLog</class>
+    <class>veritabani.KitapAlKabul</class>
+    <class>veritabani.KitapAlIstek</class>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/Kutuphane"/>
+      <property name="javax.persistence.jdbc.user" value="postgres"/>
+      <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+      <property name="javax.persistence.jdbc.password" value="enes3349"/>
+    </properties>
+  </persistence-unit>
+</persistence>

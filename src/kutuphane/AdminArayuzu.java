@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package kutuphane;
+import entity.Kitaplik;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
@@ -61,6 +62,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     ResultSet rs = null;
     CallableStatement proc = null;
     PreparedStatement pst = null;
+    Kitaplik kitaplik = new Kitaplik();
     String email = null;
     String sifre = null;
     int tema = 0;
