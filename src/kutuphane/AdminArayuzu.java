@@ -43,6 +43,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javaswingdev.chart.ModelPieChart;
+import javaswingdev.chart.PieChart;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -69,11 +70,11 @@ public class AdminArayuzu extends javax.swing.JFrame {
     String kitapisteyenadsoyad;
     String kitapgetirmetarih;
     String kitapyayinevi;
-    int secilenkitapid=0;
+    int secilenkitapid = 0;
 
     public void KitaplarTabloVerileri() {
         try {
-            String sql = "SELECT DISTINCT kitap_adi,kitap_kodu,yazar_adsoyad,yayin_evi,kitap_turu,okuma_sayisi FROM public.kitaplik;";
+            String sql = "SELECT DISTINCT kitap_adi,kitap_kodu,yazar_adsoyad,yayin_evi,kitap_turu,kitap_durum FROM public.kitaplik;";
             pst = conn.prepareStatement(sql);
             rs = pst.executeQuery();
 
@@ -83,7 +84,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             model.addColumn("Yazar");
             model.addColumn("Yayın Evi");
             model.addColumn("Kitap Türü");
-            model.addColumn("Okuma Sayısı");
+            model.addColumn("Kitap Durumu");
 
             while (rs.next()) {
                 Object[] row = new Object[6];
@@ -92,7 +93,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 row[2] = rs.getString("yazar_adsoyad");
                 row[3] = rs.getString("yayin_evi");
                 row[4] = rs.getString("kitap_turu");
-                row[5] = rs.getInt("okuma_sayisi");
+                row[5] = rs.getString("kitap_durum");
                 model.addRow(row);
             }
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -202,13 +203,13 @@ public class AdminArayuzu extends javax.swing.JFrame {
             }
 
             pnlRenk1.setBackground(Renkler(0));
-            lblRenk1Adı.setText("Çıkış");
+            lblRenk1Adi.setText("Çıkış");
             pnlRenk2.setBackground(Renkler(1));
-            lblRenk2Adı.setText("Giriş");
+            lblRenk2Adi.setText("Giriş");
             pnlRenk3.setBackground(Renkler(2));
-            lblRenk3Adı.setText("Giriş Yapmadan Çıkış");
+            lblRenk3Adi.setText("Giriş Yapmadan Çıkış");
             pnlRenk4.setBackground(Renkler(3));
-            lblRenk4Adı.setText("Kullanıcı Adı ya da Şifre Yanlış");
+            lblRenk4Adi.setText("Kullanıcı Adı ya da Şifre Yanlış");
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -218,16 +219,37 @@ public class AdminArayuzu extends javax.swing.JFrame {
         Color[] color = new Color[]{new Color(255, 102, 102), new Color(29, 184, 80), new Color(206, 215, 33), new Color(55, 55, 227)};
         return color[index];
     }
-    
-    public void KitapIstekKaldirma(int kalkacakindex, String durum) throws SQLException, ParseException{
+
+    public void KitapIstekKaldirma(int kalkacakindex, String durum, int kitapkodu, String kitapadi, boolean kabul) throws SQLException, ParseException {
         String sqldelete = "UPDATE public.kitap_al_istek SET kitap_al_istek_durum=? WHERE kitap_al_istek_ID = ?;";
         pst = conn.prepareStatement(sqldelete);
         pst.setString(1, durum);
         pst.setInt(2, secilenkitapid);
-        int sonuc =pst.executeUpdate();
+        int sonuc = pst.executeUpdate();
         if (sonuc == 1) {
-            JOptionPane.showMessageDialog(null , "Silindi");
+            JOptionPane.showMessageDialog(null, "Silindi");
         }
+        
+        if (kabul == true) {
+            String sql = "UPDATE public.kitaplik SET kitap_durum = ? where kitap_kodu = ?;";
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, kitapisteyenemail);
+            pst.setInt(2, kitapkodu);
+            int cevap = pst.executeUpdate();
+            if (cevap == 1) {
+                JOptionPane.showMessageDialog(null, "Kitap Şu anda " + kitapisteyenemail);
+            }
+
+            System.out.println("asdasasdasd");
+            String sqlupdate = "UPDATE public.kitap_envanter SET elde_olan = elde_olan - 1 WHERE kitap_adi=?;";
+            pst = conn.prepareStatement(sqlupdate);
+            pst.setString(1, kitapadi);
+            int donus = pst.executeUpdate();
+            if (donus == 1) {
+                JOptionPane.showMessageDialog(null, "Azaldı");
+            }
+        }
+
         txtEnvanterdeKalan.setText("");
         txtToplamKitap.setText("");
         cbKitapKodları.removeAllItems();
@@ -308,14 +330,14 @@ public class AdminArayuzu extends javax.swing.JFrame {
         pnlDuyurular = new javax.swing.JPanel();
         pnlDashboard = new javax.swing.JPanel();
         pieChart1 = new javaswingdev.chart.PieChart();
-        lblRenk4Adı = new javax.swing.JLabel();
+        lblRenk1Adi = new javax.swing.JLabel();
+        lblRenk2Adi = new javax.swing.JLabel();
+        lblRenk3Adi = new javax.swing.JLabel();
+        lblRenk4Adi = new javax.swing.JLabel();
         pnlRenk1 = new javax.swing.JPanel();
         pnlRenk2 = new javax.swing.JPanel();
-        lblRenk1Adı = new javax.swing.JLabel();
         pnlRenk3 = new javax.swing.JPanel();
         pnlRenk4 = new javax.swing.JPanel();
-        lblRenk2Adı = new javax.swing.JLabel();
-        lblRenk3Adı = new javax.swing.JLabel();
         pnlSettings = new javax.swing.JPanel();
         pnlSettingsKapat = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -729,9 +751,21 @@ public class AdminArayuzu extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Duyurular", pnlDuyurular);
 
-        lblRenk4Adı.setText("2");
-        pieChart1.add(lblRenk4Adı);
-        lblRenk4Adı.setBounds(620, 120, 170, 20);
+        lblRenk1Adi.setText("jLabel6");
+        pieChart1.add(lblRenk1Adi);
+        lblRenk1Adi.setBounds(630, 30, 160, 16);
+
+        lblRenk2Adi.setText("jLabel6");
+        pieChart1.add(lblRenk2Adi);
+        lblRenk2Adi.setBounds(630, 60, 160, 16);
+
+        lblRenk3Adi.setText("jLabel6");
+        pieChart1.add(lblRenk3Adi);
+        lblRenk3Adi.setBounds(630, 90, 160, 16);
+
+        lblRenk4Adi.setText("jLabel6");
+        pieChart1.add(lblRenk4Adi);
+        lblRenk4Adi.setBounds(630, 120, 160, 16);
 
         javax.swing.GroupLayout pnlRenk1Layout = new javax.swing.GroupLayout(pnlRenk1);
         pnlRenk1.setLayout(pnlRenk1Layout);
@@ -745,7 +779,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         );
 
         pieChart1.add(pnlRenk1);
-        pnlRenk1.setBounds(590, 30, 20, 20);
+        pnlRenk1.setBounds(600, 30, 20, 20);
 
         javax.swing.GroupLayout pnlRenk2Layout = new javax.swing.GroupLayout(pnlRenk2);
         pnlRenk2.setLayout(pnlRenk2Layout);
@@ -759,11 +793,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         );
 
         pieChart1.add(pnlRenk2);
-        pnlRenk2.setBounds(590, 60, 20, 20);
-
-        lblRenk1Adı.setText("2");
-        pieChart1.add(lblRenk1Adı);
-        lblRenk1Adı.setBounds(620, 30, 140, 20);
+        pnlRenk2.setBounds(600, 60, 20, 20);
 
         javax.swing.GroupLayout pnlRenk3Layout = new javax.swing.GroupLayout(pnlRenk3);
         pnlRenk3.setLayout(pnlRenk3Layout);
@@ -777,7 +807,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         );
 
         pieChart1.add(pnlRenk3);
-        pnlRenk3.setBounds(590, 90, 20, 20);
+        pnlRenk3.setBounds(600, 90, 20, 20);
 
         javax.swing.GroupLayout pnlRenk4Layout = new javax.swing.GroupLayout(pnlRenk4);
         pnlRenk4.setLayout(pnlRenk4Layout);
@@ -791,15 +821,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         );
 
         pieChart1.add(pnlRenk4);
-        pnlRenk4.setBounds(590, 120, 20, 20);
-
-        lblRenk2Adı.setText("2");
-        pieChart1.add(lblRenk2Adı);
-        lblRenk2Adı.setBounds(620, 60, 140, 20);
-
-        lblRenk3Adı.setText("2");
-        pieChart1.add(lblRenk3Adı);
-        lblRenk3Adı.setBounds(620, 90, 140, 20);
+        pnlRenk4.setBounds(600, 120, 20, 20);
 
         javax.swing.GroupLayout pnlDashboardLayout = new javax.swing.GroupLayout(pnlDashboard);
         pnlDashboard.setLayout(pnlDashboardLayout);
@@ -810,8 +832,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
         pnlDashboardLayout.setVerticalGroup(
             pnlDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlDashboardLayout.createSequentialGroup()
-                .addComponent(pieChart1, javax.swing.GroupLayout.PREFERRED_SIZE, 492, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(pieChart1, javax.swing.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Dashboard", pnlDashboard);
@@ -1454,7 +1476,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             kitapisteyenemail = (String) tblKitapOnay.getValueAt(kitaponayindex, 3);
             kitapgetirmetarih = (String) tblKitapOnay.getValueAt(kitaponayindex, 4) + ":00";
 
-            String sql = "SELECT k.kitap_kodu,(Select e.kitap_sayisi from public.kitap_envanter e where k.kitap_adi = e.kitap_adi and k.yayin_evi = e.kitap_yayinevi),(Select e.elde_olan from public.kitap_envanter e where k.kitap_adi = e.kitap_adi and k.yayin_evi = e.kitap_yayinevi) FROM public.kitaplik k where k.kitap_adi = ? and k.yayin_evi = ? and k.kitap_durum = 'Envanterde';";
+            String sql = "SELECT k.kitap_kodu,(Select e.kitap_sayisi from public.kitap_envanter e where k.kitap_adi = e.kitap_adi and k.yayin_evi = e.kitap_yayinevi),(Select e.elde_olan from public.kitap_envanter e where k.kitap_adi = e.kitap_adi and k.yayin_evi = e.kitap_yayinevi) FROM public.kitaplik k where k.kitap_adi = ? and k.yayin_evi = ? and k.kitap_durum = 'Envanterde' Order By k.kitap_kodu ASC;";
             pst = conn.prepareStatement(sql);
             pst.setString(1, kitapadi);
             pst.setString(2, kitapyayinevi);
@@ -1465,8 +1487,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 txtEnvanterdeKalan.setText(rs.getString("elde_olan"));
                 txtToplamKitap.setText(rs.getString("kitap_sayisi"));
             }
-            
-            String sqlidalma ="Select kitap_al_istek_id from public.kitap_al_istek where kitap_al_istek_geri_verme_tarihi=?";
+
+            String sqlidalma = "Select kitap_al_istek_id from public.kitap_al_istek where kitap_al_istek_geri_verme_tarihi=?";
             pst = conn.prepareStatement(sqlidalma);
             SimpleDateFormat girisFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             SimpleDateFormat cikisFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -1476,11 +1498,10 @@ public class AdminArayuzu extends javax.swing.JFrame {
             pst.setTimestamp(1, timestamp);
             rs = pst.executeQuery();
             if (rs.next()) {
-                secilenkitapid=rs.getInt("kitap_al_istek_id");
+                secilenkitapid = rs.getInt("kitap_al_istek_id");
                 System.out.println(secilenkitapid);
             }
-            
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
@@ -1493,14 +1514,21 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private void btnKitapOnaylaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKitapOnaylaActionPerformed
         try {
             int kitapkodu = Integer.parseInt(cbKitapKodları.getSelectedItem().toString());
+            String kitapadi = null;
+            String sqlkitpadi = "Select kitap_adi from public.kitaplik where kitap_kodu = ?";
+            pst = conn.prepareStatement(sqlkitpadi);
+            pst.setInt(1, kitapkodu);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                kitapadi = rs.getString("kitap_adi");
+            }
 
-            String kitapadi = "(Select kitap_adi from public.kitaplik where kitap_kodu = ?)";
             String kitapverenadsoyad = "(Select adsoyad from public.kullanicilar where email = ?)";
 
-            String sql = "INSERT INTO public.kitap_al_kabul( kitap_al_kabul_kitap_kodu, kitap_al_kabul_kitap_adi, kitap_al_kabul_isteyen_ad_soyad, kitap_al_kabul_isteyen_email, kitap_al_kabul_veren_ad_soyad, kitap_al_kabul_veren_email, kitap_al_kabul_durum, kitap_al_kabul_geri_getirme_tarihi, kitap_al_kabul_kitap_yayinevi) VALUES (?, " + kitapadi + ", ?, ?," + kitapverenadsoyad + ",  ?, 'Kabul Edildi', ?, ?);";
+            String sql = "INSERT INTO public.kitap_al_kabul( kitap_al_kabul_kitap_kodu, kitap_al_kabul_kitap_adi, kitap_al_kabul_isteyen_ad_soyad, kitap_al_kabul_isteyen_email, kitap_al_kabul_veren_ad_soyad, kitap_al_kabul_veren_email, kitap_al_kabul_durum, kitap_al_kabul_geri_getirme_tarihi, kitap_al_kabul_kitap_yayinevi) VALUES (?, ?, ?, ?," + kitapverenadsoyad + ",  ?, 'Kabul Edildi', ?, ?);";
             pst = conn.prepareStatement(sql);
             pst.setInt(1, kitapkodu);
-            pst.setInt(2, kitapkodu);
+            pst.setString(2, kitapadi);
             pst.setString(3, kitapisteyenadsoyad);
             pst.setString(4, kitapisteyenemail);
             pst.setString(5, email);
@@ -1518,7 +1546,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             } else {
                 JOptionPane.showMessageDialog(null, "Kitap Kabul Edildi hata");
             }
-            KitapIstekKaldirma(secilenkitapid,"Kabul Edildi");
+            KitapIstekKaldirma(secilenkitapid, "Kabul Edildi", kitapkodu, kitapadi, true);
 
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
@@ -1527,50 +1555,58 @@ public class AdminArayuzu extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnKitapOnaylaActionPerformed
 ///////////////////////////////////////////////// Kitap Onaylama Buton Bitiş /////////////////////////////////////////////////
-    
+
 ///////////////////////////////////////////////// Kitap Reddetme Buton Başlangıç /////////////////////////////////////////////////
     private void btnKitapReddetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKitapReddetActionPerformed
         if (txtKitapReddetmeSebep.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Lütfen Reddedilme Sebebi Giriniz");
-        }else{
+        } else {
             try {
-            int kitapkodu = Integer.parseInt(cbKitapKodları.getSelectedItem().toString());
-            String sebep = txtKitapReddetmeSebep.getText();
+                int kitapkodu = Integer.parseInt(cbKitapKodları.getSelectedItem().toString());
+                String sebep = txtKitapReddetmeSebep.getText();
 
-            String kitapadi = "(Select kitap_adi from public.kitaplik where kitap_kodu = ?)";
-            String kitapverenadsoyad = "(Select adsoyad from public.kullanicilar where email = ?)";
+                String kitapadi = null;
+                String sqlkitpadi = "Select kitap_adi from public.kitaplik where kitap_kodu = ?";
+                pst = conn.prepareStatement(sqlkitpadi);
+                pst.setInt(1, kitapkodu);
+                rs = pst.executeQuery();
+                if (rs.next()) {
+                    kitapadi = rs.getString("kitap_adi");
+                }
+                String kitapverenadsoyad = "(Select adsoyad from public.kullanicilar where email = ?)";
 
-            String sql = "INSERT INTO public.kitap_al_ret(kitap_al_ret_kitap_adi, kitap_al_ret_isteyen_ad_soyad, kitap_al_ret_isteyen_email, kitap_al_ret_veren_ad_soyad, kitap_al_ret_veren_email, kitap_al_ret_durum, kitap_al_ret_geri_getirme_tarihi, kitap_al_ret_kitap_yayinevi, kitap_al_ret_sebep) VALUES (" + kitapadi + ", ?, ?," + kitapverenadsoyad + ",  ?, 'Kabul Edildi', ?, ?, ?);";
-            pst = conn.prepareStatement(sql);
-            pst.setInt(1, kitapkodu);
-            pst.setString(2, kitapisteyenadsoyad);
-            pst.setString(3, kitapisteyenemail);
-            pst.setString(4, email);
-            pst.setString(5, email);
-            SimpleDateFormat girisFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-            SimpleDateFormat cikisFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date date2 = girisFormat.parse(kitapgetirmetarih);
-            String songerigetirmeDate = cikisFormat.format(date2);
-            Timestamp timestamp = Timestamp.valueOf(songerigetirmeDate);
-            pst.setTimestamp(6, timestamp);
-            pst.setString(7, kitapyayinevi);
-            pst.setString(8, sebep);
-            int sonuc = pst.executeUpdate();
-            if (sonuc == 1) {
-                JOptionPane.showMessageDialog(null, "Kitap Reddedildi");
-            } else {
-                JOptionPane.showMessageDialog(null, "Kitap Kabul Edildi hata");
+                String sql = "INSERT INTO public.kitap_al_ret(kitap_al_ret_kitap_adi, kitap_al_ret_isteyen_ad_soyad, kitap_al_ret_isteyen_email, kitap_al_ret_veren_ad_soyad, kitap_al_ret_veren_email, kitap_al_ret_durum, kitap_al_ret_geri_getirme_tarihi, kitap_al_ret_kitap_yayinevi, kitap_al_ret_sebep) VALUES (?, ?, ?," + kitapverenadsoyad + ",  ?, 'Kabul Edildi', ?, ?, ?);";
+                pst = conn.prepareStatement(sql);
+                pst.setString(1, kitapadi);
+                pst.setString(2, kitapisteyenadsoyad);
+                pst.setString(3, kitapisteyenemail);
+                pst.setString(4, email);
+                pst.setString(5, email);
+                SimpleDateFormat girisFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                SimpleDateFormat cikisFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date2 = girisFormat.parse(kitapgetirmetarih);
+                String songerigetirmeDate = cikisFormat.format(date2);
+                Timestamp timestamp = Timestamp.valueOf(songerigetirmeDate);
+                pst.setTimestamp(6, timestamp);
+                pst.setString(7, kitapyayinevi);
+                pst.setString(8, sebep);
+                int sonuc = pst.executeUpdate();
+                if (sonuc == 1) {
+                    JOptionPane.showMessageDialog(null, "Kitap Reddedildi");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Kitap Kabul Edildi hata");
+                }
+                KitapIstekKaldirma(secilenkitapid, "Reddedildi", kitapkodu, kitapadi, false);
+
+            } catch (SQLException ex) {
+                Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ParseException ex) {
+                Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
             }
-            KitapIstekKaldirma(secilenkitapid,"Reddedildi");
-
-        } catch (SQLException ex) {
-            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
-            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
-        }
         }
     }//GEN-LAST:event_btnKitapReddetActionPerformed
 /////////////////////////////////////////////// Kitap Reddetme Buton Bitiş /////////////////////////////////////////////////
+
     public static void main(String args[]) {
 
     }
@@ -1604,10 +1640,10 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JLabel lblKitapKodu;
     private javax.swing.JLabel lblKitapResmi;
     private javax.swing.JLabel lblKitapTuru;
-    private javax.swing.JLabel lblRenk1Adı;
-    private javax.swing.JLabel lblRenk2Adı;
-    private javax.swing.JLabel lblRenk3Adı;
-    private javax.swing.JLabel lblRenk4Adı;
+    private javax.swing.JLabel lblRenk1Adi;
+    private javax.swing.JLabel lblRenk2Adi;
+    private javax.swing.JLabel lblRenk3Adi;
+    private javax.swing.JLabel lblRenk4Adi;
     private javax.swing.JLabel lblResim;
     private javax.swing.JLabel lblSettings;
     private javax.swing.JLabel lblYayinEvi;
