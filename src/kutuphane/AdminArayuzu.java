@@ -22,9 +22,12 @@ import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -47,14 +50,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javaswingdev.chart.ModelPieChart;
 import javaswingdev.chart.PieChart;
+import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -156,6 +166,40 @@ public class AdminArayuzu extends javax.swing.JFrame {
         }
     }
 
+    public void ArsivTabloVerileri() {
+        try {
+            String sql = "SELECT DISTINCT belge_adi,belge_yayinlayan_kisi,belge_kodu,belge_yayin_yili,belge_turu FROM public.arsiv;";
+            pst = conn.prepareStatement(sql);
+            rs = pst.executeQuery();
+
+            DefaultTableModel model = new DefaultTableModel();
+            model.addColumn("Belge Adı");
+            model.addColumn("Yayınlayan Kisi");
+            model.addColumn("Belge Kodu");
+            model.addColumn("Yayın Yılı");
+            model.addColumn("Belge Türü");
+            model.addColumn("Belge Nüshası");
+
+            while (rs.next()) {
+                Object[] row = new Object[6];
+                row[0] = rs.getString("belge_adi");
+                row[1] = rs.getString("belge_yayinlayan_kisi");
+                row[2] = rs.getInt("belge_kodu");
+                row[3] = rs.getInt("belge_yayin_yili");
+                row[4] = rs.getString("belge_turu");
+                row[5] = "Gör";
+                model.addRow(row);
+            }
+            
+            DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+            centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            tblBelgeler.setDefaultRenderer(Object.class, centerRenderer);
+            tblBelgeler.setModel(model);
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public void RandevuTabloVerileri() {
         try {
             String sql = "SELECT * FROM public.randevu";
@@ -224,7 +268,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     }
 
     public Color Renkler(int index) {
-        Color[] color = new Color[]{new Color(255, 102, 102), new Color(29, 184, 80), new Color(206, 215, 33), new Color(55, 55, 227), new Color(0,255,51)};
+        Color[] color = new Color[]{new Color(255, 102, 102), new Color(29, 184, 80), new Color(206, 215, 33), new Color(55, 55, 227), new Color(0, 255, 51)};
         return color[index];
     }
 
@@ -279,6 +323,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         PastaGrafik();
         KitapOnayTabloVerileri();
         TemaRengi();
+        ArsivTabloVerileri();
         pnlSettings.setVisible(false);
         tabArsiv.setVisible(false);
         tabDiger.setVisible(false);
@@ -374,6 +419,9 @@ public class AdminArayuzu extends javax.swing.JFrame {
         treeBelgeTuru = new javax.swing.JTree();
         lblBelgeNushasiAdi = new javax.swing.JLabel();
         btnBelgeEkle = new javax.swing.JButton();
+        pnlBelgeler = new javax.swing.JPanel();
+        jScrollPane9 = new javax.swing.JScrollPane();
+        tblBelgeler = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -1120,6 +1168,34 @@ public class AdminArayuzu extends javax.swing.JFrame {
         );
 
         tabArsiv.addTab("Belge Ekle", null, pnlBelgeEkle, "Arşive Yeni Belge Eklenir");
+
+        tblBelgeler.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane9.setViewportView(tblBelgeler);
+
+        javax.swing.GroupLayout pnlBelgelerLayout = new javax.swing.GroupLayout(pnlBelgeler);
+        pnlBelgeler.setLayout(pnlBelgelerLayout);
+        pnlBelgelerLayout.setHorizontalGroup(
+            pnlBelgelerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+        );
+        pnlBelgelerLayout.setVerticalGroup(
+            pnlBelgelerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlBelgelerLayout.createSequentialGroup()
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 408, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 110, Short.MAX_VALUE))
+        );
+
+        tabArsiv.addTab("Envanterdeki Belgeler", pnlBelgeler);
 
         getContentPane().add(tabArsiv, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 74, 788, 530));
 
@@ -1902,16 +1978,16 @@ public class AdminArayuzu extends javax.swing.JFrame {
             String yayinlayanadi = txtYayinlayanAdi.getText();
             int yayinyili = Integer.parseInt(txtYayinYili.getText());
             int belgekodu = Integer.parseInt(txtBelgeKodu.getText());
-            String adver = "(Select adsoyad from public.kullanicilar where email = ?)"; 
-            
-            String sql ="INSERT INTO public.arsiv(belge_adi, belge_yayinlayan_kisi, belge_kodu, belge_yayin_yili, belge_turu, belge_nushasi, belge_ekleyen_adsoyad, belge_ekleyen_email) VALUES (?, ?, ?, ?, ?, ?, "+adver+", ?);";
+            String adver = "(Select adsoyad from public.kullanicilar where email = ?)";
+
+            String sql = "INSERT INTO public.arsiv(belge_adi, belge_yayinlayan_kisi, belge_kodu, belge_yayin_yili, belge_turu, belge_nushasi, belge_ekleyen_adsoyad, belge_ekleyen_email) VALUES (?, ?, ?, ?, ?, ?, " + adver + ", ?);";
             pst = conn.prepareStatement(sql);
             pst.setString(1, belgeadi);
             pst.setString(2, yayinlayanadi);
             pst.setInt(3, belgekodu);
-            pst.setInt(4, yayinyili);            
+            pst.setInt(4, yayinyili);
             pst.setString(5, belgeturu.toString());
-            pst.setBinaryStream(6,new FileInputStream(dosyaadi));
+            pst.setBinaryStream(6, new FileInputStream(dosyaadi));
             pst.setString(7, email);
             pst.setString(8, email);
             int sonuc = pst.executeUpdate();
@@ -1944,8 +2020,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnBelgeSecActionPerformed
 /////////////////////////////////////////////// Belge Seçme Bitiş /////////////////////////////////////////////////
-    
-    
+
+
     private void treeBelgeTuruValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_treeBelgeTuruValueChanged
         DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeBelgeTuru.getLastSelectedPathComponent();
         if (selectedNode != null) {
@@ -1983,6 +2059,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblArsiv;
     private javax.swing.JLabel lblBelgeAdi;
@@ -2008,6 +2085,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JList<String> lstRenk;
     private javaswingdev.chart.PieChart pieChart1;
     private javax.swing.JPanel pnlBelgeEkle;
+    private javax.swing.JPanel pnlBelgeler;
     private javax.swing.JPanel pnlDashboard;
     private javax.swing.JPanel pnlDuyurular;
     private javax.swing.JPanel pnlKitapEkleme;
@@ -2025,6 +2103,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JTabbedPane tabArsiv;
     private javax.swing.JTabbedPane tabDiger;
     private javax.swing.JTabbedPane tabKutuphane;
+    private javax.swing.JTable tblBelgeler;
     private javax.swing.JTable tblKitapOnay;
     private javax.swing.JTable tblKitaplar;
     private javax.swing.JTable tblRandevular;
