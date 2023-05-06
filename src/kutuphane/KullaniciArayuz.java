@@ -19,7 +19,14 @@ import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTh
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import java.awt.Desktop;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -33,6 +40,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -51,6 +60,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     String tarihkitap;
     String saat;
     String kitapal_yayinevi;
+    int belgekodu = 0;
 
     public void KitaplarTabloVerileri() {
         try {
@@ -82,6 +92,40 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             centerRenderer.setHorizontalAlignment(JLabel.CENTER);
             tblKitapAl.setDefaultRenderer(Object.class, centerRenderer);
             tblKitapAl.setModel(model);
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void ArsivBelgelerimTabloVerileri() {
+        try {
+            String sql = "SELECT DISTINCT belge_adi,belge_yayinlayan_kisi,belge_kodu,belge_yayin_yili,belge_turu FROM public.arsiv;";
+            pst = conn.prepareStatement(sql);
+            rs = pst.executeQuery();
+
+            DefaultTableModel model = new DefaultTableModel();
+            model.addColumn("Belge Adı");
+            model.addColumn("Yayınlayan Kisi");
+            model.addColumn("Belge Kodu");
+            model.addColumn("Yayın Yılı");
+            model.addColumn("Belge Türü");
+            model.addColumn("Belge Nüshası");
+
+            while (rs.next()) {
+                Object[] row = new Object[6];
+                row[0] = rs.getString("belge_adi");
+                row[1] = rs.getString("belge_yayinlayan_kisi");
+                row[2] = rs.getInt("belge_kodu");
+                row[3] = rs.getInt("belge_yayin_yili");
+                row[4] = rs.getString("belge_turu");
+                row[5] = "Gör";
+                model.addRow(row);
+            }
+
+            DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+            centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            tblBelgelerim.setDefaultRenderer(Object.class, centerRenderer);
+            tblBelgelerim.setModel(model);
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -206,6 +250,32 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         }
     }
 
+    public void PDFGoster() throws FileNotFoundException, IOException {
+        try {
+            String sql = "SELECT belge_nushasi,belge_nushasi_adi FROM public.arsiv WHERE belge_kodu = ?";
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1, belgekodu);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                //JOptionPane.showMessageDialog(null, "asdfas");
+                byte[] pdfData = rs.getBytes("belge_nushasi");
+                String belgenushasiadi = rs.getString("belge_nushasi_adi");
+                String dosyaAdi = belgenushasiadi;
+
+                // Byte dizisini PDF dosyasına yazma işlemi
+                FileOutputStream fos = new FileOutputStream(dosyaAdi);
+                fos.write(pdfData);
+                fos.close();
+
+                // PDF dosyasını varsayılan PDF görüntüleyici ile açma
+                Desktop.getDesktop().open(new File(dosyaAdi));
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public KullaniciArayuz() {
         initComponents();
     }
@@ -221,13 +291,17 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         KabulRandevuTabloVerileri();
         RetRandevuTabloVerileri();
         KitaplarTabloVerileri();
+        ArsivBelgelerimTabloVerileri();
     }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        lblKutuphane = new javax.swing.JLabel();
+        lblArsiv = new javax.swing.JLabel();
+        lblDiger = new javax.swing.JLabel();
+        tabKutuphane = new javax.swing.JTabbedPane();
         pnlKitapAlma = new javax.swing.JPanel();
         jScrollPane7 = new javax.swing.JScrollPane();
         tblKitapAl = new javax.swing.JTable();
@@ -237,6 +311,20 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         cbKutuphaneci = new javax.swing.JComboBox<>();
         btnKitapAl = new javax.swing.JButton();
         pnlAldigimKitaplar = new javax.swing.JPanel();
+        lblSettings = new javax.swing.JLabel();
+        pnlSettings = new javax.swing.JPanel();
+        pnlSettingsKapat = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        lstRenk = new javax.swing.JList<>();
+        jLabel1 = new javax.swing.JLabel();
+        btnSettingsKaydet = new javax.swing.JButton();
+        tabArsiv = new javax.swing.JTabbedPane();
+        pnlBelgeIste = new javax.swing.JPanel();
+        pnlBelgelerim = new javax.swing.JPanel();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        tblBelgelerim = new javax.swing.JTable();
+        btnPDFAc = new javax.swing.JButton();
+        tabDiger = new javax.swing.JTabbedPane();
         pnlRandevu = new javax.swing.JPanel();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         pnlRandevuAl = new javax.swing.JPanel();
@@ -262,17 +350,43 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         jScrollPane6 = new javax.swing.JScrollPane();
         txtRetSebep = new javax.swing.JTextArea();
         jLabel6 = new javax.swing.JLabel();
-        lblSettings = new javax.swing.JLabel();
-        pnlSettings = new javax.swing.JPanel();
-        pnlSettingsKapat = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        lstRenk = new javax.swing.JList<>();
-        jLabel1 = new javax.swing.JLabel();
-        btnSettingsKaydet = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setSize(new java.awt.Dimension(800, 600));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        lblKutuphane.setFont(new java.awt.Font("Verdana", 1, 36)); // NOI18N
+        lblKutuphane.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/icons8_literature_64px.png"))); // NOI18N
+        lblKutuphane.setText("Kütüphane");
+        lblKutuphane.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblKutuphane.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblKutuphaneMouseClicked(evt);
+            }
+        });
+        getContentPane().add(lblKutuphane, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 10, -1, -1));
+
+        lblArsiv.setFont(new java.awt.Font("Verdana", 0, 36)); // NOI18N
+        lblArsiv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/icons8_view_64px.png"))); // NOI18N
+        lblArsiv.setText("Arşiv");
+        lblArsiv.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblArsiv.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblArsivMouseClicked(evt);
+            }
+        });
+        getContentPane().add(lblArsiv, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 10, -1, -1));
+
+        lblDiger.setFont(new java.awt.Font("Verdana", 0, 36)); // NOI18N
+        lblDiger.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/icons8_flicker_free_64px.png"))); // NOI18N
+        lblDiger.setText("Diğer");
+        lblDiger.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblDiger.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblDigerMouseClicked(evt);
+            }
+        });
+        getContentPane().add(lblDiger, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 10, -1, -1));
 
         tblKitapAl.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -342,10 +456,10 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                         .addComponent(txtYayinEvi, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(32, 32, 32)
                 .addComponent(btnKitapAl, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 37, Short.MAX_VALUE))
+                .addGap(0, 27, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Kitap Alma", pnlKitapAlma);
+        tabKutuphane.addTab("Kitap Alma", pnlKitapAlma);
 
         javax.swing.GroupLayout pnlAldigimKitaplarLayout = new javax.swing.GroupLayout(pnlAldigimKitaplar);
         pnlAldigimKitaplar.setLayout(pnlAldigimKitaplarLayout);
@@ -355,10 +469,120 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         );
         pnlAldigimKitaplarLayout.setVerticalGroup(
             pnlAldigimKitaplarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 499, Short.MAX_VALUE)
+            .addGap(0, 489, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("Aldığım Kitaplar", pnlAldigimKitaplar);
+        tabKutuphane.addTab("Aldığım Kitaplar", pnlAldigimKitaplar);
+
+        getContentPane().add(tabKutuphane, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 800, 520));
+
+        lblSettings.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/settings_64px.png"))); // NOI18N
+        lblSettings.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblSettings.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblSettingsMouseClicked(evt);
+            }
+        });
+        getContentPane().add(lblSettings, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
+
+        pnlSettings.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        pnlSettingsKapat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/close_64px.png"))); // NOI18N
+        pnlSettingsKapat.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        pnlSettingsKapat.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                pnlSettingsKapatMouseClicked(evt);
+            }
+        });
+        pnlSettings.add(pnlSettingsKapat, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 0, -1, -1));
+
+        lstRenk.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Aydınlık", "Karanlık", "macOS Aydınlık", "macOS Karanlık", "Arc Turuncu Aydınlık", "Arc Turuncu Karanlık", "Sönük Aydınlık", "Sönük Karanlık", "Cyan Aydınlık", "Carbon", "GitHub Aydınlık", "GitHub Karanlık", "Monokai Pro " };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        lstRenk.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lstRenkMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(lstRenk);
+
+        pnlSettings.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 110, 130, 250));
+
+        jLabel1.setText("Tema Rengi Seçiniz");
+        pnlSettings.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 80, -1, -1));
+
+        btnSettingsKaydet.setText("Kaydet");
+        btnSettingsKaydet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSettingsKaydetActionPerformed(evt);
+            }
+        });
+        pnlSettings.add(btnSettingsKaydet, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 390, -1, -1));
+
+        getContentPane().add(pnlSettings, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 800, 530));
+
+        javax.swing.GroupLayout pnlBelgeIsteLayout = new javax.swing.GroupLayout(pnlBelgeIste);
+        pnlBelgeIste.setLayout(pnlBelgeIsteLayout);
+        pnlBelgeIsteLayout.setHorizontalGroup(
+            pnlBelgeIsteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 800, Short.MAX_VALUE)
+        );
+        pnlBelgeIsteLayout.setVerticalGroup(
+            pnlBelgeIsteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 489, Short.MAX_VALUE)
+        );
+
+        tabArsiv.addTab("Belge İste", pnlBelgeIste);
+
+        tblBelgelerim.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tblBelgelerim.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblBelgelerimMouseClicked(evt);
+            }
+        });
+        jScrollPane8.setViewportView(tblBelgelerim);
+
+        btnPDFAc.setText("jButton1");
+        btnPDFAc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPDFAcActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlBelgelerimLayout = new javax.swing.GroupLayout(pnlBelgelerim);
+        pnlBelgelerim.setLayout(pnlBelgelerimLayout);
+        pnlBelgelerimLayout.setHorizontalGroup(
+            pnlBelgelerimLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
+            .addGroup(pnlBelgelerimLayout.createSequentialGroup()
+                .addGap(343, 343, 343)
+                .addComponent(btnPDFAc)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlBelgelerimLayout.setVerticalGroup(
+            pnlBelgelerimLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlBelgelerimLayout.createSequentialGroup()
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(btnPDFAc)
+                .addGap(0, 36, Short.MAX_VALUE))
+        );
+
+        tabArsiv.addTab("Belgelerim", pnlBelgelerim);
+
+        getContentPane().add(tabArsiv, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 800, 520));
 
         pnlRandevu.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -524,56 +748,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
         pnlRandevu.add(jTabbedPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
-        jTabbedPane1.addTab("Randevu", pnlRandevu);
+        tabDiger.addTab("Randevu", pnlRandevu);
 
-        getContentPane().add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 800, 530));
-
-        lblSettings.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/settings_64px.png"))); // NOI18N
-        lblSettings.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        lblSettings.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblSettingsMouseClicked(evt);
-            }
-        });
-        getContentPane().add(lblSettings, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
-
-        pnlSettings.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        pnlSettingsKapat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/close_64px.png"))); // NOI18N
-        pnlSettingsKapat.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        pnlSettingsKapat.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                pnlSettingsKapatMouseClicked(evt);
-            }
-        });
-        pnlSettings.add(pnlSettingsKapat, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 0, -1, -1));
-
-        lstRenk.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Aydınlık", "Karanlık", "macOS Aydınlık", "macOS Karanlık", "Arc Turuncu Aydınlık", "Arc Turuncu Karanlık", "Sönük Aydınlık", "Sönük Karanlık", "Cyan Aydınlık", "Carbon", "GitHub Aydınlık", "GitHub Karanlık", "Monokai Pro " };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        lstRenk.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lstRenkMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(lstRenk);
-
-        pnlSettings.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 110, 130, 250));
-
-        jLabel1.setText("Tema Rengi Seçiniz");
-        pnlSettings.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 80, -1, -1));
-
-        btnSettingsKaydet.setText("Kaydet");
-        btnSettingsKaydet.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSettingsKaydetActionPerformed(evt);
-            }
-        });
-        pnlSettings.add(btnSettingsKaydet, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 390, -1, -1));
-
-        getContentPane().add(pnlSettings, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 610));
+        getContentPane().add(tabDiger, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 800, 520));
 
         pack();
         setLocationRelativeTo(null);
@@ -583,7 +760,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
         pnlSettings.setVisible(false);
         lblSettings.setVisible(true);
-        jTabbedPane1.setVisible(true);
+        tabKutuphane.setVisible(true);
     }//GEN-LAST:event_pnlSettingsKapatMouseClicked
 
     private void lstRenkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstRenkMouseClicked
@@ -609,7 +786,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSettingsKaydetActionPerformed
 
     private void lblSettingsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSettingsMouseClicked
-        jTabbedPane1.setVisible(false);
+        tabKutuphane.setVisible(false);
         lblSettings.setVisible(false);
         pnlSettings.setVisible(true);
     }//GEN-LAST:event_lblSettingsMouseClicked
@@ -725,6 +902,52 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             System.out.println(tarihkitap);
         }
     }//GEN-LAST:event_KitapAlTarihSeciciPropertyChange
+
+    private void lblKutuphaneMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblKutuphaneMouseClicked
+        Font font = lblKutuphane.getFont();
+        Font kalınFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
+        lblKutuphane.setFont(kalınFont);
+        lblArsiv.setFont(font);
+        lblDiger.setFont(font);
+        tabArsiv.setVisible(false);
+        tabDiger.setVisible(false);
+        tabKutuphane.setVisible(true);
+    }//GEN-LAST:event_lblKutuphaneMouseClicked
+
+    private void lblArsivMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblArsivMouseClicked
+        Font font = lblArsiv.getFont();
+        Font kalınFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
+        lblArsiv.setFont(kalınFont);
+        lblKutuphane.setFont(font);
+        lblDiger.setFont(font);
+        tabArsiv.setVisible(true);
+        tabDiger.setVisible(false);
+        tabKutuphane.setVisible(false);
+    }//GEN-LAST:event_lblArsivMouseClicked
+
+    private void lblDigerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblDigerMouseClicked
+        Font font = lblDiger.getFont();
+        Font kalınFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
+        lblArsiv.setFont(font);
+        lblKutuphane.setFont(font);
+        lblDiger.setFont(kalınFont);
+        tabArsiv.setVisible(false);
+        tabDiger.setVisible(true);
+        tabKutuphane.setVisible(false);
+    }//GEN-LAST:event_lblDigerMouseClicked
+
+    private void tblBelgelerimMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBelgelerimMouseClicked
+        int belgelerimindex = tblBelgelerim.getSelectedRow();
+        belgekodu = (int) tblBelgelerim.getValueAt(belgelerimindex, 2);
+    }//GEN-LAST:event_tblBelgelerimMouseClicked
+
+    private void btnPDFAcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPDFAcActionPerformed
+        try {
+            PDFGoster();
+        } catch (IOException ex) {
+            Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnPDFAcActionPerformed
 
     public void TemaRengi() {
         if (tema == 0) {
@@ -1059,6 +1282,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.toedter.calendar.JDateChooser KitapAlTarihSecici;
     private javax.swing.JButton btnKitapAl;
+    private javax.swing.JButton btnPDFAc;
     private javax.swing.JButton btnRandevuAl;
     private javax.swing.JButton btnSettingsKaydet;
     private javax.swing.JComboBox<String> cbKutuphaneci;
@@ -1078,12 +1302,17 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JTabbedPane jTabbedPane2;
+    private javax.swing.JLabel lblArsiv;
+    private javax.swing.JLabel lblDiger;
+    private javax.swing.JLabel lblKutuphane;
     private javax.swing.JLabel lblSettings;
     private javax.swing.JList<String> lstRenk;
     private javax.swing.JPanel pnlAldigimKitaplar;
     private javax.swing.JPanel pnlBekleyenRandevu;
+    private javax.swing.JPanel pnlBelgeIste;
+    private javax.swing.JPanel pnlBelgelerim;
     private javax.swing.JPanel pnlKabulEdilenRandevu;
     private javax.swing.JPanel pnlKitapAlma;
     private javax.swing.JPanel pnlRandevu;
@@ -1091,7 +1320,11 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     private javax.swing.JPanel pnlReddedilenRandevu;
     private javax.swing.JPanel pnlSettings;
     private javax.swing.JLabel pnlSettingsKapat;
+    private javax.swing.JTabbedPane tabArsiv;
+    private javax.swing.JTabbedPane tabDiger;
+    private javax.swing.JTabbedPane tabKutuphane;
     private javax.swing.JTable tblBekleyenRandevu;
+    private javax.swing.JTable tblBelgelerim;
     private javax.swing.JTable tblKabulRandevu;
     private javax.swing.JTable tblKitapAl;
     private javax.swing.JTable tblRetRandevu;

@@ -81,6 +81,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     String email = null;
     String sifre = null;
     int tema = 0;
+    String dosyayolu = null;
     String dosyaadi = null;
     FileInputStream fis;
     String kitapisteyenemail;
@@ -463,7 +464,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 lblArsivMouseClicked(evt);
             }
         });
-        getContentPane().add(lblArsiv, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 10, -1, -1));
+        getContentPane().add(lblArsiv, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 10, -1, -1));
 
         lblDiger.setFont(new java.awt.Font("Verdana", 0, 36)); // NOI18N
         lblDiger.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/icons8_flicker_free_64px.png"))); // NOI18N
@@ -474,7 +475,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 lblDigerMouseClicked(evt);
             }
         });
-        getContentPane().add(lblDiger, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 10, -1, -1));
+        getContentPane().add(lblDiger, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 10, -1, -1));
 
         tabKutuphane.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -510,7 +511,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         });
 
         pnlResim.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        pnlResim.add(lblResim, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 260, 260));
+        pnlResim.add(lblResim, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 260, 240));
 
         btnKaydet.setText("Kaydet");
         btnKaydet.addActionListener(new java.awt.event.ActionListener() {
@@ -1192,7 +1193,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             pnlBelgelerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlBelgelerLayout.createSequentialGroup()
                 .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 408, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 110, Short.MAX_VALUE))
+                .addGap(0, 91, Short.MAX_VALUE))
         );
 
         tabArsiv.addTab("Envanterdeki Belgeler", pnlBelgeler);
@@ -1980,16 +1981,17 @@ public class AdminArayuzu extends javax.swing.JFrame {
             int belgekodu = Integer.parseInt(txtBelgeKodu.getText());
             String adver = "(Select adsoyad from public.kullanicilar where email = ?)";
 
-            String sql = "INSERT INTO public.arsiv(belge_adi, belge_yayinlayan_kisi, belge_kodu, belge_yayin_yili, belge_turu, belge_nushasi, belge_ekleyen_adsoyad, belge_ekleyen_email) VALUES (?, ?, ?, ?, ?, ?, " + adver + ", ?);";
+            String sql = "INSERT INTO public.arsiv(belge_adi, belge_yayinlayan_kisi, belge_kodu, belge_yayin_yili, belge_turu, belge_nushasi, belge_ekleyen_adsoyad, belge_ekleyen_email,belge_nushasi_adi) VALUES (?, ?, ?, ?, ?, ?, " + adver + ", ?, ?);";
             pst = conn.prepareStatement(sql);
             pst.setString(1, belgeadi);
             pst.setString(2, yayinlayanadi);
             pst.setInt(3, belgekodu);
             pst.setInt(4, yayinyili);
             pst.setString(5, belgeturu.toString());
-            pst.setBinaryStream(6, new FileInputStream(dosyaadi));
+            pst.setBinaryStream(6, new FileInputStream(dosyayolu));
             pst.setString(7, email);
             pst.setString(8, email);
+            pst.setString(9, dosyaadi);
             int sonuc = pst.executeUpdate();
             if (sonuc == 1) {
                 JOptionPane.showMessageDialog(null, "Belge Eklendi");
@@ -2004,8 +2006,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
 
 /////////////////////////////////////////////// Belge Seçme Başlangıç /////////////////////////////////////////////////
     private void btnBelgeSecActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBelgeSecActionPerformed
-        if (dosyaadi != null) {
-            dosyaadi = null;
+        if (dosyayolu != null) {
+            dosyayolu = null;
         } else {
             JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
             FileNameExtensionFilter filter = new FileNameExtensionFilter("PDF Dosyaları", "pdf");
@@ -2013,7 +2015,9 @@ public class AdminArayuzu extends javax.swing.JFrame {
             int sonuc = chooser.showOpenDialog(null);
             if (sonuc == JFileChooser.APPROVE_OPTION) {
                 File dosya = chooser.getSelectedFile();
-                dosyaadi = dosya.getAbsolutePath();
+                dosyaadi = dosya.getName();
+                System.out.println(dosyaadi);
+                dosyayolu = dosya.getAbsolutePath();
                 lblBelgeNushasiAdi.setText("Belge Seçildi !");
                 lblBelgeNushasiAdi.setForeground(Renkler(4));
             }
