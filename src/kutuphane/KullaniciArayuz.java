@@ -27,6 +27,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -263,18 +265,46 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                 String dosyaAdi = belgenushasiadi;
 
                 // Byte dizisini PDF dosyasına yazma işlemi
-                FileOutputStream fos = new FileOutputStream(dosyaAdi);
+                String dosyaYolu = "C:\\Users\\ekmn2\\OneDrive\\Belgeler\\New Folder\\Kutuphane\\pdf\\" + dosyaAdi;
+                FileOutputStream fos = new FileOutputStream(dosyaYolu);
                 fos.write(pdfData);
                 fos.close();
+                Desktop.getDesktop().open(new File(dosyaYolu));
 
+                /*File dosya = new File(dosyaAdi);                
+                if (dosya.exists()) {
+                    dosya.delete();
+                    System.out.println("Dosya silindi: " + dosyaAdi);
+                }*/
                 // PDF dosyasını varsayılan PDF görüntüleyici ile açma
-                Desktop.getDesktop().open(new File(dosyaAdi));
             }
 
         } catch (SQLException ex) {
             Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public void DosyaSilme() {
+    String klasorYolu = "C:\\Users\\ekmn2\\OneDrive\\Belgeler\\New Folder\\Kutuphane\\pdf\\";
+        File klasor = new File(klasorYolu);
+
+        if (klasor.exists()) {
+            File[] dosyalar = klasor.listFiles();
+            if (dosyalar != null) {
+                for (File dosya : dosyalar) {
+                    if (dosya.isFile()) {
+                        if (dosya.delete()) {
+                            System.out.println(dosya.getName() + " dosyası başarıyla silindi.");
+                        } else {
+                            System.out.println(dosya.getName() + " dosyası silinirken bir hata oluştu.");
+                        }
+                    }
+                }
+            }
+        } else {
+            System.out.println("Belirtilen klasör bulunamadı.");
+        }
+}
 
     public KullaniciArayuz() {
         initComponents();
@@ -353,6 +383,11 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setSize(new java.awt.Dimension(800, 600));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblKutuphane.setFont(new java.awt.Font("Verdana", 1, 36)); // NOI18N
@@ -948,6 +983,27 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnPDFAcActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        DosyaSilme();
+        try {
+            InetAddress ip;
+            ip = InetAddress.getLocalHost();
+            String sqllog = "INSERT INTO public.kullanici_log(adsoyad, email, ip, islem)VALUES ((Select adsoyad from public.kullanicilar WHERE email='" + email + "'),'" + email + "', '" + ip.getHostAddress() + "','Çıkış');";
+            pst = conn.prepareStatement(sqllog);
+            int sonuc = pst.executeUpdate();
+            if (sonuc == 1) {
+                //JOptionPane.showConfirmDialog(null, "Log Kayıt Başarılı");
+
+            } else {
+                JOptionPane.showConfirmDialog(null, " Log Kayıt Başarısız");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_formWindowClosing
 
     public void TemaRengi() {
         if (tema == 0) {
