@@ -19,9 +19,11 @@ import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTh
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.TextField;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -46,6 +48,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -63,6 +66,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     String saat;
     String kitapal_yayinevi;
     int belgekodu = 0;
+    String arayuzdurumu = "kutuphane";
 
     public void KitaplarTabloVerileri() {
         try {
@@ -128,6 +132,38 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             centerRenderer.setHorizontalAlignment(JLabel.CENTER);
             tblBelgelerim.setDefaultRenderer(Object.class, centerRenderer);
             tblBelgelerim.setModel(model);
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void ArsivBelgeIsteTabloVerileri() {
+        try {
+            String sql = "SELECT DISTINCT belge_adi,belge_yayinlayan_kisi,belge_kodu,belge_yayin_yili,belge_turu FROM public.arsiv order by belge_kodu asc;";
+            pst = conn.prepareStatement(sql);
+            rs = pst.executeQuery();
+
+            DefaultTableModel model = new DefaultTableModel();
+            model.addColumn("Belge Adı");
+            model.addColumn("Yayınlayan Kisi");
+            model.addColumn("Belge Kodu");
+            model.addColumn("Yayın Yılı");
+            model.addColumn("Belge Türü");
+
+            while (rs.next()) {
+                Object[] row = new Object[5];
+                row[0] = rs.getString("belge_adi");
+                row[1] = rs.getString("belge_yayinlayan_kisi");
+                row[2] = rs.getInt("belge_kodu");
+                row[3] = rs.getInt("belge_yayin_yili");
+                row[4] = rs.getString("belge_turu");
+                model.addRow(row);
+            }
+
+            DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+            centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            tblBelgeIste.setDefaultRenderer(Object.class, centerRenderer);
+            tblBelgeIste.setModel(model);
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -283,9 +319,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void DosyaSilme() {
-    String klasorYolu = "C:\\Users\\ekmn2\\OneDrive\\Belgeler\\New Folder\\Kutuphane\\pdf\\";
+        String klasorYolu = "C:\\Users\\ekmn2\\OneDrive\\Belgeler\\New Folder\\Kutuphane\\pdf\\";
         File klasor = new File(klasorYolu);
 
         if (klasor.exists()) {
@@ -304,7 +340,47 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         } else {
             System.out.println("Belirtilen klasör bulunamadı.");
         }
-}
+    }
+
+    public void PlaceHolder(TextField textField, String mesaj) {
+        textField.setForeground(Color.GRAY);
+
+        textField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                if (textField.getText().equals(mesaj)) {
+                    textField.setText("");
+                    textField.setForeground(Color.BLACK);
+                }
+            }
+
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                if (textField.getText().isEmpty()) {
+                    textField.setForeground(Color.GRAY);
+                    textField.setText(mesaj);
+                }
+            }
+        });
+    }
+
+    public void PlaceHolder(JTextArea textField, String mesaj) {
+        textField.setForeground(Color.GRAY);
+
+        textField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                if (textField.getText().equals(mesaj)) {
+                    textField.setText("");
+                    textField.setForeground(Color.BLACK);
+                }
+            }
+
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                if (textField.getText().isEmpty()) {
+                    textField.setForeground(Color.GRAY);
+                    textField.setText(mesaj);
+                }
+            }
+        });
+    }
 
     public KullaniciArayuz() {
         initComponents();
@@ -322,6 +398,8 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         RetRandevuTabloVerileri();
         KitaplarTabloVerileri();
         ArsivBelgelerimTabloVerileri();
+        ArsivBelgeIsteTabloVerileri();
+
     }
 
     @SuppressWarnings("unchecked")
@@ -350,6 +428,16 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         btnSettingsKaydet = new javax.swing.JButton();
         tabArsiv = new javax.swing.JTabbedPane();
         pnlBelgeIste = new javax.swing.JPanel();
+        jScrollPane9 = new javax.swing.JScrollPane();
+        tblBelgeIste = new javax.swing.JTable();
+        txtBelgeAdi = new javax.swing.JTextField();
+        txtBelgeKodu = new javax.swing.JTextField();
+        cbBelgeKutuphaneci = new javax.swing.JComboBox<>();
+        txtYayinlayanAdi = new javax.swing.JTextField();
+        jScrollPane10 = new javax.swing.JScrollPane();
+        txtIstemeSebebi = new javax.swing.JTextArea();
+        jLabel7 = new javax.swing.JLabel();
+        btnBelgeIste = new javax.swing.JButton();
         pnlBelgelerim = new javax.swing.JPanel();
         jScrollPane8 = new javax.swing.JScrollPane();
         tblBelgelerim = new javax.swing.JTable();
@@ -462,7 +550,6 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         pnlKitapAlma.setLayout(pnlKitapAlmaLayout);
         pnlKitapAlmaLayout.setHorizontalGroup(
             pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane7)
             .addGroup(pnlKitapAlmaLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(txtKitapAdi, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -477,17 +564,18 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnKitapAl, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(323, 323, 323))
+            .addComponent(jScrollPane7)
         );
         pnlKitapAlmaLayout.setVerticalGroup(
             pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlKitapAlmaLayout.createSequentialGroup()
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
                 .addGroup(pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(KitapAlTarihSecici, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(cbKutuphaneci)
                     .addGroup(pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtKitapAdi)
+                        .addComponent(txtKitapAdi, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(txtYayinEvi, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(32, 32, 32)
                 .addComponent(btnKitapAl, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -558,15 +646,98 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
         getContentPane().add(pnlSettings, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 800, 530));
 
+        tblBelgeIste.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tblBelgeIste.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblBelgeIsteMouseClicked(evt);
+            }
+        });
+        jScrollPane9.setViewportView(tblBelgeIste);
+
+        txtBelgeAdi.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtBelgeAdi.setText("Belge Adı");
+        txtBelgeAdi.setEnabled(false);
+
+        txtBelgeKodu.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtBelgeKodu.setText("Belge Kodu");
+        txtBelgeKodu.setEnabled(false);
+
+        txtYayinlayanAdi.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtYayinlayanAdi.setText("Yayınlayan Adı");
+        txtYayinlayanAdi.setEnabled(false);
+
+        txtIstemeSebebi.setColumns(20);
+        txtIstemeSebebi.setRows(5);
+        jScrollPane10.setViewportView(txtIstemeSebebi);
+
+        jLabel7.setText("Bu belgeyi neden almak istiyorsunuz ? ( * Zorunlu )");
+
+        btnBelgeIste.setText("Belge İste");
+        btnBelgeIste.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBelgeIsteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlBelgeIsteLayout = new javax.swing.GroupLayout(pnlBelgeIste);
         pnlBelgeIste.setLayout(pnlBelgeIsteLayout);
         pnlBelgeIsteLayout.setHorizontalGroup(
             pnlBelgeIsteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+            .addComponent(jScrollPane9)
+            .addGroup(pnlBelgeIsteLayout.createSequentialGroup()
+                .addGroup(pnlBelgeIsteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlBelgeIsteLayout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(txtBelgeAdi, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlBelgeIsteLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(pnlBelgeIsteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtBelgeKodu, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtYayinlayanAdi, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(18, 18, 18)
+                .addGroup(pnlBelgeIsteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlBelgeIsteLayout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addGap(0, 63, Short.MAX_VALUE))
+                    .addComponent(jScrollPane10))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnlBelgeIsteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(cbBelgeKutuphaneci, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnBelgeIste, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
+                .addGap(18, 18, 18))
         );
         pnlBelgeIsteLayout.setVerticalGroup(
             pnlBelgeIsteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 489, Short.MAX_VALUE)
+            .addGroup(pnlBelgeIsteLayout.createSequentialGroup()
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnlBelgeIsteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(pnlBelgeIsteLayout.createSequentialGroup()
+                        .addComponent(txtBelgeAdi, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtYayinlayanAdi, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(txtBelgeKodu, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlBelgeIsteLayout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnlBelgeIsteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlBelgeIsteLayout.createSequentialGroup()
+                                .addComponent(cbBelgeKutuphaneci, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnBelgeIste, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane10))))
+                .addContainerGap())
         );
 
         tabArsiv.addTab("Belge İste", pnlBelgeIste);
@@ -589,7 +760,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         });
         jScrollPane8.setViewportView(tblBelgelerim);
 
-        btnPDFAc.setText("jButton1");
+        btnPDFAc.setText("Dosyayı Göster");
         btnPDFAc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnPDFAcActionPerformed(evt);
@@ -603,7 +774,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
             .addGroup(pnlBelgelerimLayout.createSequentialGroup()
                 .addGap(343, 343, 343)
-                .addComponent(btnPDFAc)
+                .addComponent(btnPDFAc, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlBelgelerimLayout.setVerticalGroup(
@@ -611,8 +782,8 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             .addGroup(pnlBelgelerimLayout.createSequentialGroup()
                 .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
-                .addComponent(btnPDFAc)
-                .addGap(0, 36, Short.MAX_VALUE))
+                .addComponent(btnPDFAc, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 29, Short.MAX_VALUE))
         );
 
         tabArsiv.addTab("Belgelerim", pnlBelgelerim);
@@ -790,18 +961,25 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
+///////////////////////////////////////////////// Ayarlar Kapatama Butonu Başlangıç /////////////////////////////////////////////////  
     private void pnlSettingsKapatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlSettingsKapatMouseClicked
 
         pnlSettings.setVisible(false);
         lblSettings.setVisible(true);
         tabKutuphane.setVisible(true);
+        lblArsiv.setVisible(true);
+        lblDiger.setVisible(true);
+        lblKutuphane.setVisible(true);
     }//GEN-LAST:event_pnlSettingsKapatMouseClicked
-
+///////////////////////////////////////////////// Ayarlar Kapatama Butonu Bitiş /////////////////////////////////////////////////  
+    
+///////////////////////////////////////////////// Listeden Renk Seçme Başlangıç /////////////////////////////////////////////////  
     private void lstRenkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstRenkMouseClicked
         RenkSecmeListe();
     }//GEN-LAST:event_lstRenkMouseClicked
-
+///////////////////////////////////////////////// Listeden Renk Seçme Bitiş ///////////////////////////////////////////////// 
+    
+///////////////////////////////////////////////// Ayarlar Tema Rengi Kaydet Başlangıç ///////////////////////////////////////////////// 
     private void btnSettingsKaydetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingsKaydetActionPerformed
         try {
             String sql = "UPDATE public.kullanicilar SET temarengi=? WHERE email=? and sifre=?;";
@@ -819,18 +997,29 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(KullaniciArayuz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnSettingsKaydetActionPerformed
-
+///////////////////////////////////////////////// Ayarlar Tema Rengi Kaydet Bitiş ///////////////////////////////////////////////// 
+    
+///////////////////////////////////////////////// Ayarlar Açma Butonu Başlangıç ///////////////////////////////////////////////// 
     private void lblSettingsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSettingsMouseClicked
         tabKutuphane.setVisible(false);
+        tabArsiv.setVisible(false);
+        tabDiger.setVisible(false);
         lblSettings.setVisible(false);
         pnlSettings.setVisible(true);
+        lblArsiv.setVisible(false);
+        lblDiger.setVisible(false);
+        lblKutuphane.setVisible(false);
     }//GEN-LAST:event_lblSettingsMouseClicked
-
+///////////////////////////////////////////////// Ayarlar Açma Butonu Bitiş ///////////////////////////////////////////////// 
+    
+///////////////////////////////////////////////// ComboBox Saat Seçme Başlangıç ///////////////////////////////////////////////// 
     private void cbSaatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbSaatActionPerformed
         saat = cbSaat.getSelectedItem().toString();
         System.out.println("" + tarih + " " + saat + "");
     }//GEN-LAST:event_cbSaatActionPerformed
-
+///////////////////////////////////////////////// ComboBox Saat Seçme Bitiş ///////////////////////////////////////////////// 
+    
+///////////////////////////////////////////////// ComboBox Saat Seçme Başlangıç ///////////////////////////////////////////////// 
     private void btnRandevuAlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRandevuAlActionPerformed
         try {
             String randevuverenkisiadsoyad = cbRandevuKisi.getSelectedItem().toString();
@@ -863,7 +1052,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnRandevuAlActionPerformed
+///////////////////////////////////////////////// ComboBox Saat Seçme Bitiş ///////////////////////////////////////////////// 
 
+///////////////////////////////////////////////// Reddedilen Randevualr Tablosu Tıklama Başlangıç ///////////////////////////////////////////////// 
     private void tblRetRandevuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblRetRandevuMouseClicked
         int retindex = tblRetRandevu.getSelectedRow();
         if (retindex >= 0) {
@@ -871,7 +1062,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_tblRetRandevuMouseClicked
-
+///////////////////////////////////////////////// Reddedilen Randevualr Tablosu Tıklama Bitiş ///////////////////////////////////////////////// 
+    
+///////////////////////////////////////////////// Takvim Tarih Seçme Başlangıç ///////////////////////////////////////////////// 
     private void jDateChooser2PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooser2PropertyChange
         if (evt.getPropertyName().equals("date")) {
             Date date = (Date) evt.getNewValue();
@@ -879,7 +1072,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             tarih = format.format(date);
         }
     }//GEN-LAST:event_jDateChooser2PropertyChange
-
+///////////////////////////////////////////////// Takvim Tarih Seçme Bitiş ///////////////////////////////////////////////// 
+    
+ ///////////////////////////////////////////////// Kitap Al Tablosu Tıklma Başlangıç ///////////////////////////////////////////////// 
     private void tblKitapAlMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblKitapAlMouseClicked
         int kitapindex = tblKitapAl.getSelectedRow();
         if (kitapindex >= 0) {
@@ -888,7 +1083,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             txtYayinEvi.setText(kitapal_yayinevi);
         }
     }//GEN-LAST:event_tblKitapAlMouseClicked
+ ///////////////////////////////////////////////// Kitap Al Tablosu Tıklma Bitiş ///////////////////////////////////////////////// 
 
+ ///////////////////////////////////////////////// Kitap Al Buton Tıklma Başlangıç ///////////////////////////////////////////////// 
     private void btnKitapAlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKitapAlActionPerformed
         try {
             String kitapal_kitapadi = txtKitapAdi.getText();
@@ -928,7 +1125,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_btnKitapAlActionPerformed
+ ///////////////////////////////////////////////// Kitap Al Buton Tıklma Bitiş ///////////////////////////////////////////////// 
 
+///////////////////////////////////////////////// Kitap Al Tarih Seçme Başlangıç ///////////////////////////////////////////////// 
     private void KitapAlTarihSeciciPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_KitapAlTarihSeciciPropertyChange
         if (evt.getPropertyName().equals("date")) {
             Date date = (Date) evt.getNewValue();
@@ -937,45 +1136,64 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             System.out.println(tarihkitap);
         }
     }//GEN-LAST:event_KitapAlTarihSeciciPropertyChange
+///////////////////////////////////////////////// Kitap Al Tarih Seçme Bitiş ///////////////////////////////////////////////// 
 
+///////////////////////////////////////////////// Kütüphaneye Geçme Başlangıç ///////////////////////////////////////////////// 
     private void lblKutuphaneMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblKutuphaneMouseClicked
-        Font font = lblKutuphane.getFont();
-        Font kalınFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
-        lblKutuphane.setFont(kalınFont);
-        lblArsiv.setFont(font);
-        lblDiger.setFont(font);
-        tabArsiv.setVisible(false);
-        tabDiger.setVisible(false);
-        tabKutuphane.setVisible(true);
+        if (arayuzdurumu != "kutuphane") {
+            Font font = lblKutuphane.getFont();
+            Font kalınFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
+            lblKutuphane.setFont(kalınFont);
+            lblArsiv.setFont(font);
+            lblDiger.setFont(font);
+            tabArsiv.setVisible(false);
+            tabDiger.setVisible(false);
+            tabKutuphane.setVisible(true);
+            arayuzdurumu = "kutuphane";
+        }
     }//GEN-LAST:event_lblKutuphaneMouseClicked
+///////////////////////////////////////////////// Kütüphaneye Geçme Bitiş ///////////////////////////////////////////////// 
 
+///////////////////////////////////////////////// Arşive Geçme Başlangıç ///////////////////////////////////////////////// 
     private void lblArsivMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblArsivMouseClicked
-        Font font = lblArsiv.getFont();
-        Font kalınFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
-        lblArsiv.setFont(kalınFont);
-        lblKutuphane.setFont(font);
-        lblDiger.setFont(font);
-        tabArsiv.setVisible(true);
-        tabDiger.setVisible(false);
-        tabKutuphane.setVisible(false);
+        if (arayuzdurumu != "arsiv") {
+            Font font = lblArsiv.getFont();
+            Font kalınFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
+            lblArsiv.setFont(kalınFont);
+            lblKutuphane.setFont(font);
+            lblDiger.setFont(font);
+            tabArsiv.setVisible(true);
+            tabDiger.setVisible(false);
+            tabKutuphane.setVisible(false);
+            arayuzdurumu = "arsiv";
+        }
     }//GEN-LAST:event_lblArsivMouseClicked
+///////////////////////////////////////////////// Arşive Geçme Bitiş ///////////////////////////////////////////////// 
 
+///////////////////////////////////////////////// Diğer Geçme Başlangıç ///////////////////////////////////////////////// 
     private void lblDigerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblDigerMouseClicked
-        Font font = lblDiger.getFont();
-        Font kalınFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
-        lblArsiv.setFont(font);
-        lblKutuphane.setFont(font);
-        lblDiger.setFont(kalınFont);
-        tabArsiv.setVisible(false);
-        tabDiger.setVisible(true);
-        tabKutuphane.setVisible(false);
+        if (arayuzdurumu != "diger") {
+            Font font = lblDiger.getFont();
+            Font kalınFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
+            lblArsiv.setFont(font);
+            lblKutuphane.setFont(font);
+            lblDiger.setFont(kalınFont);
+            tabArsiv.setVisible(false);
+            tabDiger.setVisible(true);
+            tabKutuphane.setVisible(false);
+            arayuzdurumu = "diger";
+        }
     }//GEN-LAST:event_lblDigerMouseClicked
+///////////////////////////////////////////////// Diğer Geçme Bitiş ///////////////////////////////////////////////// 
 
+///////////////////////////////////////////////// Belgelerim Tablosu Tıklama Başlangıç ///////////////////////////////////////////////// 
     private void tblBelgelerimMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBelgelerimMouseClicked
         int belgelerimindex = tblBelgelerim.getSelectedRow();
         belgekodu = (int) tblBelgelerim.getValueAt(belgelerimindex, 2);
     }//GEN-LAST:event_tblBelgelerimMouseClicked
-
+///////////////////////////////////////////////// Belgelerim Tablosu Tıklama Bitiş ///////////////////////////////////////////////// 
+    
+///////////////////////////////////////////////// PDF Gösterme Butonu Başlangıç ///////////////////////////////////////////////// 
     private void btnPDFAcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPDFAcActionPerformed
         try {
             PDFGoster();
@@ -983,7 +1201,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnPDFAcActionPerformed
-
+///////////////////////////////////////////////// PDF Gösterme Butonu Bitiş ///////////////////////////////////////////////// 
+    
+///////////////////////////////////////////////// Çıkış - Log Kaydı Alma Başlangıç ///////////////////////////////////////////////// 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         DosyaSilme();
         try {
@@ -1004,6 +1224,51 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_formWindowClosing
+///////////////////////////////////////////////// Çıkış - Log Kaydı Alma Bitiş ///////////////////////////////////////////////// 
+
+///////////////////////////////////////////////// Belge İSteme Tablosu TIklama Başlangıç ///////////////////////////////////////////////// 
+    private void tblBelgeIsteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBelgeIsteMouseClicked
+        int belgeisteindex = tblBelgeIste.getSelectedRow();
+        txtBelgeAdi.setText((String) tblBelgeIste.getValueAt(belgeisteindex, 0));
+        txtYayinlayanAdi.setText((String) tblBelgeIste.getValueAt(belgeisteindex, 1));
+        int belgekodu = (int) tblBelgeIste.getValueAt(belgeisteindex, 2);
+        txtBelgeKodu.setText(String.valueOf(belgekodu));
+    }//GEN-LAST:event_tblBelgeIsteMouseClicked
+///////////////////////////////////////////////// Belge İSteme Tablosu TIklama Bitiş ///////////////////////////////////////////////// 
+
+///////////////////////////////////////////////// Belge İSteme Buton Başlangıç ///////////////////////////////////////////////// 
+    private void btnBelgeIsteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBelgeIsteActionPerformed
+        try {
+            String belgeadi = txtBelgeAdi.getText();
+            String yayinlayanadi = txtYayinlayanAdi.getText();
+            int belgeninkodu = Integer.parseInt(txtBelgeKodu.getText());
+            String verenadsoyad = cbBelgeKutuphaneci.getSelectedItem().toString();
+            String verenemail = "(SELECT email FROM public.kullanicilar WHERE adsoyad = ?)";
+            String isteyenadsoayd = "(SELECT adsoyad FROM public.kullanicilar WHERE email = ?)";
+            String yayinyili = "(SELECT belge_yayin_yili FROM public.arsiv WHERE belge_kodu = ?)";
+            String isteksebebi = txtIstemeSebebi.getText();
+            
+            String sql = "INSERT INTO public.arsiv_istek_bekleme(arsiv_istek_bekleme_belge_adi, arsiv_istek_bekleme_belge_kodu, arsiv_istek_bekleme_yayinlayan_adi, arsiv_istek_bekleme_yayin_yili, arsiv_istek_bekleme_isteyen_adsoyad, arsiv_istek_bekleme_isteyen_email, arsiv_istek_bekleme_veren_adsoyad, arsiv_istek_bekleme_veren_email, arsiv_istek_bekleme_durum,arsiv_istek_bekleme_istek_sebebi) VALUES (?, ?, ?, "+yayinyili+", "+isteyenadsoayd+", ?, ?, "+verenemail+", ?, ?);";
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, belgeadi);
+            pst.setInt(2, belgeninkodu);
+            pst.setString(3, yayinlayanadi);
+            pst.setInt(4, belgeninkodu);
+            pst.setString(5, email);
+            pst.setString(6, email);
+            pst.setString(7, verenadsoyad);
+            pst.setString(8, verenadsoyad);
+            pst.setString(9, "Beklemede");
+            pst.setString(10, isteksebebi);
+            
+            int sonuc = pst.executeUpdate();
+            if (sonuc == 1) {
+                JOptionPane.showMessageDialog(null,  "İstek Başarılı");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnBelgeIsteActionPerformed
 
     public void TemaRengi() {
         if (tema == 0) {
@@ -1295,6 +1560,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             while (rs.next()) {
                 cbRandevuKisi.addItem(rs.getString("adsoyad"));
                 cbKutuphaneci.addItem(rs.getString("adsoyad"));
+                cbBelgeKutuphaneci.addItem(rs.getString("adsoyad"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
@@ -1337,10 +1603,12 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.toedter.calendar.JDateChooser KitapAlTarihSecici;
+    private javax.swing.JButton btnBelgeIste;
     private javax.swing.JButton btnKitapAl;
     private javax.swing.JButton btnPDFAc;
     private javax.swing.JButton btnRandevuAl;
     private javax.swing.JButton btnSettingsKaydet;
+    private javax.swing.JComboBox<String> cbBelgeKutuphaneci;
     private javax.swing.JComboBox<String> cbKutuphaneci;
     private javax.swing.JComboBox<String> cbRandevuKisi;
     private javax.swing.JComboBox<String> cbSaat;
@@ -1351,7 +1619,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -1359,6 +1629,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JLabel lblArsiv;
     private javax.swing.JLabel lblDiger;
@@ -1380,13 +1651,18 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     private javax.swing.JTabbedPane tabDiger;
     private javax.swing.JTabbedPane tabKutuphane;
     private javax.swing.JTable tblBekleyenRandevu;
+    private javax.swing.JTable tblBelgeIste;
     private javax.swing.JTable tblBelgelerim;
     private javax.swing.JTable tblKabulRandevu;
     private javax.swing.JTable tblKitapAl;
     private javax.swing.JTable tblRetRandevu;
+    private javax.swing.JTextField txtBelgeAdi;
+    private javax.swing.JTextField txtBelgeKodu;
+    private javax.swing.JTextArea txtIstemeSebebi;
     private javax.swing.JTextField txtKitapAdi;
     private javax.swing.JTextArea txtRandevuAlKonu;
     private javax.swing.JTextArea txtRetSebep;
     private javax.swing.JTextField txtYayinEvi;
+    private javax.swing.JTextField txtYayinlayanAdi;
     // End of variables declaration//GEN-END:variables
 }
