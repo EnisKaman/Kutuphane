@@ -201,6 +201,39 @@ public class AdminArayuzu extends javax.swing.JFrame {
         }
     }
 
+    public void BelgeOnayTabloVerileri() throws ParseException {
+        try {
+            String sql = "SELECT * FROM public.arsiv_istek_bekleme WHERE arsiv_istek_bekleme_durum = 'Beklemede' ORDER BY arsiv_istek_bekleme_guncelleme_tarihi ASC";
+            pst = conn.prepareStatement(sql);
+            rs = pst.executeQuery();
+
+            DefaultTableModel model = new DefaultTableModel();
+            model.addColumn("Kitap Kodu");
+            model.addColumn("Kitap Adı");
+            model.addColumn("İsteyen Ad Soyad");
+            model.addColumn("İsteyen Email");
+            model.addColumn("İstek Sebebi");
+            model.addColumn("Güncelleme Tarihi");
+
+            while (rs.next()) {
+                Object[] row = new Object[6];
+                row[0] = rs.getInt("arsiv_istek_bekleme_belge_kodu");
+                row[1] = rs.getString("arsiv_istek_bekleme_belge_adi");
+                row[2] = rs.getString("arsiv_istek_bekleme_isteyen_adsoyad");
+                row[3] = rs.getString("arsiv_istek_bekleme_isteyen_email");
+                row[4] = rs.getString("arsiv_istek_bekleme_istek_sebebi");
+                row[5] = rs.getTimestamp("arsiv_istek_bekleme_guncelleme_tarihi");
+                model.addRow(row);
+            }
+            DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+            centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            tblBelgeOnaylama.setDefaultRenderer(Object.class, centerRenderer);
+            tblBelgeOnaylama.setModel(model);
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public void RandevuTabloVerileri() {
         try {
             String sql = "SELECT * FROM public.randevu";
@@ -325,6 +358,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         KitapOnayTabloVerileri();
         TemaRengi();
         ArsivTabloVerileri();
+        BelgeOnayTabloVerileri();
         pnlSettings.setVisible(false);
         tabArsiv.setVisible(false);
         tabDiger.setVisible(false);
@@ -420,6 +454,19 @@ public class AdminArayuzu extends javax.swing.JFrame {
         treeBelgeTuru = new javax.swing.JTree();
         lblBelgeNushasiAdi = new javax.swing.JLabel();
         btnBelgeEkle = new javax.swing.JButton();
+        pnlBelgeOnayla = new javax.swing.JPanel();
+        jScrollPane10 = new javax.swing.JScrollPane();
+        tblBelgeOnaylama = new javax.swing.JTable();
+        jScrollPane11 = new javax.swing.JScrollPane();
+        txtIstekSebebi = new javax.swing.JTextArea();
+        txtBelgeOnaylamaBelgeKodu = new javax.swing.JTextField();
+        txtBelgeOnaylamaBelgeAdi = new javax.swing.JTextField();
+        txtBelgeOnaylamaIsteyenAdi = new javax.swing.JTextField();
+        txtBelgeOnaylamaGuncellemeTarihi = new javax.swing.JTextField();
+        jScrollPane12 = new javax.swing.JScrollPane();
+        txtBelgeOnaylamaReddetmeSebebi = new javax.swing.JTextArea();
+        btnBelgeOnaylamaKabulEt = new javax.swing.JButton();
+        btnBelgeOnaylamaReddet = new javax.swing.JButton();
         pnlBelgeler = new javax.swing.JPanel();
         jScrollPane9 = new javax.swing.JScrollPane();
         tblBelgeler = new javax.swing.JTable();
@@ -1154,9 +1201,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                     .addComponent(lblBelgeYayinTarihi))
                 .addGap(18, 18, 18)
                 .addGroup(pnlBelgeEkleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlBelgeEkleLayout.createSequentialGroup()
-                        .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(pnlBelgeEkleLayout.createSequentialGroup()
                         .addGroup(pnlBelgeEkleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblBelgeNushasi)
@@ -1164,11 +1209,79 @@ public class AdminArayuzu extends javax.swing.JFrame {
                         .addGap(28, 28, 28)
                         .addComponent(lblBelgeNushasiAdi)
                         .addGap(58, 58, 58)
-                        .addComponent(btnBelgeEkle, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(btnBelgeEkle, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tabArsiv.addTab("Belge Ekle", null, pnlBelgeEkle, "Arşive Yeni Belge Eklenir");
+
+        pnlBelgeOnayla.setMinimumSize(new java.awt.Dimension(788, 518));
+        pnlBelgeOnayla.setPreferredSize(new java.awt.Dimension(788, 518));
+        pnlBelgeOnayla.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tblBelgeOnaylama.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tblBelgeOnaylama.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblBelgeOnaylamaMouseClicked(evt);
+            }
+        });
+        jScrollPane10.setViewportView(tblBelgeOnaylama);
+
+        pnlBelgeOnayla.add(jScrollPane10, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 788, 330));
+
+        txtIstekSebebi.setColumns(20);
+        txtIstekSebebi.setRows(5);
+        txtIstekSebebi.setText("Belge İsteme Sebebi");
+        txtIstekSebebi.setEnabled(false);
+        jScrollPane11.setViewportView(txtIstekSebebi);
+
+        pnlBelgeOnayla.add(jScrollPane11, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 342, 200, 164));
+
+        txtBelgeOnaylamaBelgeKodu.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtBelgeOnaylamaBelgeKodu.setText("Belge Kodu");
+        txtBelgeOnaylamaBelgeKodu.setEnabled(false);
+        pnlBelgeOnayla.add(txtBelgeOnaylamaBelgeKodu, new org.netbeans.lib.awtextra.AbsoluteConstraints(218, 342, 200, 30));
+
+        txtBelgeOnaylamaBelgeAdi.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtBelgeOnaylamaBelgeAdi.setText("Belge Adi");
+        txtBelgeOnaylamaBelgeAdi.setEnabled(false);
+        pnlBelgeOnayla.add(txtBelgeOnaylamaBelgeAdi, new org.netbeans.lib.awtextra.AbsoluteConstraints(218, 384, 200, 30));
+
+        txtBelgeOnaylamaIsteyenAdi.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtBelgeOnaylamaIsteyenAdi.setText("İsteyen Adı");
+        txtBelgeOnaylamaIsteyenAdi.setEnabled(false);
+        pnlBelgeOnayla.add(txtBelgeOnaylamaIsteyenAdi, new org.netbeans.lib.awtextra.AbsoluteConstraints(218, 427, 200, 30));
+
+        txtBelgeOnaylamaGuncellemeTarihi.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtBelgeOnaylamaGuncellemeTarihi.setText("Güncelleme Tarihi");
+        txtBelgeOnaylamaGuncellemeTarihi.setEnabled(false);
+        pnlBelgeOnayla.add(txtBelgeOnaylamaGuncellemeTarihi, new org.netbeans.lib.awtextra.AbsoluteConstraints(218, 467, 200, 24));
+
+        txtBelgeOnaylamaReddetmeSebebi.setColumns(20);
+        txtBelgeOnaylamaReddetmeSebebi.setRows(5);
+        jScrollPane12.setViewportView(txtBelgeOnaylamaReddetmeSebebi);
+
+        pnlBelgeOnayla.add(jScrollPane12, new org.netbeans.lib.awtextra.AbsoluteConstraints(582, 342, 200, 164));
+
+        btnBelgeOnaylamaKabulEt.setForeground(new java.awt.Color(153, 255, 51));
+        btnBelgeOnaylamaKabulEt.setText("Kabul Et");
+        pnlBelgeOnayla.add(btnBelgeOnaylamaKabulEt, new org.netbeans.lib.awtextra.AbsoluteConstraints(436, 385, 128, 30));
+
+        btnBelgeOnaylamaReddet.setForeground(new java.awt.Color(255, 51, 51));
+        btnBelgeOnaylamaReddet.setText("Reddet");
+        pnlBelgeOnayla.add(btnBelgeOnaylamaReddet, new org.netbeans.lib.awtextra.AbsoluteConstraints(436, 428, 128, 30));
+
+        tabArsiv.addTab("Belge Onaylama", pnlBelgeOnayla);
 
         tblBelgeler.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1193,7 +1306,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             pnlBelgelerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlBelgelerLayout.createSequentialGroup()
                 .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 408, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 91, Short.MAX_VALUE))
+                .addGap(0, 110, Short.MAX_VALUE))
         );
 
         tabArsiv.addTab("Envanterdeki Belgeler", pnlBelgeler);
@@ -1872,7 +1985,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             } else {
                 JOptionPane.showMessageDialog(null, "Kitap Kabul Edildi hata");
             }
-            KitapIstekKaldirma(secilenkitapid, "Kabul Edildi", kitapkodu, kitapadi, true);
+            KitapIstekKaldirma(secilenkitapid, "Sonuçlandırıldı", kitapkodu, kitapadi, true);
 
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
@@ -1901,7 +2014,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 }
                 String kitapverenadsoyad = "(Select adsoyad from public.kullanicilar where email = ?)";
 
-                String sql = "INSERT INTO public.kitap_al_ret(kitap_al_ret_kitap_adi, kitap_al_ret_isteyen_ad_soyad, kitap_al_ret_isteyen_email, kitap_al_ret_veren_ad_soyad, kitap_al_ret_veren_email, kitap_al_ret_durum, kitap_al_ret_geri_getirme_tarihi, kitap_al_ret_kitap_yayinevi, kitap_al_ret_sebep) VALUES (?, ?, ?," + kitapverenadsoyad + ",  ?, 'Kabul Edildi', ?, ?, ?);";
+                String sql = "INSERT INTO public.kitap_al_ret(kitap_al_ret_kitap_adi, kitap_al_ret_isteyen_ad_soyad, kitap_al_ret_isteyen_email, kitap_al_ret_veren_ad_soyad, kitap_al_ret_veren_email, kitap_al_ret_durum, kitap_al_ret_geri_getirme_tarihi, kitap_al_ret_kitap_yayinevi, kitap_al_ret_sebep) VALUES (?, ?, ?," + kitapverenadsoyad + ",  ?, 'Reddedildi', ?, ?, ?);";
                 pst = conn.prepareStatement(sql);
                 pst.setString(1, kitapadi);
                 pst.setString(2, kitapisteyenadsoyad);
@@ -1922,7 +2035,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 } else {
                     JOptionPane.showMessageDialog(null, "Kitap Kabul Edildi hata");
                 }
-                KitapIstekKaldirma(secilenkitapid, "Reddedildi", kitapkodu, kitapadi, false);
+                KitapIstekKaldirma(secilenkitapid, "Sonuçlandırıldı", kitapkodu, kitapadi, false);
 
             } catch (SQLException ex) {
                 Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
@@ -2033,12 +2146,23 @@ public class AdminArayuzu extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_treeBelgeTuruValueChanged
 
+    private void tblBelgeOnaylamaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBelgeOnaylamaMouseClicked
+        int belgeonaylaindex = tblBelgeOnaylama.getSelectedRow();
+        int belgeonaybelgekodu = (int) tblBelgeOnaylama.getValueAt(belgeonaylaindex, 0);
+        txtBelgeOnaylamaBelgeKodu.setText(String.valueOf(belgeonaybelgekodu)); 
+        txtBelgeOnaylamaBelgeAdi.setText((String) tblBelgeOnaylama.getValueAt(belgeonaylaindex, 1));
+        txtBelgeOnaylamaIsteyenAdi.setText((String) tblBelgeOnaylama.getValueAt(belgeonaylaindex, 2));
+        //txtBelgeOnaylamaGuncellemeTarihi.setText((String) tblBelgeOnaylama.getValueAt(belgeonaylaindex, 5));
+    }//GEN-LAST:event_tblBelgeOnaylamaMouseClicked
+
     public static void main(String args[]) {
 
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBelgeEkle;
+    private javax.swing.JButton btnBelgeOnaylamaKabulEt;
+    private javax.swing.JButton btnBelgeOnaylamaReddet;
     private javax.swing.JButton btnBelgeSec;
     private javax.swing.JButton btnGoruntuSec;
     private javax.swing.JButton btnKabul;
@@ -2056,6 +2180,9 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane10;
+    private javax.swing.JScrollPane jScrollPane11;
+    private javax.swing.JScrollPane jScrollPane12;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -2089,6 +2216,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JList<String> lstRenk;
     private javaswingdev.chart.PieChart pieChart1;
     private javax.swing.JPanel pnlBelgeEkle;
+    private javax.swing.JPanel pnlBelgeOnayla;
     private javax.swing.JPanel pnlBelgeler;
     private javax.swing.JPanel pnlDashboard;
     private javax.swing.JPanel pnlDuyurular;
@@ -2107,6 +2235,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JTabbedPane tabArsiv;
     private javax.swing.JTabbedPane tabDiger;
     private javax.swing.JTabbedPane tabKutuphane;
+    private javax.swing.JTable tblBelgeOnaylama;
     private javax.swing.JTable tblBelgeler;
     private javax.swing.JTable tblKitapOnay;
     private javax.swing.JTable tblKitaplar;
@@ -2114,7 +2243,13 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JTree treeBelgeTuru;
     private javax.swing.JTextField txtBelgeAdi;
     private javax.swing.JTextField txtBelgeKodu;
+    private javax.swing.JTextField txtBelgeOnaylamaBelgeAdi;
+    private javax.swing.JTextField txtBelgeOnaylamaBelgeKodu;
+    private javax.swing.JTextField txtBelgeOnaylamaGuncellemeTarihi;
+    private javax.swing.JTextField txtBelgeOnaylamaIsteyenAdi;
+    private javax.swing.JTextArea txtBelgeOnaylamaReddetmeSebebi;
     private javax.swing.JTextField txtEnvanterdeKalan;
+    private javax.swing.JTextArea txtIstekSebebi;
     private javax.swing.JTextField txtKitapAdi;
     private javax.swing.JTextField txtKitapKodu;
     private javax.swing.JTextArea txtKitapReddetmeSebep;

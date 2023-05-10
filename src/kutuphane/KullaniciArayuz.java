@@ -103,6 +103,40 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         }
     }
 
+    public void AldigimKitaplarTabloVerileri() {
+        try {
+            String sql = "SELECT * FROM public.kitap_al_kabul WHERE kitap_al_kabul_isteyen_email = ?";
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, email);
+            rs = pst.executeQuery();
+
+            DefaultTableModel model = new DefaultTableModel();
+            model.addColumn("Kitap Kodu");
+            model.addColumn("Kitap Adı");
+            model.addColumn("Yayın Evi");
+            model.addColumn("Durum");
+            model.addColumn("Getirme Tarihi");
+
+            while (rs.next()) {
+                    Object[] row = new Object[5];
+                    row[0] = rs.getInt("kitap_al_kabul_kitap_kodu");
+                    row[1] = rs.getString("kitap_al_kabul_kitap_adi");
+                    row[2] = rs.getString("kitap_al_kabul_kitap_yayinevi");
+                    row[3] = rs.getString("kitap_al_kabul_durum");
+                    row[4] = rs.getTimestamp("kitap_al_kabul_geri_getirme_tarihi");
+                    model.addRow(row);
+                
+
+            }
+            DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+            centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            tblAldigimKitaplar.setDefaultRenderer(Object.class, centerRenderer);
+            tblAldigimKitaplar.setModel(model);
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public void ArsivBelgelerimTabloVerileri() {
         try {
             String sql = "SELECT DISTINCT belge_adi,belge_yayinlayan_kisi,belge_kodu,belge_yayin_yili,belge_turu FROM public.arsiv;";
@@ -399,6 +433,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         KitaplarTabloVerileri();
         ArsivBelgelerimTabloVerileri();
         ArsivBelgeIsteTabloVerileri();
+        AldigimKitaplarTabloVerileri();
 
     }
 
@@ -419,6 +454,8 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         cbKutuphaneci = new javax.swing.JComboBox<>();
         btnKitapAl = new javax.swing.JButton();
         pnlAldigimKitaplar = new javax.swing.JPanel();
+        jScrollPane11 = new javax.swing.JScrollPane();
+        tblAldigimKitaplar = new javax.swing.JTable();
         lblSettings = new javax.swing.JLabel();
         pnlSettings = new javax.swing.JPanel();
         pnlSettingsKapat = new javax.swing.JLabel();
@@ -584,15 +621,30 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
         tabKutuphane.addTab("Kitap Alma", pnlKitapAlma);
 
+        tblAldigimKitaplar.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane11.setViewportView(tblAldigimKitaplar);
+
         javax.swing.GroupLayout pnlAldigimKitaplarLayout = new javax.swing.GroupLayout(pnlAldigimKitaplar);
         pnlAldigimKitaplar.setLayout(pnlAldigimKitaplarLayout);
         pnlAldigimKitaplarLayout.setHorizontalGroup(
             pnlAldigimKitaplarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+            .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
         );
         pnlAldigimKitaplarLayout.setVerticalGroup(
             pnlAldigimKitaplarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 489, Short.MAX_VALUE)
+            .addGroup(pnlAldigimKitaplarLayout.createSequentialGroup()
+                .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 89, Short.MAX_VALUE))
         );
 
         tabKutuphane.addTab("Aldığım Kitaplar", pnlAldigimKitaplar);
@@ -644,7 +696,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         });
         pnlSettings.add(btnSettingsKaydet, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 390, -1, -1));
 
-        getContentPane().add(pnlSettings, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 800, 530));
+        getContentPane().add(pnlSettings, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 600));
 
         tblBelgeIste.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1622,6 +1674,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane10;
+    private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -1650,6 +1703,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     private javax.swing.JTabbedPane tabArsiv;
     private javax.swing.JTabbedPane tabDiger;
     private javax.swing.JTabbedPane tabKutuphane;
+    private javax.swing.JTable tblAldigimKitaplar;
     private javax.swing.JTable tblBekleyenRandevu;
     private javax.swing.JTable tblBelgeIste;
     private javax.swing.JTable tblBelgelerim;
