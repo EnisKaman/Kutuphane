@@ -21,7 +21,9 @@ import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.TextField;
 import java.awt.image.BufferedImage;
@@ -41,6 +43,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,6 +51,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -118,14 +123,13 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             model.addColumn("Getirme Tarihi");
 
             while (rs.next()) {
-                    Object[] row = new Object[5];
-                    row[0] = rs.getInt("kitap_al_kabul_kitap_kodu");
-                    row[1] = rs.getString("kitap_al_kabul_kitap_adi");
-                    row[2] = rs.getString("kitap_al_kabul_kitap_yayinevi");
-                    row[3] = rs.getString("kitap_al_kabul_durum");
-                    row[4] = rs.getTimestamp("kitap_al_kabul_geri_getirme_tarihi");
-                    model.addRow(row);
-                
+                Object[] row = new Object[5];
+                row[0] = rs.getInt("kitap_al_kabul_kitap_kodu");
+                row[1] = rs.getString("kitap_al_kabul_kitap_adi");
+                row[2] = rs.getString("kitap_al_kabul_kitap_yayinevi");
+                row[3] = rs.getString("kitap_al_kabul_durum");
+                row[4] = rs.getTimestamp("kitap_al_kabul_geri_getirme_tarihi");
+                model.addRow(row);
 
             }
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -136,7 +140,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void ArsivBelgelerimTabloVerileri() {
         try {
             String sql = "SELECT aik.*,(SELECT belge_turu FROM public.arsiv a WHERE a.belge_kodu = aik.arsiv_istek_kabul_belge_kodu) FROM public.arsiv_istek_kabul aik WHERE aik.arsiv_istek_kabul_isteyen_email = ?;";
@@ -417,6 +421,26 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         });
     }
 
+    public static JPanel createPanel() {
+
+        JPanel panel = new JPanel();
+        panel.setPreferredSize(new Dimension(240, 100));
+        panel.setBackground(Color.LIGHT_GRAY);
+        // Panelin içeriğini düzenlemek için gerekli kodu buraya ekleyin
+        return panel;
+    }
+
+    public void RafEkleme() {
+        spRaf.getVerticalScrollBar().setUnitIncrement(50);
+        ArrayList<JPanel> panels = new ArrayList<>();
+
+        for (int i = 0; i < 30; i++) {
+            JPanel panel = createPanel(); // Yeni bir panel oluştur
+            panels.add(panel); // Paneli listeye ekle
+            pnlRaf.add(panel); // Ana panele ekle
+        }
+    }
+
     public KullaniciArayuz() {
         initComponents();
     }
@@ -427,6 +451,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         this.tema = tema;
         initComponents();
         pnlSettings.setVisible(false);
+        
         AdminCekme();
         BekleyenRandevuTabloVerileri();
         KabulRandevuTabloVerileri();
@@ -435,7 +460,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         ArsivBelgelerimTabloVerileri();
         ArsivBelgeIsteTabloVerileri();
         AldigimKitaplarTabloVerileri();
-
+        RafEkleme();
     }
 
     @SuppressWarnings("unchecked")
@@ -457,6 +482,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         pnlAldigimKitaplar = new javax.swing.JPanel();
         jScrollPane11 = new javax.swing.JScrollPane();
         tblAldigimKitaplar = new javax.swing.JTable();
+        pnlKitapRaflari = new javax.swing.JPanel();
+        spRaf = new javax.swing.JScrollPane();
+        pnlRaf = new javax.swing.JPanel();
         lblSettings = new javax.swing.JLabel();
         pnlSettings = new javax.swing.JPanel();
         pnlSettingsKapat = new javax.swing.JLabel();
@@ -649,6 +677,25 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         );
 
         tabKutuphane.addTab("Aldığım Kitaplar", pnlAldigimKitaplar);
+
+        pnlRaf.setMaximumSize(new java.awt.Dimension(798, 487));
+        pnlRaf.setLayout(new java.awt.GridLayout(2, 0, 30, 30));
+        spRaf.setViewportView(pnlRaf);
+
+        javax.swing.GroupLayout pnlKitapRaflariLayout = new javax.swing.GroupLayout(pnlKitapRaflari);
+        pnlKitapRaflari.setLayout(pnlKitapRaflariLayout);
+        pnlKitapRaflariLayout.setHorizontalGroup(
+            pnlKitapRaflariLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(spRaf)
+        );
+        pnlKitapRaflariLayout.setVerticalGroup(
+            pnlKitapRaflariLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(spRaf)
+        );
+
+        spRaf.getVerticalScrollBar().setUnitIncrement(50);
+
+        tabKutuphane.addTab("Kitap Rafları", pnlKitapRaflari);
 
         getContentPane().add(tabKutuphane, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 800, 520));
 
@@ -1025,13 +1072,13 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         lblKutuphane.setVisible(true);
     }//GEN-LAST:event_pnlSettingsKapatMouseClicked
 ///////////////////////////////////////////////// Ayarlar Kapatama Butonu Bitiş /////////////////////////////////////////////////  
-    
+
 ///////////////////////////////////////////////// Listeden Renk Seçme Başlangıç /////////////////////////////////////////////////  
     private void lstRenkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstRenkMouseClicked
         RenkSecmeListe();
     }//GEN-LAST:event_lstRenkMouseClicked
 ///////////////////////////////////////////////// Listeden Renk Seçme Bitiş ///////////////////////////////////////////////// 
-    
+
 ///////////////////////////////////////////////// Ayarlar Tema Rengi Kaydet Başlangıç ///////////////////////////////////////////////// 
     private void btnSettingsKaydetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingsKaydetActionPerformed
         try {
@@ -1051,7 +1098,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSettingsKaydetActionPerformed
 ///////////////////////////////////////////////// Ayarlar Tema Rengi Kaydet Bitiş ///////////////////////////////////////////////// 
-    
+
 ///////////////////////////////////////////////// Ayarlar Açma Butonu Başlangıç ///////////////////////////////////////////////// 
     private void lblSettingsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSettingsMouseClicked
         tabKutuphane.setVisible(false);
@@ -1064,14 +1111,14 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         lblKutuphane.setVisible(false);
     }//GEN-LAST:event_lblSettingsMouseClicked
 ///////////////////////////////////////////////// Ayarlar Açma Butonu Bitiş ///////////////////////////////////////////////// 
-    
+
 ///////////////////////////////////////////////// ComboBox Saat Seçme Başlangıç ///////////////////////////////////////////////// 
     private void cbSaatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbSaatActionPerformed
         saat = cbSaat.getSelectedItem().toString();
         System.out.println("" + tarih + " " + saat + "");
     }//GEN-LAST:event_cbSaatActionPerformed
 ///////////////////////////////////////////////// ComboBox Saat Seçme Bitiş ///////////////////////////////////////////////// 
-    
+
 ///////////////////////////////////////////////// ComboBox Saat Seçme Başlangıç ///////////////////////////////////////////////// 
     private void btnRandevuAlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRandevuAlActionPerformed
         try {
@@ -1116,7 +1163,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
     }//GEN-LAST:event_tblRetRandevuMouseClicked
 ///////////////////////////////////////////////// Reddedilen Randevualr Tablosu Tıklama Bitiş ///////////////////////////////////////////////// 
-    
+
 ///////////////////////////////////////////////// Takvim Tarih Seçme Başlangıç ///////////////////////////////////////////////// 
     private void jDateChooser2PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooser2PropertyChange
         if (evt.getPropertyName().equals("date")) {
@@ -1126,8 +1173,8 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jDateChooser2PropertyChange
 ///////////////////////////////////////////////// Takvim Tarih Seçme Bitiş ///////////////////////////////////////////////// 
-    
- ///////////////////////////////////////////////// Kitap Al Tablosu Tıklma Başlangıç ///////////////////////////////////////////////// 
+
+    ///////////////////////////////////////////////// Kitap Al Tablosu Tıklma Başlangıç ///////////////////////////////////////////////// 
     private void tblKitapAlMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblKitapAlMouseClicked
         int kitapindex = tblKitapAl.getSelectedRow();
         if (kitapindex >= 0) {
@@ -1136,9 +1183,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             txtYayinEvi.setText(kitapal_yayinevi);
         }
     }//GEN-LAST:event_tblKitapAlMouseClicked
- ///////////////////////////////////////////////// Kitap Al Tablosu Tıklma Bitiş ///////////////////////////////////////////////// 
+    ///////////////////////////////////////////////// Kitap Al Tablosu Tıklma Bitiş ///////////////////////////////////////////////// 
 
- ///////////////////////////////////////////////// Kitap Al Buton Tıklma Başlangıç ///////////////////////////////////////////////// 
+    ///////////////////////////////////////////////// Kitap Al Buton Tıklma Başlangıç ///////////////////////////////////////////////// 
     private void btnKitapAlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKitapAlActionPerformed
         try {
             String kitapal_kitapadi = txtKitapAdi.getText();
@@ -1178,7 +1225,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_btnKitapAlActionPerformed
- ///////////////////////////////////////////////// Kitap Al Buton Tıklma Bitiş ///////////////////////////////////////////////// 
+    ///////////////////////////////////////////////// Kitap Al Buton Tıklma Bitiş ///////////////////////////////////////////////// 
 
 ///////////////////////////////////////////////// Kitap Al Tarih Seçme Başlangıç ///////////////////////////////////////////////// 
     private void KitapAlTarihSeciciPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_KitapAlTarihSeciciPropertyChange
@@ -1245,7 +1292,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         belgekodu = (int) tblBelgelerim.getValueAt(belgelerimindex, 2);
     }//GEN-LAST:event_tblBelgelerimMouseClicked
 ///////////////////////////////////////////////// Belgelerim Tablosu Tıklama Bitiş ///////////////////////////////////////////////// 
-    
+
 ///////////////////////////////////////////////// PDF Gösterme Butonu Başlangıç ///////////////////////////////////////////////// 
     private void btnPDFAcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPDFAcActionPerformed
         try {
@@ -1255,7 +1302,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnPDFAcActionPerformed
 ///////////////////////////////////////////////// PDF Gösterme Butonu Bitiş ///////////////////////////////////////////////// 
-    
+
 ///////////////////////////////////////////////// Çıkış - Log Kaydı Alma Başlangıç ///////////////////////////////////////////////// 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         DosyaSilme();
@@ -1300,8 +1347,8 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             String isteyenadsoayd = "(SELECT adsoyad FROM public.kullanicilar WHERE email = ?)";
             String yayinyili = "(SELECT belge_yayin_yili FROM public.arsiv WHERE belge_kodu = ?)";
             String isteksebebi = txtIstemeSebebi.getText();
-            
-            String sql = "INSERT INTO public.arsiv_istek_bekleme(arsiv_istek_bekleme_belge_adi, arsiv_istek_bekleme_belge_kodu, arsiv_istek_bekleme_yayinlayan_adi, arsiv_istek_bekleme_yayin_yili, arsiv_istek_bekleme_isteyen_adsoyad, arsiv_istek_bekleme_isteyen_email, arsiv_istek_bekleme_veren_adsoyad, arsiv_istek_bekleme_veren_email, arsiv_istek_bekleme_durum,arsiv_istek_bekleme_istek_sebebi) VALUES (?, ?, ?, "+yayinyili+", "+isteyenadsoayd+", ?, ?, "+verenemail+", ?, ?);";
+
+            String sql = "INSERT INTO public.arsiv_istek_bekleme(arsiv_istek_bekleme_belge_adi, arsiv_istek_bekleme_belge_kodu, arsiv_istek_bekleme_yayinlayan_adi, arsiv_istek_bekleme_yayin_yili, arsiv_istek_bekleme_isteyen_adsoyad, arsiv_istek_bekleme_isteyen_email, arsiv_istek_bekleme_veren_adsoyad, arsiv_istek_bekleme_veren_email, arsiv_istek_bekleme_durum,arsiv_istek_bekleme_istek_sebebi) VALUES (?, ?, ?, " + yayinyili + ", " + isteyenadsoayd + ", ?, ?, " + verenemail + ", ?, ?);";
             pst = conn.prepareStatement(sql);
             pst.setString(1, belgeadi);
             pst.setInt(2, belgeninkodu);
@@ -1313,10 +1360,10 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             pst.setString(8, verenadsoyad);
             pst.setString(9, "Beklemede");
             pst.setString(10, isteksebebi);
-            
+
             int sonuc = pst.executeUpdate();
             if (sonuc == 1) {
-                JOptionPane.showMessageDialog(null,  "İstek Başarılı");
+                JOptionPane.showMessageDialog(null, "İstek Başarılı");
             }
         } catch (SQLException ex) {
             Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
@@ -1622,30 +1669,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     }
 
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(KullaniciArayuz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(KullaniciArayuz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(KullaniciArayuz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(KullaniciArayuz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
 
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new KullaniciArayuz().setVisible(true);
@@ -1696,11 +1720,14 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     private javax.swing.JPanel pnlBelgelerim;
     private javax.swing.JPanel pnlKabulEdilenRandevu;
     private javax.swing.JPanel pnlKitapAlma;
+    private javax.swing.JPanel pnlKitapRaflari;
+    private javax.swing.JPanel pnlRaf;
     private javax.swing.JPanel pnlRandevu;
     private javax.swing.JPanel pnlRandevuAl;
     private javax.swing.JPanel pnlReddedilenRandevu;
     private javax.swing.JPanel pnlSettings;
     private javax.swing.JLabel pnlSettingsKapat;
+    public javax.swing.JScrollPane spRaf;
     private javax.swing.JTabbedPane tabArsiv;
     private javax.swing.JTabbedPane tabDiger;
     private javax.swing.JTabbedPane tabKutuphane;
