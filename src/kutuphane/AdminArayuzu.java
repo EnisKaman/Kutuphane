@@ -31,6 +31,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -84,6 +85,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     int tema = 0;
     String dosyayolu = null;
     String dosyaadi = null;
+    File dosya;
     FileInputStream fis;
     String kitapisteyenemail;
     String kitapisteyenadsoyad;
@@ -194,7 +196,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 row[5] = "Gör";
                 model.addRow(row);
             }
-            
+
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
             centerRenderer.setHorizontalAlignment(JLabel.CENTER);
             tblBelgeler.setDefaultRenderer(Object.class, centerRenderer);
@@ -218,13 +220,12 @@ public class AdminArayuzu extends javax.swing.JFrame {
             model.addColumn("İstek Sebebi");
             model.addColumn("Güncelleme Tarihi");
 
-            
             int tablorow = 0;
             while (rs.next()) {
                 Object[] row = new Object[6];
                 int id = rs.getInt("arsiv_istek_bekleme_id");
                 BelgeIDToOnaylamaTabloRow.put(tablorow, id);
-                tablorow ++;
+                tablorow++;
                 row[0] = rs.getInt("arsiv_istek_bekleme_belge_kodu");
                 row[1] = rs.getString("arsiv_istek_bekleme_belge_adi");
                 row[2] = rs.getString("arsiv_istek_bekleme_isteyen_adsoyad");
@@ -241,7 +242,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void RandevuTabloVerileri() {
         try {
             String sql = "SELECT * FROM public.randevu";
@@ -1690,14 +1691,16 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private void btnGoruntuSecActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoruntuSecActionPerformed
         JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         chooser.showOpenDialog(null);
-        File dosya = chooser.getSelectedFile();
-        dosyaadi = dosya.getAbsolutePath();
+        dosya = chooser.getSelectedFile();
+        String eskidosyaadi = dosya.getAbsolutePath();
+        dosyaadi = eskidosyaadi.replace("\\", "\\\\");
         ImageIcon resim = new ImageIcon(dosyaadi);
         Image image = resim.getImage().getScaledInstance(pnlResim.getWidth(), pnlResim.getHeight(), Image.SCALE_SMOOTH);
         ImageIcon boyutlanmisresim = new ImageIcon(image);
         lblResim.setBounds(pnlResim.getBounds());
         //pnlResim.add(lblResim);
         lblResim.setIcon(boyutlanmisresim);
+        System.out.println(dosyaadi.toString());
     }//GEN-LAST:event_btnGoruntuSecActionPerformed
 ///////////////////////////////////////////////// Resim Seçme Bitiş /////////////////////////////////////////////////  
 
@@ -1795,6 +1798,26 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 } catch (SQLException ex) {
                     Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
                 }
+            }
+
+            String destinationPath = "C:\\Users\\ekmn2\\OneDrive\\Belgeler\\New Folder\\Kutuphane\\pic\\";
+            try {
+                File destinationFile = new File(destinationPath, txtKitapAdi.getText() + ".jpg");
+                FileInputStream fis = new FileInputStream(dosya);
+                FileOutputStream fos = new FileOutputStream(destinationFile);
+
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = fis.read(buffer)) > 0) {
+                    fos.write(buffer, 0, length);
+                }
+
+                fis.close();
+                fos.close();
+
+                JOptionPane.showMessageDialog(null, "Dosya başarıyla kaydedildi.");
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
 
         } catch (SQLException ex) {
@@ -2162,7 +2185,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private void tblBelgeOnaylamaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBelgeOnaylamaMouseClicked
         belgeonaylaindex = tblBelgeOnaylama.getSelectedRow();
         int belgeonaybelgekodu = (int) tblBelgeOnaylama.getValueAt(belgeonaylaindex, 0);
-        txtBelgeOnaylamaBelgeKodu.setText(String.valueOf(belgeonaybelgekodu)); 
+        txtBelgeOnaylamaBelgeKodu.setText(String.valueOf(belgeonaybelgekodu));
         txtBelgeOnaylamaBelgeAdi.setText((String) tblBelgeOnaylama.getValueAt(belgeonaylaindex, 1));
         txtBelgeOnaylamaIsteyenAdi.setText((String) tblBelgeOnaylama.getValueAt(belgeonaylaindex, 2));
         //txtBelgeOnaylamaGuncellemeTarihi.setText((String) tblBelgeOnaylama.getValueAt(belgeonaylaindex, 5));
@@ -2179,8 +2202,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
             String isteyenemail = "(SELECT arsiv_istek_bekleme_isteyen_email FROM public.arsiv_istek_bekleme WHERE arsiv_istek_bekleme_id = ?)";
             String verenadi = "(Select adsoyad from public.kullanicilar where email = ?)";
             String isteksebebi = txtIstekSebebi.getText();
-            
-            String sqlupdate ="UPDATE public.arsiv_istek_bekleme SET arsiv_istek_bekleme_durum = ? WHERE arsiv_istek_bekleme_id = ?;";
+
+            String sqlupdate = "UPDATE public.arsiv_istek_bekleme SET arsiv_istek_bekleme_durum = ? WHERE arsiv_istek_bekleme_id = ?;";
             pst = conn.prepareStatement(sqlupdate);
             pst.setString(1, "Kabul Edildi");
             pst.setInt(2, id);
@@ -2188,8 +2211,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
             if (sonuc == 1) {
                 JOptionPane.showMessageDialog(null, "Kabul Edildi Update");
             }
-            
-            String sqlinsert = "INSERT INTO public.arsiv_istek_kabul(arsiv_istek_kabul_belge_kodu, arsiv_istek_kabul_belge_adi, arsiv_istek_kabul_yayinlayan_adi, arsiv_istek_kabul_yayin_yili, arsiv_istek_kabul_isteyen_adsoyad, arsiv_istek_kabul_isteyen_email, arsiv_istek_kabul_veren_adsoyad, arsiv_istek_kabul_veren_email, arsiv_istek_kabul_durum, arsiv_istek_kabul_istek_sebebi) VALUES (?, ?, "+yayinlayanadi+", "+yayinyili+", "+isteyenadi+", "+isteyenemail+", "+verenadi+", ?, ?, ?);";
+
+            String sqlinsert = "INSERT INTO public.arsiv_istek_kabul(arsiv_istek_kabul_belge_kodu, arsiv_istek_kabul_belge_adi, arsiv_istek_kabul_yayinlayan_adi, arsiv_istek_kabul_yayin_yili, arsiv_istek_kabul_isteyen_adsoyad, arsiv_istek_kabul_isteyen_email, arsiv_istek_kabul_veren_adsoyad, arsiv_istek_kabul_veren_email, arsiv_istek_kabul_durum, arsiv_istek_kabul_istek_sebebi) VALUES (?, ?, " + yayinlayanadi + ", " + yayinyili + ", " + isteyenadi + ", " + isteyenemail + ", " + verenadi + ", ?, ?, ?);";
             pst = conn.prepareStatement(sqlinsert);
             pst.setInt(1, belgekodu);
             pst.setString(2, belgeadi);
@@ -2205,7 +2228,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             if (cevap == 1) {
                 JOptionPane.showMessageDialog(null, "İnsert Oldu");
             }
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }

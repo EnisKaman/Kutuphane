@@ -27,10 +27,13 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.TextField;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.CallableStatement;
@@ -45,8 +48,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -72,6 +77,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     String kitapal_yayinevi;
     int belgekodu = 0;
     String arayuzdurumu = "kutuphane";
+    List<byte[]> resimler = new ArrayList<>();
 
     public void KitaplarTabloVerileri() {
         try {
@@ -431,13 +437,63 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     }
 
     public void RafEkleme() {
-        spRaf.getVerticalScrollBar().setUnitIncrement(50);
-        ArrayList<JPanel> panels = new ArrayList<>();
+        try {
+            int toplamkitap = 0;
+            ArrayList<JPanel> panels = new ArrayList<>();
 
-        for (int i = 0; i < 30; i++) {
-            JPanel panel = createPanel(); // Yeni bir panel oluştur
-            panels.add(panel); // Paneli listeye ekle
-            pnlRaf.add(panel); // Ana panele ekle
+            String sqlkitapsayisi = "SELECT  COUNT(DISTINCT kitap_adi) FROM public.kitaplik;";
+            pst = conn.prepareStatement(sqlkitapsayisi);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                toplamkitap = rs.getInt(1);
+                System.out.println(toplamkitap);
+            }
+
+            String sqlresimadi = "SELECT DISTINCT kitap_adi FROM public.kitaplik WHERE kitap_kodu = ?";
+            pst = conn.prepareStatement(sqlresimadi);
+            pst.setInt(1, 123017);
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                String kitapadi = rs.getString("kitap_adi");
+                
+                String hedefDizin = "C:\\Users\\ekmn2\\OneDrive\\Belgeler\\New Folder\\Kutuphane\\pic\\" + kitapadi + ".jpg";
+                BufferedImage image = null;
+                image = ImageIO.read(new File(hedefDizin));
+                
+
+                ImageIcon icon = new ImageIcon(image);
+                JLabel label = new JLabel(icon);
+                
+                JPanel panel = createPanel(); // Yeni bir panel oluştur
+                panel.add(label);
+                panels.add(panel); // Paneli listeye ekle
+                pnlRaf.add(panel); // Ana panele ekle
+            }
+
+            for (int i = 0; i < toplamkitap; i++) {
+                JPanel panel = createPanel(); // Yeni bir panel oluştur
+                panels.add(panel); // Paneli listeye ekle
+                pnlRaf.add(panel); // Ana panele ekle
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private static void kaydet(List<byte[]> resimler, String hedefDizin) throws IOException {
+        for (int i = 0; i < resimler.size(); i++) {
+            byte[] imageData = resimler.get(i);
+            String dosyaAdi = "resim_" + i + ".jpg";
+            String dosyaYolu = hedefDizin + dosyaAdi;
+
+            try (OutputStream outputStream = new FileOutputStream(dosyaYolu)) {
+                outputStream.write(imageData);
+            }
+
+            System.out.println("Resim " + dosyaAdi + " kaydedildi.");
         }
     }
 
@@ -451,7 +507,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         this.tema = tema;
         initComponents();
         pnlSettings.setVisible(false);
-        
+        spRaf.getVerticalScrollBar().setUnitIncrement(50);
         AdminCekme();
         BekleyenRandevuTabloVerileri();
         KabulRandevuTabloVerileri();

@@ -127,12 +127,12 @@ public class ResimKoyma extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         try {
-            PreparedStatement ps = conn.prepareStatement("SELECT kitapresim FROM kitap_resimleri WHERE kitapadi = ?");
-            ps.setString(1, "Savas_ve_Baris.jpg");
+            PreparedStatement ps = conn.prepareStatement("SELECT kitap_resim FROM public.kitaplik WHERE kitap_adi = ?");
+            ps.setString(1, "Savaş ve Barış");
             
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                byte[] imageData = rs.getBytes("kitapresim");
+                byte[] imageData = rs.getBytes("kitap_resim");
                 InputStream input = new ByteArrayInputStream(imageData);
                 BufferedImage image = null;
                 try {
