@@ -1314,7 +1314,7 @@
               </AuxValues>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                  <AbsoluteConstraints x="0" y="342" width="200" height="164"/>
+                  <AbsoluteConstraints x="10" y="340" width="200" height="164"/>
                 </Constraint>
               </Constraints>
 
@@ -1405,6 +1405,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Kabul Et"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBelgeOnaylamaKabulEtActionPerformed"/>
+              </Events>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
                   <AbsoluteConstraints x="436" y="385" width="128" height="30"/>

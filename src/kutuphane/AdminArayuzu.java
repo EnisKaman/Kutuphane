@@ -46,6 +46,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javaswingdev.chart.ModelPieChart;
@@ -90,6 +91,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
     String kitapyayinevi;
     int secilenkitapid = 0;
     Object belgeturu;
+    int belgeonaylaindex;
+    HashMap<Integer, Integer> BelgeIDToOnaylamaTabloRow = new HashMap<>();
 
     public void KitaplarTabloVerileri() {
         try {
@@ -215,8 +218,13 @@ public class AdminArayuzu extends javax.swing.JFrame {
             model.addColumn("İstek Sebebi");
             model.addColumn("Güncelleme Tarihi");
 
+            
+            int tablorow = 0;
             while (rs.next()) {
                 Object[] row = new Object[6];
+                int id = rs.getInt("arsiv_istek_bekleme_id");
+                BelgeIDToOnaylamaTabloRow.put(tablorow, id);
+                tablorow ++;
                 row[0] = rs.getInt("arsiv_istek_bekleme_belge_kodu");
                 row[1] = rs.getString("arsiv_istek_bekleme_belge_adi");
                 row[2] = rs.getString("arsiv_istek_bekleme_isteyen_adsoyad");
@@ -1245,7 +1253,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         txtIstekSebebi.setEnabled(false);
         jScrollPane11.setViewportView(txtIstekSebebi);
 
-        pnlBelgeOnayla.add(jScrollPane11, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 342, 200, 164));
+        pnlBelgeOnayla.add(jScrollPane11, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 340, 200, 164));
 
         txtBelgeOnaylamaBelgeKodu.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtBelgeOnaylamaBelgeKodu.setText("Belge Kodu");
@@ -1275,6 +1283,11 @@ public class AdminArayuzu extends javax.swing.JFrame {
 
         btnBelgeOnaylamaKabulEt.setForeground(new java.awt.Color(153, 255, 51));
         btnBelgeOnaylamaKabulEt.setText("Kabul Et");
+        btnBelgeOnaylamaKabulEt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBelgeOnaylamaKabulEtActionPerformed(evt);
+            }
+        });
         pnlBelgeOnayla.add(btnBelgeOnaylamaKabulEt, new org.netbeans.lib.awtextra.AbsoluteConstraints(436, 385, 128, 30));
 
         btnBelgeOnaylamaReddet.setForeground(new java.awt.Color(255, 51, 51));
@@ -2147,13 +2160,56 @@ public class AdminArayuzu extends javax.swing.JFrame {
     }//GEN-LAST:event_treeBelgeTuruValueChanged
 
     private void tblBelgeOnaylamaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBelgeOnaylamaMouseClicked
-        int belgeonaylaindex = tblBelgeOnaylama.getSelectedRow();
+        belgeonaylaindex = tblBelgeOnaylama.getSelectedRow();
         int belgeonaybelgekodu = (int) tblBelgeOnaylama.getValueAt(belgeonaylaindex, 0);
         txtBelgeOnaylamaBelgeKodu.setText(String.valueOf(belgeonaybelgekodu)); 
         txtBelgeOnaylamaBelgeAdi.setText((String) tblBelgeOnaylama.getValueAt(belgeonaylaindex, 1));
         txtBelgeOnaylamaIsteyenAdi.setText((String) tblBelgeOnaylama.getValueAt(belgeonaylaindex, 2));
         //txtBelgeOnaylamaGuncellemeTarihi.setText((String) tblBelgeOnaylama.getValueAt(belgeonaylaindex, 5));
     }//GEN-LAST:event_tblBelgeOnaylamaMouseClicked
+
+    private void btnBelgeOnaylamaKabulEtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBelgeOnaylamaKabulEtActionPerformed
+        try {
+            int id = BelgeIDToOnaylamaTabloRow.get(belgeonaylaindex);
+            int belgekodu = Integer.parseInt(txtBelgeOnaylamaBelgeKodu.getText());
+            String belgeadi = txtBelgeOnaylamaBelgeAdi.getText();
+            String yayinlayanadi = "(SELECT belge_yayinlayan_kisi FROM public.arsiv WHERE belge_kodu = ?)";
+            String yayinyili = "(SELECT belge_yayin_yili FROM public.arsiv WHERE belge_kodu = ?)";
+            String isteyenadi = "(SELECT arsiv_istek_bekleme_isteyen_adsoyad FROM public.arsiv_istek_bekleme WHERE arsiv_istek_bekleme_id = ?)";
+            String isteyenemail = "(SELECT arsiv_istek_bekleme_isteyen_email FROM public.arsiv_istek_bekleme WHERE arsiv_istek_bekleme_id = ?)";
+            String verenadi = "(Select adsoyad from public.kullanicilar where email = ?)";
+            String isteksebebi = txtIstekSebebi.getText();
+            
+            String sqlupdate ="UPDATE public.arsiv_istek_bekleme SET arsiv_istek_bekleme_durum = ? WHERE arsiv_istek_bekleme_id = ?;";
+            pst = conn.prepareStatement(sqlupdate);
+            pst.setString(1, "Kabul Edildi");
+            pst.setInt(2, id);
+            int sonuc = pst.executeUpdate();
+            if (sonuc == 1) {
+                JOptionPane.showMessageDialog(null, "Kabul Edildi Update");
+            }
+            
+            String sqlinsert = "INSERT INTO public.arsiv_istek_kabul(arsiv_istek_kabul_belge_kodu, arsiv_istek_kabul_belge_adi, arsiv_istek_kabul_yayinlayan_adi, arsiv_istek_kabul_yayin_yili, arsiv_istek_kabul_isteyen_adsoyad, arsiv_istek_kabul_isteyen_email, arsiv_istek_kabul_veren_adsoyad, arsiv_istek_kabul_veren_email, arsiv_istek_kabul_durum, arsiv_istek_kabul_istek_sebebi) VALUES (?, ?, "+yayinlayanadi+", "+yayinyili+", "+isteyenadi+", "+isteyenemail+", "+verenadi+", ?, ?, ?);";
+            pst = conn.prepareStatement(sqlinsert);
+            pst.setInt(1, belgekodu);
+            pst.setString(2, belgeadi);
+            pst.setInt(3, belgekodu);
+            pst.setInt(4, belgekodu);
+            pst.setInt(5, id);
+            pst.setInt(6, id);
+            pst.setString(7, email);
+            pst.setString(8, email);
+            pst.setString(9, "Kabul Edildi");
+            pst.setString(10, isteksebebi);
+            int cevap = pst.executeUpdate();
+            if (cevap == 1) {
+                JOptionPane.showMessageDialog(null, "İnsert Oldu");
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnBelgeOnaylamaKabulEtActionPerformed
 
     public static void main(String args[]) {
 

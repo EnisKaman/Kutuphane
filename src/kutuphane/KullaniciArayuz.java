@@ -139,8 +139,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     
     public void ArsivBelgelerimTabloVerileri() {
         try {
-            String sql = "SELECT DISTINCT belge_adi,belge_yayinlayan_kisi,belge_kodu,belge_yayin_yili,belge_turu FROM public.arsiv;";
+            String sql = "SELECT aik.*,(SELECT belge_turu FROM public.arsiv a WHERE a.belge_kodu = aik.arsiv_istek_kabul_belge_kodu) FROM public.arsiv_istek_kabul aik WHERE aik.arsiv_istek_kabul_isteyen_email = ?;";
             pst = conn.prepareStatement(sql);
+            pst.setString(1, email);
             rs = pst.executeQuery();
 
             DefaultTableModel model = new DefaultTableModel();
@@ -153,10 +154,10 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
             while (rs.next()) {
                 Object[] row = new Object[6];
-                row[0] = rs.getString("belge_adi");
-                row[1] = rs.getString("belge_yayinlayan_kisi");
-                row[2] = rs.getInt("belge_kodu");
-                row[3] = rs.getInt("belge_yayin_yili");
+                row[0] = rs.getString("arsiv_istek_kabul_belge_adi");
+                row[1] = rs.getString("arsiv_istek_kabul_yayinlayan_adi");
+                row[2] = rs.getInt("arsiv_istek_kabul_belge_kodu");
+                row[3] = rs.getInt("arsiv_istek_kabul_yayin_yili");
                 row[4] = rs.getString("belge_turu");
                 row[5] = "Gör";
                 model.addRow(row);
