@@ -64,10 +64,53 @@
             </exec>
         </target>
 
+
+
+
     Notice that the overridden target depends on the jar target and not only on 
     the compile target as the regular run target does. Again, for a list of available 
     properties which you can use, check the target you are overriding in the
     nbproject/build-impl.xml file. 
 
     -->
+<property name="lib.dir" value="lib"/>
+
+<target name="copy-tesseract">
+    <copy todir="${lib.dir}">
+        <fileset dir="C:\Program Files\apache-ant-1.10.13">
+            <include name="**/*.jar"/>
+        </fileset>
+    </copy>
+
+    
+    <copy todir="${lib.dir}">
+        <fileset dir="C:\Users\ekmn2\OneDrive\Belgeler\New Folder\Kutuphane\testdata\eng.traineddata">
+            <include name="**/*.jar"/>
+        </fileset>
+    </copy>
+    
+    <copy todir="${lib.dir}">
+        <fileset dir="C:\Users\ekmn2\OneDrive\Belgeler\New Folder\Kutuphane\testdata\eng.traineddata">
+            <include name="**/*.jar"/>
+        </fileset>
+    </copy>
+
+<copy todir="${lib.dir}">
+        <fileset dir="C:\Users\ekmn2\OneDrive\Belgeler\New Folder\Kutuphane\testdata\tur.traineddata">
+            <include name="**/*.jar"/>
+        </fileset>
+    </copy>
+    
+    <copy todir="${lib.dir}">
+        <fileset dir="C:\Users\ekmn2\OneDrive\Belgeler\New Folder\Kutuphane\testdata\tur.traineddata">
+            <include name="**/*.jar"/>
+        </fileset>
+    </copy>
+</target>
+
+
+
 </project>
+
+
+
