@@ -71,13 +71,13 @@ public class Orc extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         String imagePath = "resim.jpg";
-        String hedefDizin = "C:\\Users\\ekmn2\\OneDrive\\Belgeler\\New Folder\\Kutuphane\\ocr\\451.jpg";
+        String hedefDizin = "C:\\Users\\ekmn2\\OneDrive\\Belgeler\\New Folder\\Kutuphane\\ocr\\gorsel3-vize-raporu-odevi.pdf";
         // Tesseract OCR nesnesini oluşturun
         Tesseract tesseract = new Tesseract();
 
         try {
             // Tesseract dil modelini ayarlayın
-            tesseract.setLanguage("eng");
+            tesseract.setLanguage("tur");
 
             // Resimdeki yazıyı okuyun
             String result = tesseract.doOCR(new File(hedefDizin));

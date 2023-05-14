@@ -68,6 +68,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
+import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.TesseractException;
 
 /**
  *
@@ -95,6 +97,9 @@ public class AdminArayuzu extends javax.swing.JFrame {
     Object belgeturu;
     int belgeonaylaindex;
     HashMap<Integer, Integer> BelgeIDToOnaylamaTabloRow = new HashMap<>();
+    String tarananbelgesonuclari;
+    String taranacakbelgeyolu;
+    File taranacakbelge;
 
     public void KitaplarTabloVerileri() {
         try {
@@ -463,6 +468,10 @@ public class AdminArayuzu extends javax.swing.JFrame {
         treeBelgeTuru = new javax.swing.JTree();
         lblBelgeNushasiAdi = new javax.swing.JLabel();
         btnBelgeEkle = new javax.swing.JButton();
+        lblBelgeNushasi1 = new javax.swing.JLabel();
+        btnTaranacakBelge = new javax.swing.JButton();
+        jScrollPane13 = new javax.swing.JScrollPane();
+        txtTarananBelge = new javax.swing.JTextArea();
         pnlBelgeOnayla = new javax.swing.JPanel();
         jScrollPane10 = new javax.swing.JScrollPane();
         tblBelgeOnaylama = new javax.swing.JTable();
@@ -481,6 +490,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         tblBelgeler = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(800, 600));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowActivated(java.awt.event.WindowEvent evt) {
                 formWindowActivated(evt);
@@ -1155,38 +1165,62 @@ public class AdminArayuzu extends javax.swing.JFrame {
             }
         });
 
+        lblBelgeNushasi1.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        lblBelgeNushasi1.setText("Belge Tarama");
+
+        btnTaranacakBelge.setText("Belge Tara");
+        btnTaranacakBelge.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTaranacakBelgeActionPerformed(evt);
+            }
+        });
+
+        txtTarananBelge.setColumns(20);
+        txtTarananBelge.setRows(5);
+        txtTarananBelge.setText("Taranan Belge Sonuçları\n");
+        jScrollPane13.setViewportView(txtTarananBelge);
+
         javax.swing.GroupLayout pnlBelgeEkleLayout = new javax.swing.GroupLayout(pnlBelgeEkle);
         pnlBelgeEkle.setLayout(pnlBelgeEkleLayout);
         pnlBelgeEkleLayout.setHorizontalGroup(
             pnlBelgeEkleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlBelgeEkleLayout.createSequentialGroup()
+                .addGap(49, 49, 49)
                 .addGroup(pnlBelgeEkleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlBelgeEkleLayout.createSequentialGroup()
-                        .addGap(49, 49, 49)
                         .addGroup(pnlBelgeEkleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblBelgeNushasi)
-                            .addComponent(lblBelgeKodu)
-                            .addComponent(lblYayinlayanAdi)
-                            .addComponent(lblBelgeAdi)
-                            .addComponent(lblBelgeNushasiAdi)
-                            .addComponent(lblBelgeYayinTarihi))
-                        .addGap(18, 18, 18)
+                            .addGroup(pnlBelgeEkleLayout.createSequentialGroup()
+                                .addGap(141, 141, 141)
+                                .addComponent(btnBelgeSec, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlBelgeEkleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(lblBelgeNushasi1)
+                                .addGroup(pnlBelgeEkleLayout.createSequentialGroup()
+                                    .addGap(141, 141, 141)
+                                    .addComponent(btnTaranacakBelge, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jScrollPane13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(pnlBelgeEkleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtYayinYili)
-                            .addComponent(txtYayinlayanAdi)
-                            .addComponent(txtBelgeAdi)
-                            .addComponent(txtBelgeKodu)))
+                            .addGroup(pnlBelgeEkleLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                                .addComponent(lblBelgeNushasiAdi)
+                                .addGap(88, 88, 88))
+                            .addGroup(pnlBelgeEkleLayout.createSequentialGroup()
+                                .addGap(46, 46, 46)
+                                .addComponent(btnBelgeEkle, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlBelgeEkleLayout.createSequentialGroup()
                         .addGroup(pnlBelgeEkleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnlBelgeEkleLayout.createSequentialGroup()
-                                .addGap(190, 190, 190)
-                                .addComponent(btnBelgeSec, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(pnlBelgeEkleLayout.createSequentialGroup()
-                                .addGap(108, 108, 108)
-                                .addComponent(btnBelgeEkle, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(106, 106, 106)
-                        .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 136, Short.MAX_VALUE)))
+                            .addComponent(lblBelgeYayinTarihi)
+                            .addComponent(lblBelgeKodu)
+                            .addComponent(lblYayinlayanAdi)
+                            .addComponent(lblBelgeAdi))
+                        .addGap(36, 36, 36)
+                        .addGroup(pnlBelgeEkleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtBelgeAdi)
+                            .addComponent(txtYayinlayanAdi)
+                            .addComponent(txtBelgeKodu)
+                            .addComponent(txtYayinYili))))
                 .addContainerGap())
         );
         pnlBelgeEkleLayout.setVerticalGroup(
@@ -1209,17 +1243,23 @@ public class AdminArayuzu extends javax.swing.JFrame {
                     .addComponent(txtYayinYili, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblBelgeYayinTarihi))
                 .addGap(18, 18, 18)
-                .addGroup(pnlBelgeEkleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(pnlBelgeEkleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(pnlBelgeEkleLayout.createSequentialGroup()
                         .addGroup(pnlBelgeEkleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblBelgeNushasi)
-                            .addComponent(btnBelgeSec, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(28, 28, 28)
-                        .addComponent(lblBelgeNushasiAdi)
-                        .addGap(58, 58, 58)
-                        .addComponent(btnBelgeEkle, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(btnBelgeSec, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblBelgeNushasiAdi))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlBelgeEkleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(pnlBelgeEkleLayout.createSequentialGroup()
+                                .addGroup(pnlBelgeEkleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(lblBelgeNushasi1)
+                                    .addComponent(btnTaranacakBelge, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane13, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnBelgeEkle, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
 
         tabArsiv.addTab("Belge Ekle", null, pnlBelgeEkle, "Arşive Yeni Belge Eklenir");
@@ -1314,7 +1354,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         pnlBelgeler.setLayout(pnlBelgelerLayout);
         pnlBelgelerLayout.setHorizontalGroup(
             pnlBelgelerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+            .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
         );
         pnlBelgelerLayout.setVerticalGroup(
             pnlBelgelerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1325,7 +1365,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
 
         tabArsiv.addTab("Envanterdeki Belgeler", pnlBelgeler);
 
-        getContentPane().add(tabArsiv, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 74, 788, 530));
+        getContentPane().add(tabArsiv, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 74, 800, 530));
 
         pack();
         setLocationRelativeTo(null);
@@ -2234,6 +2274,34 @@ public class AdminArayuzu extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnBelgeOnaylamaKabulEtActionPerformed
 
+    private void btnTaranacakBelgeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTaranacakBelgeActionPerformed
+        if (taranacakbelgeyolu != null) {
+            taranacakbelgeyolu = null;
+        } else {
+            JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+            //FileNameExtensionFilter filter = new FileNameExtensionFilter("PDF Dosyaları", "pdf");
+            //chooser.setFileFilter(filter);
+            int sonuc = chooser.showOpenDialog(null);
+            if (sonuc == JFileChooser.APPROVE_OPTION) {
+                taranacakbelge = chooser.getSelectedFile();              
+                taranacakbelgeyolu = taranacakbelge.getAbsolutePath();
+                System.out.println(taranacakbelgeyolu);
+                //lblBelgeNushasiAdi.setText("Belge Seçildi !");
+                //lblBelgeNushasiAdi.setForeground(Renkler(4));
+            }
+        }
+        
+        Tesseract tesseract = new Tesseract();
+        try {
+            tesseract.setLanguage("tur");
+            String result = tesseract.doOCR(new File(taranacakbelgeyolu));
+            //System.out.println(result);
+            txtTarananBelge.setText(result);
+        } catch (TesseractException e) {
+            System.err.println(e.getMessage());
+        }
+    }//GEN-LAST:event_btnTaranacakBelgeActionPerformed
+
     public static void main(String args[]) {
 
     }
@@ -2251,6 +2319,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JButton btnKitapReddet;
     private javax.swing.JButton btnRet;
     private javax.swing.JButton btnSettingsKaydet;
+    private javax.swing.JButton btnTaranacakBelge;
     private javax.swing.JComboBox<String> cbKitapKodları;
     private javax.swing.JComboBox<String> cbKitapTuru;
     private javax.swing.JLabel jLabel1;
@@ -2262,6 +2331,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane12;
+    private javax.swing.JScrollPane jScrollPane13;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -2275,6 +2345,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JLabel lblBelgeAdi;
     private javax.swing.JLabel lblBelgeKodu;
     private javax.swing.JLabel lblBelgeNushasi;
+    private javax.swing.JLabel lblBelgeNushasi1;
     private javax.swing.JLabel lblBelgeNushasiAdi;
     private javax.swing.JLabel lblBelgeYayinTarihi;
     private javax.swing.JLabel lblDiger;
@@ -2336,6 +2407,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JTextField txtRandevuIsteyenKisi;
     private javax.swing.JTextField txtRandevuTarih;
     private javax.swing.JTextArea txtSebep;
+    private javax.swing.JTextArea txtTarananBelge;
     private javax.swing.JTextField txtToplamKitap;
     private javax.swing.JTextField txtYayinEvi;
     private javax.swing.JTextField txtYayinYili;

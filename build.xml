@@ -107,6 +107,14 @@
         </fileset>
     </copy>
 </target>
+<path id="classpath">
+    <fileset dir="lib">
+        <include name="*.jar"/>
+    </fileset>
+</path>
+<taskdef name="java" classname="org.apache.tools.ant.taskdefs.Java">
+  <classpath refid="classpath"/>
+</taskdef>
 
 
 
