@@ -548,10 +548,14 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         txtIstemeSebebi = new javax.swing.JTextArea();
         jLabel7 = new javax.swing.JLabel();
         btnBelgeIste = new javax.swing.JButton();
+        jLabel10 = new javax.swing.JLabel();
+        txtBelgeIsteArama = new javax.swing.JTextField();
         pnlBelgelerim = new javax.swing.JPanel();
         jScrollPane8 = new javax.swing.JScrollPane();
         tblBelgelerim = new javax.swing.JTable();
         btnPDFAc = new javax.swing.JButton();
+        jLabel11 = new javax.swing.JLabel();
+        txtBelgelerimArama = new javax.swing.JTextField();
         tabDiger = new javax.swing.JTabbedPane();
         pnlRandevu = new javax.swing.JPanel();
         jTabbedPane2 = new javax.swing.JTabbedPane();
@@ -672,30 +676,27 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         pnlKitapAlmaLayout.setHorizontalGroup(
             pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlKitapAlmaLayout.createSequentialGroup()
-                .addGap(9, 9, 9)
-                .addComponent(txtKitapAdi, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(txtYayinEvi, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(KitapAlTarihSecici, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(cbKutuphaneci, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(9, 9, 9))
-            .addGroup(pnlKitapAlmaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane7)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitapAlmaLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane7)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitapAlmaLayout.createSequentialGroup()
-                        .addComponent(btnKitapAl, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(321, 321, 321))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitapAlmaLayout.createSequentialGroup()
+                        .addGap(0, 457, Short.MAX_VALUE)
                         .addComponent(jLabel9)
                         .addGap(18, 18, 18)
-                        .addComponent(txtKitapAlmaArama, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addComponent(txtKitapAlmaArama, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlKitapAlmaLayout.createSequentialGroup()
+                        .addComponent(txtKitapAdi, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(txtYayinEvi, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(KitapAlTarihSecici, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(cbKutuphaneci, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitapAlmaLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnKitapAl, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(312, 312, 312)))
+                .addContainerGap())
         );
         pnlKitapAlmaLayout.setVerticalGroup(
             pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -704,7 +705,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                 .addGroup(pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtKitapAlmaArama, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -717,7 +718,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btnKitapAl, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(KitapAlTarihSecici, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGap(18, 18, 18))
         );
 
         tabKutuphane.addTab("Kitap Alma", pnlKitapAlma);
@@ -747,12 +748,15 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         pnlAldigimKitaplar.setLayout(pnlAldigimKitaplarLayout);
         pnlAldigimKitaplarLayout.setHorizontalGroup(
             pnlAldigimKitaplarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlAldigimKitaplarLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel8)
-                .addGap(18, 18, 18)
-                .addComponent(txtAldigimKitaplarArama, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(pnlAldigimKitaplarLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlAldigimKitaplarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlAldigimKitaplarLayout.createSequentialGroup()
+                        .addGap(0, 457, Short.MAX_VALUE)
+                        .addComponent(jLabel8)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtAldigimKitaplarArama, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane11))
                 .addContainerGap())
         );
         pnlAldigimKitaplarLayout.setVerticalGroup(
@@ -762,9 +766,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                 .addGroup(pnlAldigimKitaplarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtAldigimKitaplarArama, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(8, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         tabKutuphane.addTab("Aldığım Kitaplar", pnlAldigimKitaplar);
@@ -818,6 +822,8 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
         getContentPane().add(pnlSettings, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 600));
 
+        tabArsiv.setToolTipText("");
+
         tblBelgeIste.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -861,38 +867,54 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             }
         });
 
+        jLabel10.setText("Tabloda Arama Yapın :");
+
+        txtBelgeIsteArama.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                txtBelgeIsteAramaPropertyChange(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlBelgeIsteLayout = new javax.swing.GroupLayout(pnlBelgeIste);
         pnlBelgeIste.setLayout(pnlBelgeIsteLayout);
         pnlBelgeIsteLayout.setHorizontalGroup(
             pnlBelgeIsteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane9)
             .addGroup(pnlBelgeIsteLayout.createSequentialGroup()
                 .addGroup(pnlBelgeIsteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlBelgeIsteLayout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addComponent(txtBelgeAdi, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlBelgeIsteLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel10)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtBelgeIsteArama, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 794, Short.MAX_VALUE)
+                    .addGroup(pnlBelgeIsteLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(pnlBelgeIsteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtBelgeAdi, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtBelgeKodu, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtYayinlayanAdi, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(18, 18, 18)
-                .addGroup(pnlBelgeIsteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlBelgeIsteLayout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addGap(0, 63, Short.MAX_VALUE))
-                    .addComponent(jScrollPane10))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(pnlBelgeIsteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(cbBelgeKutuphaneci, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnBelgeIste, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
-                .addGap(18, 18, 18))
+                            .addComponent(txtYayinlayanAdi, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlBelgeIsteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlBelgeIsteLayout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addGap(0, 91, Short.MAX_VALUE))
+                            .addComponent(jScrollPane10))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(pnlBelgeIsteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(cbBelgeKutuphaneci, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnBelgeIste, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
         );
         pnlBelgeIsteLayout.setVerticalGroup(
             pnlBelgeIsteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlBelgeIsteLayout.createSequentialGroup()
-                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addContainerGap()
+                .addGroup(pnlBelgeIsteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtBelgeIsteArama, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlBelgeIsteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(pnlBelgeIsteLayout.createSequentialGroup()
                         .addComponent(txtBelgeAdi, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -908,8 +930,8 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                                 .addComponent(cbBelgeKutuphaneci, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btnBelgeIste, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane10))))
-                .addContainerGap())
+                            .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(18, 18, 18))
         );
 
         tabArsiv.addTab("Belge İste", pnlBelgeIste);
@@ -939,23 +961,44 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             }
         });
 
+        jLabel11.setText("Tabloda Arama Yapın :");
+
+        txtBelgelerimArama.setToolTipText("Tablodaki Herhangi Bir Veriyi Arayabilirsiniz");
+        txtBelgelerimArama.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                txtBelgelerimAramaPropertyChange(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlBelgelerimLayout = new javax.swing.GroupLayout(pnlBelgelerim);
         pnlBelgelerim.setLayout(pnlBelgelerimLayout);
         pnlBelgelerimLayout.setHorizontalGroup(
             pnlBelgelerimLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
-            .addGroup(pnlBelgelerimLayout.createSequentialGroup()
-                .addGap(343, 343, 343)
-                .addComponent(btnPDFAc, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlBelgelerimLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnlBelgelerimLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlBelgelerimLayout.createSequentialGroup()
+                        .addComponent(btnPDFAc, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(301, 301, 301))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlBelgelerimLayout.createSequentialGroup()
+                        .addComponent(jLabel11)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtBelgelerimArama, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         pnlBelgelerimLayout.setVerticalGroup(
             pnlBelgelerimLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlBelgelerimLayout.createSequentialGroup()
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
+                .addContainerGap()
+                .addGroup(pnlBelgelerimLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtBelgelerimArama, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(btnPDFAc, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 29, Short.MAX_VALUE))
+                .addGap(20, 20, 20))
         );
 
         tabArsiv.addTab("Belgelerim", pnlBelgelerim);
@@ -1492,7 +1535,57 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             }
 
         });
+        
+        txtBelgelerimArama.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                ArsivBelgelerimTabloVerileri();
+                search(tblBelgelerim, txtBelgelerimArama);
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                ArsivBelgelerimTabloVerileri();
+                search(tblBelgelerim, txtBelgelerimArama);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                ArsivBelgelerimTabloVerileri();
+                search(tblBelgelerim, txtBelgelerimArama);
+            }
+
+        });
+        
+        txtBelgeIsteArama.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                ArsivBelgeIsteTabloVerileri();
+                search(tblBelgeIste, txtBelgeIsteArama);
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                ArsivBelgeIsteTabloVerileri();
+                search(tblBelgeIste, txtBelgeIsteArama);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                ArsivBelgeIsteTabloVerileri();
+                search(tblBelgeIste, txtBelgeIsteArama);
+            }
+
+        });
     }//GEN-LAST:event_formWindowActivated
+
+    private void txtBelgeIsteAramaPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtBelgeIsteAramaPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBelgeIsteAramaPropertyChange
+
+    private void txtBelgelerimAramaPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtBelgelerimAramaPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBelgelerimAramaPropertyChange
 
     public void TemaRengi() {
         if (tema == 0) {
@@ -1815,6 +1908,8 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cbSaat;
     private com.toedter.calendar.JDateChooser jDateChooser2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1863,7 +1958,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     private javax.swing.JTable tblRetRandevu;
     private javax.swing.JTextField txtAldigimKitaplarArama;
     private javax.swing.JTextField txtBelgeAdi;
+    private javax.swing.JTextField txtBelgeIsteArama;
     private javax.swing.JTextField txtBelgeKodu;
+    private javax.swing.JTextField txtBelgelerimArama;
     private javax.swing.JTextArea txtIstemeSebebi;
     private javax.swing.JTextField txtKitapAdi;
     private javax.swing.JTextField txtKitapAlmaArama;
