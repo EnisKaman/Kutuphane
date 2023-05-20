@@ -46,8 +46,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javaswingdev.chart.ModelPieChart;
@@ -61,6 +63,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -356,6 +360,47 @@ public class AdminArayuzu extends javax.swing.JFrame {
         KitapOnayTabloVerileri();
     }
 
+    public void search() {
+        String searchText = txtKitapArama.getText().toLowerCase();
+        List<Integer> matchingRows = new ArrayList<>();
+
+        // Tabloyu dolaşarak arama yap
+        for (int row = 0; row < tblKitaplar.getRowCount(); row++) {
+            for (int col = 0; col < tblKitaplar.getColumnCount(); col++) {
+                String cellText = tblKitaplar.getValueAt(row, col).toString().toLowerCase();
+                if (cellText.contains(searchText)) {
+                    matchingRows.add(row);
+                    break; // Sütun içinde eşleşme bulunduğunda döngüyü sonlandır
+                }
+            }
+        }
+
+        // Aranan sonuçları vurgula
+        tblKitaplar.clearSelection();
+        for (int matchedRow : matchingRows) {
+            tblKitaplar.addRowSelectionInterval(matchedRow, matchedRow);
+
+        }
+
+        int rowCount = tblKitaplar.getRowCount();
+        int[] selectedRows = tblKitaplar.getSelectedRows();
+
+        for (int i = rowCount - 1; i >= 0; i--) {
+            if (!isSelected(i, selectedRows)) {
+                ((DefaultTableModel) tblKitaplar.getModel()).removeRow(i);
+            }
+        }
+    }
+
+    private boolean isSelected(int row, int[] selectedRows) {
+        for (int selectedRow : selectedRows) {
+            if (row == selectedRow) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public AdminArayuzu() {
         initComponents();
     }
@@ -419,7 +464,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         pnlKitaplar = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblKitaplar = new javax.swing.JTable();
-        jTextField1 = new javax.swing.JTextField();
+        txtKitapArama = new javax.swing.JTextField();
         btnKitapAra = new javax.swing.JButton();
         pnlSettings = new javax.swing.JPanel();
         pnlSettingsKapat = new javax.swing.JLabel();
@@ -712,7 +757,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         pnlKitapOnaylama.setLayout(pnlKitapOnaylamaLayout);
         pnlKitapOnaylamaLayout.setHorizontalGroup(
             pnlKitapOnaylamaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+            .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 868, Short.MAX_VALUE)
             .addGroup(pnlKitapOnaylamaLayout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addGroup(pnlKitapOnaylamaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -757,7 +802,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                                 .addComponent(txtToplamKitap, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(txtEnvanterdeKalan, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnKitapReddet, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 49, Short.MAX_VALUE))
+                        .addGap(0, 74, Short.MAX_VALUE))
                     .addGroup(pnlKitapOnaylamaLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane7)
@@ -777,6 +822,12 @@ public class AdminArayuzu extends javax.swing.JFrame {
         tblKitaplar.setToolTipText("");
         jScrollPane2.setViewportView(tblKitaplar);
 
+        txtKitapArama.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                txtKitapAramaPropertyChange(evt);
+            }
+        });
+
         btnKitapAra.setText("Ara");
 
         javax.swing.GroupLayout pnlKitaplarLayout = new javax.swing.GroupLayout(pnlKitaplar);
@@ -786,10 +837,10 @@ public class AdminArayuzu extends javax.swing.JFrame {
             .addGroup(pnlKitaplarLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlKitaplarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 776, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 856, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitaplarLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtKitapArama, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnKitapAra, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -799,7 +850,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitaplarLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(pnlKitaplarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtKitapArama, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnKitapAra, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1683,7 +1734,26 @@ public class AdminArayuzu extends javax.swing.JFrame {
     }//GEN-LAST:event_lblSettingsMouseClicked
 ///////////////////////////////////////////////// Ayarlar Açma Bitiş /////////////////////////////////////////////////    
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        txtKitapArama.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                KitaplarTabloVerileri();
+                search();
+            }
 
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                KitaplarTabloVerileri();
+                search();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                KitaplarTabloVerileri();
+                search();
+            }
+
+        });
     }//GEN-LAST:event_formWindowActivated
 ///////////////////////////////////////////////// Şeçilen Rengi Veritabanına Kaydetme Başlangıç /////////////////////////////////////////////////        
     private void btnSettingsKaydetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingsKaydetActionPerformed
@@ -2283,14 +2353,14 @@ public class AdminArayuzu extends javax.swing.JFrame {
             //chooser.setFileFilter(filter);
             int sonuc = chooser.showOpenDialog(null);
             if (sonuc == JFileChooser.APPROVE_OPTION) {
-                taranacakbelge = chooser.getSelectedFile();              
+                taranacakbelge = chooser.getSelectedFile();
                 taranacakbelgeyolu = taranacakbelge.getAbsolutePath();
                 System.out.println(taranacakbelgeyolu);
                 //lblBelgeNushasiAdi.setText("Belge Seçildi !");
                 //lblBelgeNushasiAdi.setForeground(Renkler(4));
             }
         }
-        
+
         Tesseract tesseract = new Tesseract();
         try {
             tesseract.setLanguage("tur");
@@ -2301,6 +2371,10 @@ public class AdminArayuzu extends javax.swing.JFrame {
             System.err.println(e.getMessage());
         }
     }//GEN-LAST:event_btnTaranacakBelgeActionPerformed
+
+    private void txtKitapAramaPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtKitapAramaPropertyChange
+        search();
+    }//GEN-LAST:event_txtKitapAramaPropertyChange
 
     public static void main(String args[]) {
 
@@ -2340,7 +2414,6 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblArsiv;
     private javax.swing.JLabel lblBelgeAdi;
     private javax.swing.JLabel lblBelgeKodu;
@@ -2401,6 +2474,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JTextField txtEnvanterdeKalan;
     private javax.swing.JTextArea txtIstekSebebi;
     private javax.swing.JTextField txtKitapAdi;
+    private javax.swing.JTextField txtKitapArama;
     private javax.swing.JTextField txtKitapKodu;
     private javax.swing.JTextArea txtKitapReddetmeSebep;
     private javax.swing.JTextArea txtKonu;
