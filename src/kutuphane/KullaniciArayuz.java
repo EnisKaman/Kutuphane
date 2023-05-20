@@ -65,6 +65,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 public class KullaniciArayuz extends javax.swing.JFrame {
 
@@ -82,6 +84,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     int belgekodu = 0;
     String arayuzdurumu = "kutuphane";
     List<byte[]> resimler = new ArrayList<>();
+    
+    
+    
 
     public void KitaplarTabloVerileri() {
         try {
@@ -111,8 +116,11 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             }
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
             centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            TableRowSorter shorter = new TableRowSorter(model);
+            tblKitapAl.setRowSorter(shorter);
             tblKitapAl.setDefaultRenderer(Object.class, centerRenderer);
             tblKitapAl.setModel(model);
+            
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -144,8 +152,11 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             }
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
             centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            TableRowSorter shorter = new TableRowSorter(model);
+            tblAldigimKitaplar.setRowSorter(shorter);
             tblAldigimKitaplar.setDefaultRenderer(Object.class, centerRenderer);
             tblAldigimKitaplar.setModel(model);
+            
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -179,8 +190,11 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
             centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            TableRowSorter shorter = new TableRowSorter(model);
+            tblBelgelerim.setRowSorter(shorter);
             tblBelgelerim.setDefaultRenderer(Object.class, centerRenderer);
             tblBelgelerim.setModel(model);
+            
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -211,8 +225,11 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
             centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            TableRowSorter shorter = new TableRowSorter(model);
+            tblBelgeIste.setRowSorter(shorter);
             tblBelgeIste.setDefaultRenderer(Object.class, centerRenderer);
             tblBelgeIste.setModel(model);
+            
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -249,6 +266,8 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             }
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
             centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            TableRowSorter shorter = new TableRowSorter(model);
+            tblBekleyenRandevu.setRowSorter(shorter);
             tblBekleyenRandevu.setDefaultRenderer(Object.class, centerRenderer);
             tblBekleyenRandevu.setModel(model);
 
@@ -288,6 +307,8 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             }
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
             centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            TableRowSorter shorter = new TableRowSorter(model);
+            tblKabulRandevu.setRowSorter(shorter);
             tblKabulRandevu.setDefaultRenderer(Object.class, centerRenderer);
             tblKabulRandevu.setModel(model);
 
@@ -329,6 +350,8 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             }
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
             centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            TableRowSorter shorter = new TableRowSorter(model);
+            tblRetRandevu.setRowSorter(shorter);
             tblRetRandevu.setDefaultRenderer(Object.class, centerRenderer);
             tblRetRandevu.setModel(model);
 
@@ -431,7 +454,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         });
     }
 
-  public void search(JTable table, JTextField textField) {
+    public void search(JTable table, JTextField textField) {
         String searchText = textField.getText().toLowerCase();
         List<Integer> matchingRows = new ArrayList<>();
 
@@ -470,7 +493,6 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         }
         return false;
     }
-
 
     private static void kaydet(List<byte[]> resimler, String hedefDizin) throws IOException {
         for (int i = 0; i < resimler.size(); i++) {
@@ -1514,7 +1536,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             }
 
         });
-        
+
         txtKitapAlmaArama.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent e) {
@@ -1535,7 +1557,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             }
 
         });
-        
+
         txtBelgelerimArama.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent e) {
@@ -1556,7 +1578,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             }
 
         });
-        
+
         txtBelgeIsteArama.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent e) {

@@ -47,6 +47,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -71,6 +73,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableRowSorter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
@@ -104,6 +107,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     String tarananbelgesonuclari;
     String taranacakbelgeyolu;
     File taranacakbelge;
+    
 
     public void KitaplarTabloVerileri() {
         try {
@@ -131,6 +135,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
             }
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
             centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            TableRowSorter shorter = new TableRowSorter(model);
+            tblKitaplar.setRowSorter(shorter);
             tblKitaplar.setDefaultRenderer(Object.class, centerRenderer);
             tblKitaplar.setModel(model);
         } catch (SQLException ex) {
@@ -174,6 +180,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
             }
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
             centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            TableRowSorter shorter = new TableRowSorter(model);
+            tblKitapOnay.setRowSorter(shorter);
             tblKitapOnay.setDefaultRenderer(Object.class, centerRenderer);
             tblKitapOnay.setModel(model);
         } catch (SQLException ex) {
@@ -208,6 +216,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
 
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
             centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            TableRowSorter shorter = new TableRowSorter(model);
+            tblBelgeler.setRowSorter(shorter);
             tblBelgeler.setDefaultRenderer(Object.class, centerRenderer);
             tblBelgeler.setModel(model);
         } catch (SQLException ex) {
@@ -245,6 +255,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
             }
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
             centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            TableRowSorter shorter = new TableRowSorter(model);
+            tblBelgeOnaylama.setRowSorter(shorter);
             tblBelgeOnaylama.setDefaultRenderer(Object.class, centerRenderer);
             tblBelgeOnaylama.setModel(model);
         } catch (SQLException ex) {
@@ -282,6 +294,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
             }
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
             centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            TableRowSorter shorter = new TableRowSorter(model2);
+            tblRandevular.setRowSorter(shorter);
             tblRandevular.setDefaultRenderer(Object.class, centerRenderer);
             tblRandevular.setModel(model2);
 
@@ -400,6 +414,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
         return false;
     }
 
+    
+    
     public AdminArayuzu() {
         initComponents();
     }
