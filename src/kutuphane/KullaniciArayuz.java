@@ -58,7 +58,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -427,61 +431,46 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         });
     }
 
-    public static JPanel createPanel() {
+  public void search(JTable table, JTextField textField) {
+        String searchText = textField.getText().toLowerCase();
+        List<Integer> matchingRows = new ArrayList<>();
 
-        JPanel panel = new JPanel();
-        panel.setPreferredSize(new Dimension(240, 100));
-        panel.setBackground(Color.LIGHT_GRAY);
-        // Panelin içeriğini düzenlemek için gerekli kodu buraya ekleyin
-        return panel;
-    }
-
-    public void RafEkleme() {
-        try {
-            int toplamkitap = 0;
-            ArrayList<JPanel> panels = new ArrayList<>();
-
-            String sqlkitapsayisi = "SELECT  COUNT(DISTINCT kitap_adi) FROM public.kitaplik;";
-            pst = conn.prepareStatement(sqlkitapsayisi);
-            rs = pst.executeQuery();
-            if (rs.next()) {
-                toplamkitap = rs.getInt(1);
-                System.out.println(toplamkitap);
+        // Tabloyu dolaşarak arama yap
+        for (int row = 0; row < table.getRowCount(); row++) {
+            for (int col = 0; col < table.getColumnCount(); col++) {
+                String cellText = table.getValueAt(row, col).toString().toLowerCase();
+                if (cellText.contains(searchText)) {
+                    matchingRows.add(row);
+                    break; // Sütun içinde eşleşme bulunduğunda döngüyü sonlandır
+                }
             }
+        }
 
-            String sqlresimadi = "SELECT DISTINCT kitap_adi FROM public.kitaplik WHERE kitap_kodu = ?";
-            pst = conn.prepareStatement(sqlresimadi);
-            pst.setInt(1, 123017);
-            rs = pst.executeQuery();
-            while (rs.next()) {
-                String kitapadi = rs.getString("kitap_adi");
-                
-                String hedefDizin = "C:\\Users\\ekmn2\\OneDrive\\Belgeler\\New Folder\\Kutuphane\\pic\\" + kitapadi + ".jpg";
-                BufferedImage image = null;
-                image = ImageIO.read(new File(hedefDizin));
-                
+        // Aranan sonuçları vurgula
+        table.clearSelection();
+        for (int matchedRow : matchingRows) {
+            table.addRowSelectionInterval(matchedRow, matchedRow);
+        }
 
-                ImageIcon icon = new ImageIcon(image);
-                JLabel label = new JLabel(icon);
-                
-                JPanel panel = createPanel(); // Yeni bir panel oluştur
-                panel.add(label);
-                panels.add(panel); // Paneli listeye ekle
-                pnlRaf.add(panel); // Ana panele ekle
+        int rowCount = table.getRowCount();
+        int[] selectedRows = table.getSelectedRows();
+
+        for (int i = rowCount - 1; i >= 0; i--) {
+            if (!isSelected(i, selectedRows)) {
+                ((DefaultTableModel) table.getModel()).removeRow(i);
             }
-
-            for (int i = 0; i < toplamkitap; i++) {
-                JPanel panel = createPanel(); // Yeni bir panel oluştur
-                panels.add(panel); // Paneli listeye ekle
-                pnlRaf.add(panel); // Ana panele ekle
-            }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    private boolean isSelected(int row, int[] selectedRows) {
+        for (int selectedRow : selectedRows) {
+            if (row == selectedRow) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     private static void kaydet(List<byte[]> resimler, String hedefDizin) throws IOException {
         for (int i = 0; i < resimler.size(); i++) {
@@ -507,7 +496,6 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         this.tema = tema;
         initComponents();
         pnlSettings.setVisible(false);
-        spRaf.getVerticalScrollBar().setUnitIncrement(50);
         AdminCekme();
         BekleyenRandevuTabloVerileri();
         KabulRandevuTabloVerileri();
@@ -516,7 +504,6 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         ArsivBelgelerimTabloVerileri();
         ArsivBelgeIsteTabloVerileri();
         AldigimKitaplarTabloVerileri();
-        RafEkleme();
     }
 
     @SuppressWarnings("unchecked")
@@ -535,12 +522,13 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         KitapAlTarihSecici = new com.toedter.calendar.JDateChooser();
         cbKutuphaneci = new javax.swing.JComboBox<>();
         btnKitapAl = new javax.swing.JButton();
+        txtKitapAlmaArama = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
         pnlAldigimKitaplar = new javax.swing.JPanel();
         jScrollPane11 = new javax.swing.JScrollPane();
         tblAldigimKitaplar = new javax.swing.JTable();
-        pnlKitapRaflari = new javax.swing.JPanel();
-        spRaf = new javax.swing.JScrollPane();
-        pnlRaf = new javax.swing.JPanel();
+        txtAldigimKitaplarArama = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
         lblSettings = new javax.swing.JLabel();
         pnlSettings = new javax.swing.JPanel();
         pnlSettingsKapat = new javax.swing.JLabel();
@@ -594,6 +582,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setSize(new java.awt.Dimension(800, 600));
         addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
             }
@@ -668,40 +659,65 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             }
         });
 
+        txtKitapAlmaArama.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                txtKitapAlmaAramaPropertyChange(evt);
+            }
+        });
+
+        jLabel9.setText("Tabloda Arama Yapın");
+
         javax.swing.GroupLayout pnlKitapAlmaLayout = new javax.swing.GroupLayout(pnlKitapAlma);
         pnlKitapAlma.setLayout(pnlKitapAlmaLayout);
         pnlKitapAlmaLayout.setHorizontalGroup(
             pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlKitapAlmaLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(9, 9, 9)
                 .addComponent(txtKitapAdi, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(txtYayinEvi, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addGap(12, 12, 12)
+                .addComponent(txtYayinEvi, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(KitapAlTarihSecici, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(cbKutuphaneci, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(9, 9, 9))
+            .addGroup(pnlKitapAlmaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane7)
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitapAlmaLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnKitapAl, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(323, 323, 323))
-            .addComponent(jScrollPane7)
+                .addGroup(pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitapAlmaLayout.createSequentialGroup()
+                        .addComponent(btnKitapAl, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(321, 321, 321))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitapAlmaLayout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtKitapAlmaArama, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         pnlKitapAlmaLayout.setVerticalGroup(
             pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlKitapAlmaLayout.createSequentialGroup()
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
-                .addGroup(pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(KitapAlTarihSecici, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cbKutuphaneci)
-                    .addGroup(pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtKitapAdi, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtYayinEvi, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(32, 32, 32)
-                .addComponent(btnKitapAl, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 27, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtKitapAlmaArama, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlKitapAlmaLayout.createSequentialGroup()
+                        .addGroup(pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(txtYayinEvi, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtKitapAdi, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(cbKutuphaneci, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnKitapAl, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(KitapAlTarihSecici, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         tabKutuphane.addTab("Kitap Alma", pnlKitapAlma);
@@ -719,39 +735,39 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         ));
         jScrollPane11.setViewportView(tblAldigimKitaplar);
 
+        txtAldigimKitaplarArama.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                txtAldigimKitaplarAramaPropertyChange(evt);
+            }
+        });
+
+        jLabel8.setText("Tabloda Arama Yapın");
+
         javax.swing.GroupLayout pnlAldigimKitaplarLayout = new javax.swing.GroupLayout(pnlAldigimKitaplar);
         pnlAldigimKitaplar.setLayout(pnlAldigimKitaplarLayout);
         pnlAldigimKitaplarLayout.setHorizontalGroup(
             pnlAldigimKitaplarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlAldigimKitaplarLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel8)
+                .addGap(18, 18, 18)
+                .addComponent(txtAldigimKitaplarArama, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         pnlAldigimKitaplarLayout.setVerticalGroup(
             pnlAldigimKitaplarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlAldigimKitaplarLayout.createSequentialGroup()
-                .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 89, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlAldigimKitaplarLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlAldigimKitaplarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtAldigimKitaplarArama, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(8, Short.MAX_VALUE))
         );
 
         tabKutuphane.addTab("Aldığım Kitaplar", pnlAldigimKitaplar);
-
-        pnlRaf.setMaximumSize(new java.awt.Dimension(798, 487));
-        pnlRaf.setLayout(new java.awt.GridLayout(2, 0, 30, 30));
-        spRaf.setViewportView(pnlRaf);
-
-        javax.swing.GroupLayout pnlKitapRaflariLayout = new javax.swing.GroupLayout(pnlKitapRaflari);
-        pnlKitapRaflari.setLayout(pnlKitapRaflariLayout);
-        pnlKitapRaflariLayout.setHorizontalGroup(
-            pnlKitapRaflariLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(spRaf)
-        );
-        pnlKitapRaflariLayout.setVerticalGroup(
-            pnlKitapRaflariLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(spRaf)
-        );
-
-        spRaf.getVerticalScrollBar().setUnitIncrement(50);
-
-        tabKutuphane.addTab("Kitap Rafları", pnlKitapRaflari);
 
         getContentPane().add(tabKutuphane, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 800, 520));
 
@@ -1426,6 +1442,58 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnBelgeIsteActionPerformed
 
+    private void txtAldigimKitaplarAramaPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtAldigimKitaplarAramaPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtAldigimKitaplarAramaPropertyChange
+
+    private void txtKitapAlmaAramaPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtKitapAlmaAramaPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtKitapAlmaAramaPropertyChange
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        txtAldigimKitaplarArama.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                AldigimKitaplarTabloVerileri();
+                search(tblAldigimKitaplar, txtAldigimKitaplarArama);
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                AldigimKitaplarTabloVerileri();
+                search(tblAldigimKitaplar, txtAldigimKitaplarArama);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                AldigimKitaplarTabloVerileri();
+                search(tblAldigimKitaplar, txtAldigimKitaplarArama);
+            }
+
+        });
+        
+        txtKitapAlmaArama.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                KitaplarTabloVerileri();
+                search(tblKitapAl, txtKitapAlmaArama);
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                KitaplarTabloVerileri();
+                search(tblKitapAl, txtKitapAlmaArama);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                KitaplarTabloVerileri();
+                search(tblKitapAl, txtKitapAlmaArama);
+            }
+
+        });
+    }//GEN-LAST:event_formWindowActivated
+
     public void TemaRengi() {
         if (tema == 0) {
             EventQueue.invokeLater(new Runnable() {
@@ -1753,6 +1821,8 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane11;
@@ -1776,14 +1846,11 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     private javax.swing.JPanel pnlBelgelerim;
     private javax.swing.JPanel pnlKabulEdilenRandevu;
     private javax.swing.JPanel pnlKitapAlma;
-    private javax.swing.JPanel pnlKitapRaflari;
-    private javax.swing.JPanel pnlRaf;
     private javax.swing.JPanel pnlRandevu;
     private javax.swing.JPanel pnlRandevuAl;
     private javax.swing.JPanel pnlReddedilenRandevu;
     private javax.swing.JPanel pnlSettings;
     private javax.swing.JLabel pnlSettingsKapat;
-    public javax.swing.JScrollPane spRaf;
     private javax.swing.JTabbedPane tabArsiv;
     private javax.swing.JTabbedPane tabDiger;
     private javax.swing.JTabbedPane tabKutuphane;
@@ -1794,10 +1861,12 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     private javax.swing.JTable tblKabulRandevu;
     private javax.swing.JTable tblKitapAl;
     private javax.swing.JTable tblRetRandevu;
+    private javax.swing.JTextField txtAldigimKitaplarArama;
     private javax.swing.JTextField txtBelgeAdi;
     private javax.swing.JTextField txtBelgeKodu;
     private javax.swing.JTextArea txtIstemeSebebi;
     private javax.swing.JTextField txtKitapAdi;
+    private javax.swing.JTextField txtKitapAlmaArama;
     private javax.swing.JTextArea txtRandevuAlKonu;
     private javax.swing.JTextArea txtRetSebep;
     private javax.swing.JTextField txtYayinEvi;

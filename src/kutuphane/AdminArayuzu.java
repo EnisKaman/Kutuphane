@@ -360,14 +360,14 @@ public class AdminArayuzu extends javax.swing.JFrame {
         KitapOnayTabloVerileri();
     }
 
-    public void search() {
-        String searchText = txtKitapArama.getText().toLowerCase();
+    public void search(JTable table, JTextField textField) {
+        String searchText = textField.getText().toLowerCase();
         List<Integer> matchingRows = new ArrayList<>();
 
         // Tabloyu dolaşarak arama yap
-        for (int row = 0; row < tblKitaplar.getRowCount(); row++) {
-            for (int col = 0; col < tblKitaplar.getColumnCount(); col++) {
-                String cellText = tblKitaplar.getValueAt(row, col).toString().toLowerCase();
+        for (int row = 0; row < table.getRowCount(); row++) {
+            for (int col = 0; col < table.getColumnCount(); col++) {
+                String cellText = table.getValueAt(row, col).toString().toLowerCase();
                 if (cellText.contains(searchText)) {
                     matchingRows.add(row);
                     break; // Sütun içinde eşleşme bulunduğunda döngüyü sonlandır
@@ -376,18 +376,17 @@ public class AdminArayuzu extends javax.swing.JFrame {
         }
 
         // Aranan sonuçları vurgula
-        tblKitaplar.clearSelection();
+        table.clearSelection();
         for (int matchedRow : matchingRows) {
-            tblKitaplar.addRowSelectionInterval(matchedRow, matchedRow);
-
+            table.addRowSelectionInterval(matchedRow, matchedRow);
         }
 
-        int rowCount = tblKitaplar.getRowCount();
-        int[] selectedRows = tblKitaplar.getSelectedRows();
+        int rowCount = table.getRowCount();
+        int[] selectedRows = table.getSelectedRows();
 
         for (int i = rowCount - 1; i >= 0; i--) {
             if (!isSelected(i, selectedRows)) {
-                ((DefaultTableModel) tblKitaplar.getModel()).removeRow(i);
+                ((DefaultTableModel) table.getModel()).removeRow(i);
             }
         }
     }
@@ -465,7 +464,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         tblKitaplar = new javax.swing.JTable();
         txtKitapArama = new javax.swing.JTextField();
-        btnKitapAra = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
         pnlSettings = new javax.swing.JPanel();
         pnlSettingsKapat = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -533,6 +532,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
         pnlBelgeler = new javax.swing.JPanel();
         jScrollPane9 = new javax.swing.JScrollPane();
         tblBelgeler = new javax.swing.JTable();
+        jLabel7 = new javax.swing.JLabel();
+        txtBelgeArama = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(800, 600));
@@ -757,7 +758,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         pnlKitapOnaylama.setLayout(pnlKitapOnaylamaLayout);
         pnlKitapOnaylamaLayout.setHorizontalGroup(
             pnlKitapOnaylamaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 868, Short.MAX_VALUE)
+            .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
             .addGroup(pnlKitapOnaylamaLayout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addGroup(pnlKitapOnaylamaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -802,7 +803,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                                 .addComponent(txtToplamKitap, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(txtEnvanterdeKalan, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnKitapReddet, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 74, Short.MAX_VALUE))
+                        .addGap(0, 49, Short.MAX_VALUE))
                     .addGroup(pnlKitapOnaylamaLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane7)
@@ -828,7 +829,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             }
         });
 
-        btnKitapAra.setText("Ara");
+        jLabel6.setText("Tabloda Arama Yapın");
 
         javax.swing.GroupLayout pnlKitaplarLayout = new javax.swing.GroupLayout(pnlKitaplar);
         pnlKitaplar.setLayout(pnlKitaplarLayout);
@@ -837,12 +838,12 @@ public class AdminArayuzu extends javax.swing.JFrame {
             .addGroup(pnlKitaplarLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlKitaplarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 856, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 776, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitaplarLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(txtKitapArama, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel6)
                         .addGap(18, 18, 18)
-                        .addComponent(btnKitapAra, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtKitapArama, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         pnlKitaplarLayout.setVerticalGroup(
@@ -851,8 +852,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(pnlKitaplarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtKitapArama, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnKitapAra, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jLabel6))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -1310,7 +1311,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                                 .addComponent(jScrollPane13, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(btnBelgeEkle, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         tabArsiv.addTab("Belge Ekle", null, pnlBelgeEkle, "Arşive Yeni Belge Eklenir");
@@ -1401,17 +1402,36 @@ public class AdminArayuzu extends javax.swing.JFrame {
         ));
         jScrollPane9.setViewportView(tblBelgeler);
 
+        jLabel7.setText("Tabloda Arama Yapın");
+
+        txtBelgeArama.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                txtBelgeAramaPropertyChange(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlBelgelerLayout = new javax.swing.GroupLayout(pnlBelgeler);
         pnlBelgeler.setLayout(pnlBelgelerLayout);
         pnlBelgelerLayout.setHorizontalGroup(
             pnlBelgelerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlBelgelerLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel7)
+                .addGap(18, 18, 18)
+                .addComponent(txtBelgeArama, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         pnlBelgelerLayout.setVerticalGroup(
             pnlBelgelerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlBelgelerLayout.createSequentialGroup()
-                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 408, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 110, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlBelgelerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlBelgelerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtBelgeArama, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         tabArsiv.addTab("Envanterdeki Belgeler", pnlBelgeler);
@@ -1738,19 +1758,40 @@ public class AdminArayuzu extends javax.swing.JFrame {
             @Override
             public void changedUpdate(DocumentEvent e) {
                 KitaplarTabloVerileri();
-                search();
+                search(tblKitaplar, txtKitapArama);
             }
 
             @Override
             public void insertUpdate(DocumentEvent e) {
                 KitaplarTabloVerileri();
-                search();
+                search(tblKitaplar, txtKitapArama);
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
                 KitaplarTabloVerileri();
-                search();
+                search(tblKitaplar, txtKitapArama);
+            }
+
+        });
+        
+        txtBelgeArama.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                ArsivTabloVerileri();
+                search(tblBelgeler, txtBelgeArama);
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                ArsivTabloVerileri();
+                search(tblBelgeler, txtBelgeArama);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                ArsivTabloVerileri();
+                search(tblBelgeler, txtBelgeArama);
             }
 
         });
@@ -2373,8 +2414,12 @@ public class AdminArayuzu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTaranacakBelgeActionPerformed
 
     private void txtKitapAramaPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtKitapAramaPropertyChange
-        search();
+        
     }//GEN-LAST:event_txtKitapAramaPropertyChange
+
+    private void txtBelgeAramaPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtBelgeAramaPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBelgeAramaPropertyChange
 
     public static void main(String args[]) {
 
@@ -2388,7 +2433,6 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JButton btnGoruntuSec;
     private javax.swing.JButton btnKabul;
     private javax.swing.JButton btnKaydet;
-    private javax.swing.JButton btnKitapAra;
     private javax.swing.JButton btnKitapOnayla;
     private javax.swing.JButton btnKitapReddet;
     private javax.swing.JButton btnRet;
@@ -2401,6 +2445,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane11;
@@ -2465,6 +2511,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JTable tblRandevular;
     private javax.swing.JTree treeBelgeTuru;
     private javax.swing.JTextField txtBelgeAdi;
+    private javax.swing.JTextField txtBelgeArama;
     private javax.swing.JTextField txtBelgeKodu;
     private javax.swing.JTextField txtBelgeOnaylamaBelgeAdi;
     private javax.swing.JTextField txtBelgeOnaylamaBelgeKodu;
