@@ -77,6 +77,9 @@ import javax.swing.table.TableRowSorter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
+import raven.cell.TableActionCellEditor;
+import raven.cell.TableActionCellRender;
+import raven.cell.TableActionEvent;
 
 /**
  *
@@ -107,7 +110,6 @@ public class AdminArayuzu extends javax.swing.JFrame {
     String tarananbelgesonuclari;
     String taranacakbelgeyolu;
     File taranacakbelge;
-    
 
     public void KitaplarTabloVerileri() {
         try {
@@ -139,6 +141,34 @@ public class AdminArayuzu extends javax.swing.JFrame {
             tblKitaplar.setRowSorter(shorter);
             tblKitaplar.setDefaultRenderer(Object.class, centerRenderer);
             tblKitaplar.setModel(model);
+            TableActionEvent event = new TableActionEvent() {
+                @Override
+                public void onEdit(int row) {
+                    System.out.println("Edit row : " + row);
+                    JOptionPane.showMessageDialog(null, "Edit row : " + row);
+                }
+
+                @Override
+                public void onDelete(int row) {
+                    int silinecekkitapkodu = (int) tblKitaplar.getValueAt(row, 0);
+                    String silinecekkitapadi = (String) tblKitaplar.getValueAt(row, 1);
+                    String silinecekkitapyayinevi = (String) tblKitaplar.getValueAt(row, 3);
+
+                    int result = JOptionPane.showConfirmDialog(null, "Kitap Kodu: " + silinecekkitapkodu + "\nKitap Adı: " + silinecekkitapadi + "\nYayın Evi: " + silinecekkitapyayinevi + "\nKitabı Silmek İstediğinizden Emin Misiniz ?");
+                    if (result == JOptionPane.YES_OPTION) {                        
+                        Delete(row, tblBelgeler);
+                    } else if (result == JOptionPane.NO_OPTION) {
+                        JOptionPane.showMessageDialog(null, "Kitabı Silmediniz");
+                    }
+                }
+
+                @Override
+                public void onView(int row) {
+                    JOptionPane.showMessageDialog(null, "View row : " + row);
+                }
+            };
+            tblKitaplar.getColumnModel().getColumn(5).setCellRenderer(new TableActionCellRender());
+            tblKitaplar.getColumnModel().getColumn(5).setCellEditor(new TableActionCellEditor(event));
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -414,8 +444,34 @@ public class AdminArayuzu extends javax.swing.JFrame {
         return false;
     }
 
-    
-    
+    public void Delete(int row, JTable tablo) {
+        try {
+            int silinecekkitapkodu = (int) tablo.getValueAt(row, 0);
+            String silinecekkitapadi = (String) tablo.getValueAt(row, 1);
+            String silinecekkitapyayinevi = (String) tablo.getValueAt(row, 3);
+
+            String sqldelete = "DELETE FROM public.kitaplik WHERE kitap_kodu = ?;";
+            pst = conn.prepareStatement(sqldelete);
+            pst.setInt(1, silinecekkitapkodu);
+            int sonuc = pst.executeUpdate();
+            if (sonuc == 1) {
+                JOptionPane.showMessageDialog(null, "Kitap Silindi");
+            }
+
+            String sqlenvanter = "UPDATE public.kitap_envanter kitap_sayisi=kitap_sayisi - 1, elde_olan=elde_olan - 1 WHERE kitap_adi = ? AND kitap_yayinevi = ?;";
+            pst = conn.prepareStatement(sqlenvanter);
+            pst.setString(1, silinecekkitapadi);
+            pst.setString(2, silinecekkitapyayinevi);
+            int sonuc2 = pst.executeUpdate();
+            if (sonuc2 == 1) {
+                JOptionPane.showMessageDialog(null, "Envanterden 1 azaldı");
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public AdminArayuzu() {
         initComponents();
     }
@@ -837,6 +893,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             }
         ));
         tblKitaplar.setToolTipText("");
+        tblKitaplar.setRowHeight(40);
         jScrollPane2.setViewportView(tblKitaplar);
 
         txtKitapArama.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -869,9 +926,9 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 .addGroup(pnlKitaplarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtKitapArama, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 446, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27))
         );
 
         tabKutuphane.addTab("Kitaplar", null, pnlKitaplar, "Envanterdeki Kitapları Görüntülersiniz");
@@ -926,7 +983,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         );
         pnlUyeIslemleriLayout.setVerticalGroup(
             pnlUyeIslemleriLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 499, Short.MAX_VALUE)
+            .addGap(0, 509, Short.MAX_VALUE)
         );
 
         tabDiger.addTab("Üye İşlemleri", null, pnlUyeIslemleri, "Üyelerin Bilgilerini Güncelleyip Yeni Admin Ekleyebilirsiniz");
@@ -1034,7 +1091,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         );
         pnlDuyurularLayout.setVerticalGroup(
             pnlDuyurularLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 499, Short.MAX_VALUE)
+            .addGap(0, 509, Short.MAX_VALUE)
         );
 
         tabDiger.addTab("Duyurular", null, pnlDuyurular, "Yeni Duyuru Ekleyebilirsiniz");
@@ -1119,7 +1176,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         );
         pnlDashboardLayout.setVerticalGroup(
             pnlDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pieChart1, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
+            .addComponent(pieChart1, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
         );
 
         tabDiger.addTab("Dashboard", null, pnlDashboard, "Sistem Hakkındaki Analiz Oranları Görüntülenir");
@@ -1790,7 +1847,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             }
 
         });
-        
+
         txtBelgeArama.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent e) {
@@ -2430,7 +2487,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTaranacakBelgeActionPerformed
 
     private void txtKitapAramaPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtKitapAramaPropertyChange
-        
+
     }//GEN-LAST:event_txtKitapAramaPropertyChange
 
     private void txtBelgeAramaPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtBelgeAramaPropertyChange

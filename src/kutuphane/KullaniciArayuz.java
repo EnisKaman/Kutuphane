@@ -67,6 +67,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import raven.cell.TableActionCellEditor;
+import raven.cell.TableActionCellRender;
+import raven.cell.TableActionEvent;
 
 public class KullaniciArayuz extends javax.swing.JFrame {
 
@@ -84,9 +87,6 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     int belgekodu = 0;
     String arayuzdurumu = "kutuphane";
     List<byte[]> resimler = new ArrayList<>();
-    
-    
-    
 
     public void KitaplarTabloVerileri() {
         try {
@@ -120,7 +120,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             tblKitapAl.setRowSorter(shorter);
             tblKitapAl.setDefaultRenderer(Object.class, centerRenderer);
             tblKitapAl.setModel(model);
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -156,7 +156,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             tblAldigimKitaplar.setRowSorter(shorter);
             tblAldigimKitaplar.setDefaultRenderer(Object.class, centerRenderer);
             tblAldigimKitaplar.setModel(model);
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -169,7 +169,8 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             pst.setString(1, email);
             rs = pst.executeQuery();
 
-            DefaultTableModel model = new DefaultTableModel();
+            DefaultTableModel model = new DefaultTableModel() ;
+
             model.addColumn("Belge Adı");
             model.addColumn("Yayınlayan Kisi");
             model.addColumn("Belge Kodu");
@@ -184,7 +185,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                 row[2] = rs.getInt("arsiv_istek_kabul_belge_kodu");
                 row[3] = rs.getInt("arsiv_istek_kabul_yayin_yili");
                 row[4] = rs.getString("belge_turu");
-                row[5] = "Gör";
+                row[5] = null;
                 model.addRow(row);
             }
 
@@ -192,9 +193,29 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             centerRenderer.setHorizontalAlignment(JLabel.CENTER);
             TableRowSorter shorter = new TableRowSorter(model);
             tblBelgelerim.setRowSorter(shorter);
-            tblBelgelerim.setDefaultRenderer(Object.class, centerRenderer);
             tblBelgelerim.setModel(model);
+            tblBelgelerim.setDefaultRenderer(Object.class, centerRenderer);
+            TableActionEvent event = new TableActionEvent() {
+                @Override
+                public void onEdit(int row) {
+                    System.out.println("Edit row : " + row);
+                }
+
+                @Override
+                public void onDelete(int row) {
+                    
+                    System.out.println("Delete row : " + row);
+                }
+
+                @Override
+                public void onView(int row) {
+                    System.out.println("View row : " + row);
+                }
+            };
+            tblBelgelerim.getColumnModel().getColumn(5).setCellRenderer(new TableActionCellRender());
+            tblBelgelerim.getColumnModel().getColumn(5).setCellEditor(new TableActionCellEditor(event));
             
+
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -229,7 +250,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             tblBelgeIste.setRowSorter(shorter);
             tblBelgeIste.setDefaultRenderer(Object.class, centerRenderer);
             tblBelgeIste.setModel(model);
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -969,6 +990,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblBelgelerim.setRowHeight(40);
         tblBelgelerim.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblBelgelerimMouseClicked(evt);
