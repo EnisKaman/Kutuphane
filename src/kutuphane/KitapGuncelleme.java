@@ -3,23 +3,47 @@ package kutuphane;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileSystemView;
 
 public class KitapGuncelleme extends javax.swing.JFrame {
 
+    Connection conn = new Baglanti().getConnection();
+    ResultSet rs = null;
+    CallableStatement proc = null;
+    PreparedStatement pst = null;
     byte[] imagedata = null;
+    static int kitapid;
+    boolean goruntudurum = false;
+    String dosyayolu = null;
+    String dosyaadi = null;
+    File dosya;
+    FileInputStream fis;
+    AdminArayuzu adm;
 
     public KitapGuncelleme() {
         initComponents();
     }
 
-    public KitapGuncelleme(int kitapkodu, String kitapadi, String yazaradi, String yayinevi, String kitapturu, byte[] imagedata) {
+    public KitapGuncelleme(int kitapid, int kitapkodu, String kitapadi, String yazaradi, String yayinevi, String kitapturu, byte[] imagedata, AdminArayuzu adm) {
         initComponents();
+        this.adm = adm;
+        this.kitapid = kitapid;
         txtKitapKodu.setText(String.valueOf(kitapkodu));
         txtKitapAdi.setText(kitapadi);
         txtYazarAdSoyad.setText(yazaradi);
@@ -33,7 +57,7 @@ public class KitapGuncelleme extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(ResimKoyma.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         ImageIcon icon = new ImageIcon(image);
         Image resim = icon.getImage().getScaledInstance(pnlResim.getWidth(), pnlResim.getHeight(), Image.SCALE_SMOOTH);
         ImageIcon boyutlanmisresim = new ImageIcon(resim);
@@ -62,6 +86,11 @@ public class KitapGuncelleme extends javax.swing.JFrame {
         btnKaydet = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblYazarAdSoyad.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
@@ -114,15 +143,12 @@ public class KitapGuncelleme extends javax.swing.JFrame {
             .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
-                        .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblKitapAdi)
-                            .addComponent(lblKitapKodu)
-                            .addComponent(lblYayinEvi)
-                            .addComponent(lblKitapTuru)
-                            .addComponent(lblKitapResmi)))
-                    .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
-                        .addComponent(lblYazarAdSoyad)))
+                    .addComponent(lblKitapAdi)
+                    .addComponent(lblKitapKodu)
+                    .addComponent(lblYayinEvi)
+                    .addComponent(lblKitapTuru)
+                    .addComponent(lblKitapResmi)
+                    .addComponent(lblYazarAdSoyad))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
                 .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
@@ -183,16 +209,55 @@ public class KitapGuncelleme extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGoruntuSecActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoruntuSecActionPerformed
-
+        JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        chooser.showOpenDialog(null);
+        dosya = chooser.getSelectedFile();
+        String eskidosyaadi = dosya.getAbsolutePath();
+        dosyaadi = eskidosyaadi.replace("\\", "\\\\");
+        ImageIcon resim = new ImageIcon(dosyaadi);
+        Image image = resim.getImage().getScaledInstance(pnlResim.getWidth(), pnlResim.getHeight(), Image.SCALE_SMOOTH);
+        ImageIcon boyutlanmisresim = new ImageIcon(image);
+        lblResim.setIcon(boyutlanmisresim);
+        goruntudurum = true;
     }//GEN-LAST:event_btnGoruntuSecActionPerformed
 
     private void btnKaydetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKaydetActionPerformed
+        try {
+            
+            String sql = "UPDATE public.kitaplik SET kitap_kodu=?, kitap_adi=?, kitap_resim=?, yazar_adsoyad=?, yayin_evi=?, kitap_turu=? WHERE kitap_id = ?;";
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1, Integer.parseInt(txtKitapKodu.getText()));
+            pst.setString(2, txtKitapAdi.getText());
+            if (goruntudurum == false) {
+                pst.setBytes(3, imagedata);
+            } else if (goruntudurum == true) {
+                fis = new FileInputStream(dosya);
+                pst.setBinaryStream(3, fis, dosya.length());
+            }
+            pst.setString(4, txtYazarAdSoyad.getText());
+            pst.setString(5, txtYayinEvi.getText());
+            pst.setString(6, cbKitapTuru.getSelectedItem().toString());
+            pst.setInt(7, kitapid);
+            int sonuc = pst.executeUpdate();
+            if (sonuc == 1) {
+                JOptionPane.showMessageDialog(null, "Güncellem Başarılı");
+            }
 
+        } catch (SQLException ex) {
+            Logger.getLogger(KitapGuncelleme.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(KitapGuncelleme.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnKaydetActionPerformed
 
     private void txtPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtPropertyChange
 
     }//GEN-LAST:event_txtPropertyChange
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        adm.GuncellemeFormKapatildi();
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments
