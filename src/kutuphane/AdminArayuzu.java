@@ -155,8 +155,11 @@ public class AdminArayuzu extends javax.swing.JFrame {
                     String silinecekkitapyayinevi = (String) tblKitaplar.getValueAt(row, 3);
 
                     int result = JOptionPane.showConfirmDialog(null, "Kitap Kodu: " + silinecekkitapkodu + "\nKitap Adı: " + silinecekkitapadi + "\nYayın Evi: " + silinecekkitapyayinevi + "\nKitabı Silmek İstediğinizden Emin Misiniz ?");
-                    if (result == JOptionPane.YES_OPTION) {                        
-                        Delete(row, tblBelgeler);
+                    if (result == JOptionPane.YES_OPTION) {
+                        DeleteKitap(row, tblKitaplar);
+                        model.removeRow(row); 
+                        tblKitaplar.setModel(model); 
+                        txtKitapArama.setText("");
                     } else if (result == JOptionPane.NO_OPTION) {
                         JOptionPane.showMessageDialog(null, "Kitabı Silmediniz");
                     }
@@ -444,11 +447,13 @@ public class AdminArayuzu extends javax.swing.JFrame {
         return false;
     }
 
-    public void Delete(int row, JTable tablo) {
+    public void DeleteKitap(int row, JTable tablo) {
         try {
             int silinecekkitapkodu = (int) tablo.getValueAt(row, 0);
             String silinecekkitapadi = (String) tablo.getValueAt(row, 1);
             String silinecekkitapyayinevi = (String) tablo.getValueAt(row, 3);
+
+            JOptionPane.showMessageDialog(null, silinecekkitapadi + silinecekkitapyayinevi + silinecekkitapkodu);
 
             String sqldelete = "DELETE FROM public.kitaplik WHERE kitap_kodu = ?;";
             pst = conn.prepareStatement(sqldelete);
@@ -458,7 +463,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Kitap Silindi");
             }
 
-            String sqlenvanter = "UPDATE public.kitap_envanter kitap_sayisi=kitap_sayisi - 1, elde_olan=elde_olan - 1 WHERE kitap_adi = ? AND kitap_yayinevi = ?;";
+            String sqlenvanter = "UPDATE public.kitap_envanter SET kitap_sayisi=kitap_sayisi - 1, elde_olan=elde_olan - 1 WHERE kitap_adi = ? AND kitap_yayinevi = ?;";
             pst = conn.prepareStatement(sqlenvanter);
             pst.setString(1, silinecekkitapadi);
             pst.setString(2, silinecekkitapyayinevi);
