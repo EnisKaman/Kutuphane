@@ -86,7 +86,7 @@ import raven.cell.TableActionEvent;
  * @author Enis
  */
 public class AdminArayuzu extends javax.swing.JFrame {
-
+    
     Connection conn = new Baglanti().getConnection();
     ResultSet rs = null;
     CallableStatement proc = null;
@@ -110,13 +110,13 @@ public class AdminArayuzu extends javax.swing.JFrame {
     String tarananbelgesonuclari;
     String taranacakbelgeyolu;
     File taranacakbelge;
-
+    
     public void KitaplarTabloVerileri() {
         try {
             String sql = "SELECT DISTINCT kitap_adi,kitap_kodu,yazar_adsoyad,yayin_evi,kitap_turu,kitap_durum FROM public.kitaplik;";
             pst = conn.prepareStatement(sql);
             rs = pst.executeQuery();
-
+            
             DefaultTableModel model = new DefaultTableModel();
             model.addColumn("Kitap Kodu");
             model.addColumn("Kitap Adı");
@@ -124,7 +124,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             model.addColumn("Yayın Evi");
             model.addColumn("Kitap Türü");
             model.addColumn("Kitap Durumu");
-
+            
             while (rs.next()) {
                 Object[] row = new Object[6];
                 row[0] = rs.getInt("kitap_kodu");
@@ -144,27 +144,27 @@ public class AdminArayuzu extends javax.swing.JFrame {
             TableActionEvent event = new TableActionEvent() {
                 @Override
                 public void onEdit(int row) {
-                    System.out.println("Edit row : " + row);
-                    JOptionPane.showMessageDialog(null, "Edit row : " + row);
+                    int kitapkodu = (int) tblKitaplar.getValueAt(row, 0);
+                    EditKitapGonder(kitapkodu);
                 }
-
+                
                 @Override
                 public void onDelete(int row) {
                     int silinecekkitapkodu = (int) tblKitaplar.getValueAt(row, 0);
                     String silinecekkitapadi = (String) tblKitaplar.getValueAt(row, 1);
                     String silinecekkitapyayinevi = (String) tblKitaplar.getValueAt(row, 3);
-
+                    
                     int result = JOptionPane.showConfirmDialog(null, "Kitap Kodu: " + silinecekkitapkodu + "\nKitap Adı: " + silinecekkitapadi + "\nYayın Evi: " + silinecekkitapyayinevi + "\nKitabı Silmek İstediğinizden Emin Misiniz ?");
                     if (result == JOptionPane.YES_OPTION) {
                         DeleteKitap(row, tblKitaplar);
-                        model.removeRow(row); 
-                        tblKitaplar.setModel(model); 
+                        model.removeRow(row);                        
+                        tblKitaplar.setModel(model);                        
                         txtKitapArama.setText("");
                     } else if (result == JOptionPane.NO_OPTION) {
                         JOptionPane.showMessageDialog(null, "Kitabı Silmediniz");
                     }
                 }
-
+                
                 @Override
                 public void onView(int row) {
                     JOptionPane.showMessageDialog(null, "View row : " + row);
@@ -176,13 +176,13 @@ public class AdminArayuzu extends javax.swing.JFrame {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     public void KitapOnayTabloVerileri() throws ParseException {
         try {
             String sql = "SELECT * FROM public.kitap_al_istek where kitap_al_istek_durum = 'Beklemede';";
             pst = conn.prepareStatement(sql);
             rs = pst.executeQuery();
-
+            
             DefaultTableModel model = new DefaultTableModel();
             model.addColumn("Kitap Adı");
             model.addColumn("Yayın Evi");
@@ -190,7 +190,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             model.addColumn("İsteyen Email");
             model.addColumn("Getirme Tarihi");
             model.addColumn("Güncelleme Tarihi");
-
+            
             while (rs.next()) {
                 Object[] row = new Object[6];
                 row[0] = rs.getString("kitap_al_istek_kitap_adi");
@@ -221,13 +221,13 @@ public class AdminArayuzu extends javax.swing.JFrame {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     public void ArsivTabloVerileri() {
         try {
             String sql = "SELECT DISTINCT belge_adi,belge_yayinlayan_kisi,belge_kodu,belge_yayin_yili,belge_turu FROM public.arsiv;";
             pst = conn.prepareStatement(sql);
             rs = pst.executeQuery();
-
+            
             DefaultTableModel model = new DefaultTableModel();
             model.addColumn("Belge Adı");
             model.addColumn("Yayınlayan Kisi");
@@ -235,7 +235,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             model.addColumn("Yayın Yılı");
             model.addColumn("Belge Türü");
             model.addColumn("Belge Nüshası");
-
+            
             while (rs.next()) {
                 Object[] row = new Object[6];
                 row[0] = rs.getString("belge_adi");
@@ -246,7 +246,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 row[5] = "Gör";
                 model.addRow(row);
             }
-
+            
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
             centerRenderer.setHorizontalAlignment(JLabel.CENTER);
             TableRowSorter shorter = new TableRowSorter(model);
@@ -257,13 +257,13 @@ public class AdminArayuzu extends javax.swing.JFrame {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     public void BelgeOnayTabloVerileri() throws ParseException {
         try {
             String sql = "SELECT * FROM public.arsiv_istek_bekleme WHERE arsiv_istek_bekleme_durum = 'Beklemede' ORDER BY arsiv_istek_bekleme_guncelleme_tarihi ASC";
             pst = conn.prepareStatement(sql);
             rs = pst.executeQuery();
-
+            
             DefaultTableModel model = new DefaultTableModel();
             model.addColumn("Kitap Kodu");
             model.addColumn("Kitap Adı");
@@ -271,7 +271,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             model.addColumn("İsteyen Email");
             model.addColumn("İstek Sebebi");
             model.addColumn("Güncelleme Tarihi");
-
+            
             int tablorow = 0;
             while (rs.next()) {
                 Object[] row = new Object[6];
@@ -296,20 +296,20 @@ public class AdminArayuzu extends javax.swing.JFrame {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     public void RandevuTabloVerileri() {
         try {
             String sql = "SELECT * FROM public.randevu";
             pst = conn.prepareStatement(sql);
             rs = pst.executeQuery();
-
+            
             DefaultTableModel model2 = new DefaultTableModel();
             model2.addColumn("Randevu İsteyen Kişi");
             model2.addColumn("Randevu Konusu");
             model2.addColumn("Randevu Tarihi");
             model2.addColumn("Randevu Durumu");
             model2.addColumn("Güncelleme Tarihi");
-
+            
             while (rs.next()) {
                 Object[] row = new Object[5];
                 row[0] = rs.getString("randevu_isteyen_adsoyad");
@@ -331,12 +331,12 @@ public class AdminArayuzu extends javax.swing.JFrame {
             tblRandevular.setRowSorter(shorter);
             tblRandevular.setDefaultRenderer(Object.class, centerRenderer);
             tblRandevular.setModel(model2);
-
+            
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     public void PastaGrafik() {
         try {
             pieChart1.clearData();
@@ -352,7 +352,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 //lblRenk1.setBackground(Renkler(index++));
                 //lblRenk1Adı.setText(islem);
             }
-
+            
             pnlRenk1.setBackground(Renkler(0));
             lblRenk1Adi.setText("Çıkış");
             pnlRenk2.setBackground(Renkler(1));
@@ -365,12 +365,12 @@ public class AdminArayuzu extends javax.swing.JFrame {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     public Color Renkler(int index) {
         Color[] color = new Color[]{new Color(255, 102, 102), new Color(29, 184, 80), new Color(206, 215, 33), new Color(55, 55, 227), new Color(0, 255, 51)};
         return color[index];
     }
-
+    
     public void KitapIstekKaldirma(int kalkacakindex, String durum, int kitapkodu, String kitapadi, boolean kabul) throws SQLException, ParseException {
         String sqldelete = "UPDATE public.kitap_al_istek SET kitap_al_istek_durum=? WHERE kitap_al_istek_ID = ?;";
         pst = conn.prepareStatement(sqldelete);
@@ -380,7 +380,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         if (sonuc == 1) {
             JOptionPane.showMessageDialog(null, "Silindi");
         }
-
+        
         if (kabul == true) {
             String sql = "UPDATE public.kitaplik SET kitap_durum = ? where kitap_kodu = ?;";
             pst = conn.prepareStatement(sql);
@@ -390,7 +390,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             if (cevap == 1) {
                 JOptionPane.showMessageDialog(null, "Kitap Şu anda " + kitapisteyenemail);
             }
-
+            
             System.out.println("asdasasdasd");
             String sqlupdate = "UPDATE public.kitap_envanter SET elde_olan = elde_olan - 1 WHERE kitap_adi=?;";
             pst = conn.prepareStatement(sqlupdate);
@@ -400,13 +400,13 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Azaldı");
             }
         }
-
+        
         txtEnvanterdeKalan.setText("");
         txtToplamKitap.setText("");
         cbKitapKodları.removeAllItems();
         KitapOnayTabloVerileri();
     }
-
+    
     public void search(JTable table, JTextField textField) {
         String searchText = textField.getText().toLowerCase();
         List<Integer> matchingRows = new ArrayList<>();
@@ -427,17 +427,17 @@ public class AdminArayuzu extends javax.swing.JFrame {
         for (int matchedRow : matchingRows) {
             table.addRowSelectionInterval(matchedRow, matchedRow);
         }
-
+        
         int rowCount = table.getRowCount();
         int[] selectedRows = table.getSelectedRows();
-
+        
         for (int i = rowCount - 1; i >= 0; i--) {
             if (!isSelected(i, selectedRows)) {
                 ((DefaultTableModel) table.getModel()).removeRow(i);
             }
         }
     }
-
+    
     private boolean isSelected(int row, int[] selectedRows) {
         for (int selectedRow : selectedRows) {
             if (row == selectedRow) {
@@ -446,15 +446,44 @@ public class AdminArayuzu extends javax.swing.JFrame {
         }
         return false;
     }
-
+    
+    public void EditKitapGonder(int kitapkodu) {
+        try {
+            
+            String kitapadi = null;
+            String yazaradi = null;
+            String yayinevi = null;
+            String kitapturu = null;
+            byte[] imagedata = null;
+            
+            String sql = "Select * FROM public.kitaplik WHERE kitap_kodu = ?";
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1, kitapkodu);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                kitapadi = rs.getString("kitap_adi");
+                yazaradi = rs.getString("yazar_adsoyad");
+                yayinevi = rs.getString("yayin_evi");
+                kitapturu = rs.getString("kitap_turu");
+                imagedata = rs.getBytes("kitap_resim");
+            }
+            
+            KitapGuncelleme kg = new KitapGuncelleme(kitapkodu, kitapadi, yazaradi, yayinevi, kitapturu, imagedata);
+            kg.setVisible(true);
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public void DeleteKitap(int row, JTable tablo) {
         try {
             int silinecekkitapkodu = (int) tablo.getValueAt(row, 0);
             String silinecekkitapadi = (String) tablo.getValueAt(row, 1);
             String silinecekkitapyayinevi = (String) tablo.getValueAt(row, 3);
-
+            
             JOptionPane.showMessageDialog(null, silinecekkitapadi + silinecekkitapyayinevi + silinecekkitapkodu);
-
+            
             String sqldelete = "DELETE FROM public.kitaplik WHERE kitap_kodu = ?;";
             pst = conn.prepareStatement(sqldelete);
             pst.setInt(1, silinecekkitapkodu);
@@ -462,7 +491,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             if (sonuc == 1) {
                 JOptionPane.showMessageDialog(null, "Kitap Silindi");
             }
-
+            
             String sqlenvanter = "UPDATE public.kitap_envanter SET kitap_sayisi=kitap_sayisi - 1, elde_olan=elde_olan - 1 WHERE kitap_adi = ? AND kitap_yayinevi = ?;";
             pst = conn.prepareStatement(sqlenvanter);
             pst.setString(1, silinecekkitapadi);
@@ -471,21 +500,21 @@ public class AdminArayuzu extends javax.swing.JFrame {
             if (sonuc2 == 1) {
                 JOptionPane.showMessageDialog(null, "Envanterden 1 azaldı");
             }
-
+            
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     public AdminArayuzu() {
         initComponents();
     }
-
+    
     public AdminArayuzu(String email, String sifre, int tema) throws ParseException {
         this.email = email;
         this.sifre = sifre;
         this.tema = tema;
-
+        
         initComponents();
         KitaplarTabloVerileri();
         RandevuTabloVerileri();
@@ -498,7 +527,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         tabArsiv.setVisible(false);
         tabDiger.setVisible(false);
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -1807,7 +1836,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
 
 ///////////////////////////////////////////////// Ayarlar Kaptma Başlangıç /////////////////////////////////////////////////      
     private void pnlSettingsKapatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlSettingsKapatMouseClicked
-
+        
         pnlSettings.setVisible(false);
         lblSettings.setVisible(true);
         tabKutuphane.setVisible(true);
@@ -1838,40 +1867,40 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 KitaplarTabloVerileri();
                 search(tblKitaplar, txtKitapArama);
             }
-
+            
             @Override
             public void insertUpdate(DocumentEvent e) {
                 KitaplarTabloVerileri();
                 search(tblKitaplar, txtKitapArama);
             }
-
+            
             @Override
             public void removeUpdate(DocumentEvent e) {
                 KitaplarTabloVerileri();
                 search(tblKitaplar, txtKitapArama);
             }
-
+            
         });
-
+        
         txtBelgeArama.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent e) {
                 ArsivTabloVerileri();
                 search(tblBelgeler, txtBelgeArama);
             }
-
+            
             @Override
             public void insertUpdate(DocumentEvent e) {
                 ArsivTabloVerileri();
                 search(tblBelgeler, txtBelgeArama);
             }
-
+            
             @Override
             public void removeUpdate(DocumentEvent e) {
                 ArsivTabloVerileri();
                 search(tblBelgeler, txtBelgeArama);
             }
-
+            
         });
     }//GEN-LAST:event_formWindowActivated
 ///////////////////////////////////////////////// Şeçilen Rengi Veritabanına Kaydetme Başlangıç /////////////////////////////////////////////////        
@@ -1967,7 +1996,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
     }
 ///////////////////////////////////////////////// Envantere Kaydetme Bitiş /////////////////////////////////////////////////  
 
@@ -1979,7 +2008,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             String yayinevi = txtYayinEvi.getText();
             int kitapkodu = Integer.parseInt(txtKitapKodu.getText());
             String kitapturu = cbKitapTuru.getSelectedItem().toString();
-
+            
             String sqlkitapkodu = "Select COUNT(kitap_kodu) from public.kitaplik where kitap_kodu = ?;";
             pst = conn.prepareStatement(sqlkitapkodu);
             pst.setInt(1, kitapkodu);
@@ -1992,11 +2021,11 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Kitap Zaten Envantere Eklenmiş");
             } else {
                 try {
-                    fis = new FileInputStream(dosyaadi);
+                    fis = new FileInputStream(dosya);
                     PreparedStatement ps = conn.prepareStatement("INSERT INTO kitaplik (yazar_adsoyad, kitap_adi, kitap_resim, kitap_kodu, yayin_evi, kitap_turu) VALUES (?, ?, ?, ?, ?, ?)");
                     ps.setString(1, yazaradsoyad);
                     ps.setString(2, kitapadi);
-                    ps.setBinaryStream(3, fis, dosyaadi.length());
+                    ps.setBinaryStream(3, fis, dosya.length());
                     ps.setInt(4, kitapkodu);
                     ps.setString(5, yayinevi);
                     ps.setString(6, kitapturu);
@@ -2008,18 +2037,18 @@ public class AdminArayuzu extends javax.swing.JFrame {
                         ps2.setString(1, kitapadi);
                         ps2.setString(2, yayinevi);
                         rs = ps2.executeQuery();
-
+                        
                         if (rs.next()) {
                             int count = rs.getInt("count");
                             EnvantereEkle(kitapadi, kitapkodu, count, yayinevi);
                         }
-
+                        
                         KitaplarTabloVerileri();
                         JOptionPane.showMessageDialog(null, "Kitap Eklendi");
                     } else {
                         JOptionPane.showMessageDialog(null, "Kitap Eklenmedi");
                     }
-
+                    
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(ResimKoyma.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
@@ -2028,27 +2057,27 @@ public class AdminArayuzu extends javax.swing.JFrame {
                     Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-
+            
             String destinationPath = "C:\\Users\\ekmn2\\OneDrive\\Belgeler\\New Folder\\Kutuphane\\pic\\";
             try {
                 File destinationFile = new File(destinationPath, txtKitapAdi.getText() + ".jpg");
                 FileInputStream fis = new FileInputStream(dosya);
                 FileOutputStream fos = new FileOutputStream(destinationFile);
-
+                
                 byte[] buffer = new byte[1024];
                 int length;
                 while ((length = fis.read(buffer)) > 0) {
                     fos.write(buffer, 0, length);
                 }
-
+                
                 fis.close();
                 fos.close();
-
+                
                 JOptionPane.showMessageDialog(null, "Dosya başarıyla kaydedildi.");
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-
+            
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -2179,19 +2208,19 @@ public class AdminArayuzu extends javax.swing.JFrame {
             kitapisteyenadsoyad = (String) tblKitapOnay.getValueAt(kitaponayindex, 2);
             kitapisteyenemail = (String) tblKitapOnay.getValueAt(kitaponayindex, 3);
             kitapgetirmetarih = (String) tblKitapOnay.getValueAt(kitaponayindex, 4) + ":00";
-
+            
             String sql = "SELECT k.kitap_kodu,(Select e.kitap_sayisi from public.kitap_envanter e where k.kitap_adi = e.kitap_adi and k.yayin_evi = e.kitap_yayinevi),(Select e.elde_olan from public.kitap_envanter e where k.kitap_adi = e.kitap_adi and k.yayin_evi = e.kitap_yayinevi) FROM public.kitaplik k where k.kitap_adi = ? and k.yayin_evi = ? and k.kitap_durum = 'Envanterde' Order By k.kitap_kodu ASC;";
             pst = conn.prepareStatement(sql);
             pst.setString(1, kitapadi);
             pst.setString(2, kitapyayinevi);
             rs = pst.executeQuery();
-
+            
             while (rs.next()) {
                 cbKitapKodları.addItem(rs.getString("kitap_kodu"));
                 txtEnvanterdeKalan.setText(rs.getString("elde_olan"));
                 txtToplamKitap.setText(rs.getString("kitap_sayisi"));
             }
-
+            
             String sqlidalma = "Select kitap_al_istek_id from public.kitap_al_istek where kitap_al_istek_geri_verme_tarihi=?";
             pst = conn.prepareStatement(sqlidalma);
             SimpleDateFormat girisFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -2205,7 +2234,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 secilenkitapid = rs.getInt("kitap_al_istek_id");
                 System.out.println(secilenkitapid);
             }
-
+            
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
@@ -2226,9 +2255,9 @@ public class AdminArayuzu extends javax.swing.JFrame {
             if (rs.next()) {
                 kitapadi = rs.getString("kitap_adi");
             }
-
+            
             String kitapverenadsoyad = "(Select adsoyad from public.kullanicilar where email = ?)";
-
+            
             String sql = "INSERT INTO public.kitap_al_kabul( kitap_al_kabul_kitap_kodu, kitap_al_kabul_kitap_adi, kitap_al_kabul_isteyen_ad_soyad, kitap_al_kabul_isteyen_email, kitap_al_kabul_veren_ad_soyad, kitap_al_kabul_veren_email, kitap_al_kabul_durum, kitap_al_kabul_geri_getirme_tarihi, kitap_al_kabul_kitap_yayinevi) VALUES (?, ?, ?, ?," + kitapverenadsoyad + ",  ?, 'Kabul Edildi', ?, ?);";
             pst = conn.prepareStatement(sql);
             pst.setInt(1, kitapkodu);
@@ -2251,7 +2280,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Kitap Kabul Edildi hata");
             }
             KitapIstekKaldirma(secilenkitapid, "Sonuçlandırıldı", kitapkodu, kitapadi, true);
-
+            
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
@@ -2268,7 +2297,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             try {
                 int kitapkodu = Integer.parseInt(cbKitapKodları.getSelectedItem().toString());
                 String sebep = txtKitapReddetmeSebep.getText();
-
+                
                 String kitapadi = null;
                 String sqlkitpadi = "Select kitap_adi from public.kitaplik where kitap_kodu = ?";
                 pst = conn.prepareStatement(sqlkitpadi);
@@ -2278,7 +2307,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                     kitapadi = rs.getString("kitap_adi");
                 }
                 String kitapverenadsoyad = "(Select adsoyad from public.kullanicilar where email = ?)";
-
+                
                 String sql = "INSERT INTO public.kitap_al_ret(kitap_al_ret_kitap_adi, kitap_al_ret_isteyen_ad_soyad, kitap_al_ret_isteyen_email, kitap_al_ret_veren_ad_soyad, kitap_al_ret_veren_email, kitap_al_ret_durum, kitap_al_ret_geri_getirme_tarihi, kitap_al_ret_kitap_yayinevi, kitap_al_ret_sebep) VALUES (?, ?, ?," + kitapverenadsoyad + ",  ?, 'Reddedildi', ?, ?, ?);";
                 pst = conn.prepareStatement(sql);
                 pst.setString(1, kitapadi);
@@ -2301,7 +2330,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "Kitap Kabul Edildi hata");
                 }
                 KitapIstekKaldirma(secilenkitapid, "Sonuçlandırıldı", kitapkodu, kitapadi, false);
-
+                
             } catch (SQLException ex) {
                 Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ParseException ex) {
@@ -2358,7 +2387,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             int yayinyili = Integer.parseInt(txtYayinYili.getText());
             int belgekodu = Integer.parseInt(txtBelgeKodu.getText());
             String adver = "(Select adsoyad from public.kullanicilar where email = ?)";
-
+            
             String sql = "INSERT INTO public.arsiv(belge_adi, belge_yayinlayan_kisi, belge_kodu, belge_yayin_yili, belge_turu, belge_nushasi, belge_ekleyen_adsoyad, belge_ekleyen_email,belge_nushasi_adi) VALUES (?, ?, ?, ?, ?, ?, " + adver + ", ?, ?);";
             pst = conn.prepareStatement(sql);
             pst.setString(1, belgeadi);
@@ -2431,7 +2460,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             String isteyenemail = "(SELECT arsiv_istek_bekleme_isteyen_email FROM public.arsiv_istek_bekleme WHERE arsiv_istek_bekleme_id = ?)";
             String verenadi = "(Select adsoyad from public.kullanicilar where email = ?)";
             String isteksebebi = txtIstekSebebi.getText();
-
+            
             String sqlupdate = "UPDATE public.arsiv_istek_bekleme SET arsiv_istek_bekleme_durum = ? WHERE arsiv_istek_bekleme_id = ?;";
             pst = conn.prepareStatement(sqlupdate);
             pst.setString(1, "Kabul Edildi");
@@ -2440,7 +2469,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             if (sonuc == 1) {
                 JOptionPane.showMessageDialog(null, "Kabul Edildi Update");
             }
-
+            
             String sqlinsert = "INSERT INTO public.arsiv_istek_kabul(arsiv_istek_kabul_belge_kodu, arsiv_istek_kabul_belge_adi, arsiv_istek_kabul_yayinlayan_adi, arsiv_istek_kabul_yayin_yili, arsiv_istek_kabul_isteyen_adsoyad, arsiv_istek_kabul_isteyen_email, arsiv_istek_kabul_veren_adsoyad, arsiv_istek_kabul_veren_email, arsiv_istek_kabul_durum, arsiv_istek_kabul_istek_sebebi) VALUES (?, ?, " + yayinlayanadi + ", " + yayinyili + ", " + isteyenadi + ", " + isteyenemail + ", " + verenadi + ", ?, ?, ?);";
             pst = conn.prepareStatement(sqlinsert);
             pst.setInt(1, belgekodu);
@@ -2457,7 +2486,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             if (cevap == 1) {
                 JOptionPane.showMessageDialog(null, "İnsert Oldu");
             }
-
+            
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -2479,7 +2508,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 //lblBelgeNushasiAdi.setForeground(Renkler(4));
             }
         }
-
+        
         Tesseract tesseract = new Tesseract();
         try {
             tesseract.setLanguage("tur");
@@ -2498,9 +2527,9 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private void txtBelgeAramaPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtBelgeAramaPropertyChange
         // TODO add your handling code here:
     }//GEN-LAST:event_txtBelgeAramaPropertyChange
-
+    
     public static void main(String args[]) {
-
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

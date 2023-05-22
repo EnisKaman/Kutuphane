@@ -127,8 +127,8 @@ public class ResimKoyma extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         try {
-            PreparedStatement ps = conn.prepareStatement("SELECT kitap_resim FROM public.kitaplik WHERE kitap_adi = ?");
-            ps.setString(1, "Savaş ve Barış");
+            PreparedStatement ps = conn.prepareStatement("SELECT kitap_resim FROM public.kitaplik WHERE kitap_kodu = ?");
+            ps.setInt(1, 123017);
             
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
