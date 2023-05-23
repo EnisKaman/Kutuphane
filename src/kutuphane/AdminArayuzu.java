@@ -113,7 +113,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
 
     public void KitaplarTabloVerileri() {
         try {
-            String sql = "SELECT DISTINCT kitap_adi,kitap_kodu,yazar_adsoyad,yayin_evi,kitap_turu,kitap_durum FROM public.kitaplik;";
+            String sql = "SELECT DISTINCT kitap_adi,kitap_kodu,yazar_adsoyad,yayin_evi,kitap_turu,kitap_durum FROM public.kitaplik ORDER BY kitap_kodu ASC;";
             pst = conn.prepareStatement(sql);
             rs = pst.executeQuery();
 
@@ -485,7 +485,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 eldeolankitapsayisi = rs.getInt("elde_olan");
             }
 
-            DetayliGoruntule dg = new DetayliGoruntule(kitapkodu, kitapadi, yazaradi, yayinevi, kitapturu, kitapozeti, imagedata, toplamkitapsayisi, eldeolankitapsayisi);
+            AdminKitapDetayliGoruntule dg = new AdminKitapDetayliGoruntule(kitapkodu, kitapadi, yazaradi, yayinevi, kitapturu, kitapozeti, imagedata, toplamkitapsayisi, eldeolankitapsayisi);
             dg.setVisible(true);
 
         } catch (SQLException ex) {

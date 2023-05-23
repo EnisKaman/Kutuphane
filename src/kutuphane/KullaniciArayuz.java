@@ -128,7 +128,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             TableActionEventKullanici event = new TableActionEventKullanici() {
                 @Override
                 public void onView(int row) {
-                    JOptionPane.showMessageDialog(null, "asd");
+                    String kitapadi = (String) tblKitapAl.getValueAt(row, 0);
+                    String yayinevi = (String) tblKitapAl.getValueAt(row, 2);
+                    ViewKitapGonder(kitapadi, yayinevi);
                 }
             };
             
@@ -543,6 +545,45 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         }
     }
     
+    public void ViewKitapGonder(String kitapadi, String yayinevi) {
+        try {
+            String yazaradi = null;
+            String kitapturu = null;
+            String kitapozeti = null;
+            byte[] imagedata = null;
+            int toplamkitapsayisi = 0;
+            int eldeolankitapsayisi = 0;
+
+            String sql = "Select * FROM public.kitaplik WHERE kitap_adi = ? AND yayin_evi = ?";
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, kitapadi);
+            pst.setString(2, yayinevi);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                yazaradi = rs.getString("yazar_adsoyad");
+                kitapturu = rs.getString("kitap_turu");
+                kitapozeti = rs.getString("kitap_ozet");
+                imagedata = rs.getBytes("kitap_resim");
+            }
+            
+            String sqlkitapsayisi = "SELECT kitap_sayisi, elde_olan FROM public.kitap_envanter WHERE kitap_adi = ? AND kitap_yayinevi = ?;";
+            pst = conn.prepareStatement(sqlkitapsayisi);
+            pst.setString(1, kitapadi);
+            pst.setString(2, yayinevi);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                toplamkitapsayisi = rs.getInt("kitap_sayisi");
+                eldeolankitapsayisi = rs.getInt("elde_olan");
+            }
+
+            KullaniciKitapDetayliGoruntule kdg = new KullaniciKitapDetayliGoruntule(kitapadi, yazaradi, yayinevi, kitapturu, kitapozeti, imagedata, toplamkitapsayisi, eldeolankitapsayisi);
+            kdg.setVisible(true);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public KullaniciArayuz() {
         initComponents();
     }
@@ -553,6 +594,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         this.tema = tema;
         initComponents();
         pnlSettings.setVisible(false);
+        TemaRengi();
         AdminCekme();
         BekleyenRandevuTabloVerileri();
         KabulRandevuTabloVerileri();

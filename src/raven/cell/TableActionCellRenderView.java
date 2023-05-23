@@ -20,11 +20,11 @@ public class TableActionCellRenderView extends DefaultTableCellRenderer{
         
         PanelActionView action = new PanelActionView();
         action.setBackground(com.getBackground());
-        if (isSelected == false && row % 2 == 0) {
+        /*if (isSelected == false && row % 2 == 0) {
             action.setBackground(Color.WHITE);
         }else{
             action.setBackground(com.getBackground());
-        }
+        }*/
         
         return action;
     }

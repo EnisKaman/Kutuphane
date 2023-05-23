@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-public class DetayliGoruntule extends javax.swing.JFrame {
+public class KullaniciKitapDetayliGoruntule extends javax.swing.JFrame {
 
     Connection conn = new Baglanti().getConnection();
     ResultSet rs = null;
@@ -30,13 +30,12 @@ public class DetayliGoruntule extends javax.swing.JFrame {
     File dosya;
     FileInputStream fis;
     
-    public DetayliGoruntule() {
+    public KullaniciKitapDetayliGoruntule() {
         initComponents();
     }
 
-    public DetayliGoruntule(int kitapkodu, String kitapadi, String yazaradi, String yayinevi, String kitapturu, String kitapozeti,  byte[] imagedata, int toplamkitapsayisi, int eldeolankitapsayisi) {
+    public KullaniciKitapDetayliGoruntule(String kitapadi, String yazaradi, String yayinevi, String kitapturu, String kitapozeti,  byte[] imagedata, int toplamkitapsayisi, int eldeolankitapsayisi) {
         initComponents();
-        txtKitapKodu.setText(String.valueOf(kitapkodu));
         txtKitapAdi.setText(kitapadi);
         txtYazarAdSoyad.setText(yazaradi);
         txtYayinEvi.setText(yayinevi);
@@ -57,6 +56,7 @@ public class DetayliGoruntule extends javax.swing.JFrame {
         ImageIcon boyutlanmisresim = new ImageIcon(resim);
         lblResim.setIcon(boyutlanmisresim);
     }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -64,12 +64,10 @@ public class DetayliGoruntule extends javax.swing.JFrame {
         pnlKitapEkleme = new javax.swing.JPanel();
         lblYazarAdSoyad = new javax.swing.JLabel();
         txtYazarAdSoyad = new javax.swing.JTextField();
-        lblKitapKodu = new javax.swing.JLabel();
         lblKitapAdi = new javax.swing.JLabel();
         lblYayinEvi = new javax.swing.JLabel();
         lblKitapTuru = new javax.swing.JLabel();
         txtKitapAdi = new javax.swing.JTextField();
-        txtKitapKodu = new javax.swing.JTextField();
         txtYayinEvi = new javax.swing.JTextField();
         pnlResim = new javax.swing.JPanel();
         lblResim = new javax.swing.JLabel();
@@ -95,9 +93,6 @@ public class DetayliGoruntule extends javax.swing.JFrame {
             }
         });
 
-        lblKitapKodu.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
-        lblKitapKodu.setText("Kitap Kodu");
-
         lblKitapAdi.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         lblKitapAdi.setText("Kitap Adı");
 
@@ -109,12 +104,10 @@ public class DetayliGoruntule extends javax.swing.JFrame {
 
         txtKitapAdi.setEnabled(false);
 
-        txtKitapKodu.setEnabled(false);
-
         txtYayinEvi.setEnabled(false);
 
         pnlResim.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        pnlResim.add(lblResim, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 240, 260));
+        pnlResim.add(lblResim, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 290, 440));
 
         lblKitapTuru1.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         lblKitapTuru1.setText("Toplam Kitap Sayısı");
@@ -131,6 +124,7 @@ public class DetayliGoruntule extends javax.swing.JFrame {
         txtToplamKitap.setEnabled(false);
 
         txtKitapOzeti.setColumns(20);
+        txtKitapOzeti.setLineWrap(true);
         txtKitapOzeti.setRows(5);
         txtKitapOzeti.setEnabled(false);
         jScrollPane1.setViewportView(txtKitapOzeti);
@@ -143,40 +137,44 @@ public class DetayliGoruntule extends javax.swing.JFrame {
         pnlKitapEklemeLayout.setHorizontalGroup(
             pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblKitapTuru3)
-                    .addComponent(lblKitapAdi)
-                    .addComponent(lblKitapKodu)
-                    .addComponent(lblYayinEvi)
-                    .addComponent(lblKitapTuru)
-                    .addComponent(lblYazarAdSoyad)
-                    .addComponent(lblKitapTuru1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
-                        .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGap(21, 21, 21)
+                        .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblKitapAdi)
+                            .addComponent(lblYayinEvi)
+                            .addComponent(lblKitapTuru)
+                            .addComponent(lblYazarAdSoyad)
+                            .addComponent(lblKitapTuru1)))
+                    .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addComponent(lblKitapTuru3)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1)
+                    .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
+                        .addComponent(txtToplamKitap, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblKitapTuru2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtEldeOlanSayisi, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
+                        .addGap(1, 1, 1)
+                        .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtYayinEvi)
-                            .addComponent(txtKitapKodu)
                             .addComponent(txtKitapAdi)
                             .addComponent(txtYazarAdSoyad)
-                            .addComponent(txtKitapTuru)
-                            .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
-                                .addComponent(txtToplamKitap, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(26, 26, 26)
-                                .addComponent(lblKitapTuru2)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtEldeOlanSayisi, javax.swing.GroupLayout.PREFERRED_SIZE, 58, Short.MAX_VALUE)))
-                        .addGap(34, 34, 34)
-                        .addComponent(pnlResim, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1))
+                            .addComponent(txtKitapTuru))))
+                .addGap(29, 29, 29)
+                .addComponent(pnlResim, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(19, 19, 19))
         );
         pnlKitapEklemeLayout.setVerticalGroup(
             pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitapEklemeLayout.createSequentialGroup()
                 .addGap(25, 25, 25)
-                .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(pnlResim, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
                         .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtYazarAdSoyad, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
@@ -187,28 +185,24 @@ public class DetayliGoruntule extends javax.swing.JFrame {
                             .addComponent(txtKitapAdi, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblKitapKodu)
-                            .addComponent(txtKitapKodu, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblYayinEvi)
                             .addComponent(txtYayinEvi, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblKitapTuru)
-                            .addComponent(txtKitapTuru, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtKitapTuru, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblKitapTuru))
                         .addGap(18, 18, 18)
                         .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblKitapTuru1)
                             .addComponent(txtToplamKitap, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblKitapTuru2)
                             .addComponent(txtEldeOlanSayisi, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(2, 2, 2))
-                    .addComponent(pnlResim, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblKitapTuru3))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
+                                .addComponent(lblKitapTuru3)
+                                .addGap(188, 188, 188))
+                            .addComponent(jScrollPane1))))
                 .addGap(82, 82, 82))
         );
 
@@ -222,11 +216,7 @@ public class DetayliGoruntule extends javax.swing.JFrame {
 
     }//GEN-LAST:event_txtYazarAdSoyadtxtPropertyChange
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
@@ -239,20 +229,20 @@ public class DetayliGoruntule extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(DetayliGoruntule.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(KullaniciKitapDetayliGoruntule.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(DetayliGoruntule.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(KullaniciKitapDetayliGoruntule.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(DetayliGoruntule.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(KullaniciKitapDetayliGoruntule.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(DetayliGoruntule.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(KullaniciKitapDetayliGoruntule.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DetayliGoruntule().setVisible(true);
+                new KullaniciKitapDetayliGoruntule().setVisible(true);
             }
         });
     }
@@ -260,7 +250,6 @@ public class DetayliGoruntule extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblKitapAdi;
-    private javax.swing.JLabel lblKitapKodu;
     private javax.swing.JLabel lblKitapTuru;
     private javax.swing.JLabel lblKitapTuru1;
     private javax.swing.JLabel lblKitapTuru2;
@@ -272,7 +261,6 @@ public class DetayliGoruntule extends javax.swing.JFrame {
     private javax.swing.JPanel pnlResim;
     private javax.swing.JTextField txtEldeOlanSayisi;
     private javax.swing.JTextField txtKitapAdi;
-    private javax.swing.JTextField txtKitapKodu;
     private javax.swing.JTextArea txtKitapOzeti;
     private javax.swing.JTextField txtKitapTuru;
     private javax.swing.JTextField txtToplamKitap;
