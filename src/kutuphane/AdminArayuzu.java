@@ -123,16 +123,18 @@ public class AdminArayuzu extends javax.swing.JFrame {
             model.addColumn("Yazar");
             model.addColumn("Yayın Evi");
             model.addColumn("Kitap Türü");
-            model.addColumn("Kitap Durumu");
+            model.addColumn("Kitap Durum");
+            model.addColumn("İşlem");
 
             while (rs.next()) {
-                Object[] row = new Object[6];
+                Object[] row = new Object[7];
                 row[0] = rs.getInt("kitap_kodu");
                 row[1] = rs.getString("kitap_adi");
                 row[2] = rs.getString("yazar_adsoyad");
                 row[3] = rs.getString("yayin_evi");
                 row[4] = rs.getString("kitap_turu");
                 row[5] = rs.getString("kitap_durum");
+                row[6] = rs.getString("kitap_durum");
                 model.addRow(row);
             }
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -167,11 +169,12 @@ public class AdminArayuzu extends javax.swing.JFrame {
 
                 @Override
                 public void onView(int row) {
-                    JOptionPane.showMessageDialog(null, "View row : " + row);
+                    int kitapkodu = (int) tblKitaplar.getValueAt(row, 0);
+                    ViewKitapGonder(kitapkodu);
                 }
             };
-            tblKitaplar.getColumnModel().getColumn(5).setCellRenderer(new TableActionCellRender());
-            tblKitaplar.getColumnModel().getColumn(5).setCellEditor(new TableActionCellEditor(event));
+            tblKitaplar.getColumnModel().getColumn(6).setCellRenderer(new TableActionCellRender());
+            tblKitaplar.getColumnModel().getColumn(6).setCellEditor(new TableActionCellEditor(event));
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -447,6 +450,49 @@ public class AdminArayuzu extends javax.swing.JFrame {
         return false;
     }
 
+    public void ViewKitapGonder(int kitapkodu) {
+        try {
+
+            String kitapadi = null;
+            String yazaradi = null;
+            String yayinevi = null;
+            String kitapturu = null;
+            String kitapozeti = null;
+            byte[] imagedata = null;
+            int toplamkitapsayisi = 0;
+            int eldeolankitapsayisi = 0;
+
+            String sql = "Select * FROM public.kitaplik WHERE kitap_kodu = ?";
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1, kitapkodu);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                kitapadi = rs.getString("kitap_adi");
+                yazaradi = rs.getString("yazar_adsoyad");
+                yayinevi = rs.getString("yayin_evi");
+                kitapturu = rs.getString("kitap_turu");
+                kitapozeti = rs.getString("kitap_ozet");
+                imagedata = rs.getBytes("kitap_resim");
+            }
+            
+            String sqlkitapsayisi = "SELECT kitap_sayisi, elde_olan FROM public.kitap_envanter WHERE kitap_adi = ? AND kitap_yayinevi = ?;";
+            pst = conn.prepareStatement(sqlkitapsayisi);
+            pst.setString(1, kitapadi);
+            pst.setString(2, yayinevi);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                toplamkitapsayisi = rs.getInt("kitap_sayisi");
+                eldeolankitapsayisi = rs.getInt("elde_olan");
+            }
+
+            DetayliGoruntule dg = new DetayliGoruntule(kitapkodu, kitapadi, yazaradi, yayinevi, kitapturu, kitapozeti, imagedata, toplamkitapsayisi, eldeolankitapsayisi);
+            dg.setVisible(true);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public void EditKitapGonder(int kitapkodu) {
         try {
 
@@ -455,6 +501,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             String yazaradi = null;
             String yayinevi = null;
             String kitapturu = null;
+            String kitapozeti = null;
             byte[] imagedata = null;
 
             String sql = "Select * FROM public.kitaplik WHERE kitap_kodu = ?";
@@ -467,19 +514,16 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 yazaradi = rs.getString("yazar_adsoyad");
                 yayinevi = rs.getString("yayin_evi");
                 kitapturu = rs.getString("kitap_turu");
+                kitapozeti = rs.getString("kitap_ozet");
                 imagedata = rs.getBytes("kitap_resim");
             }
 
-            KitapGuncelleme kg = new KitapGuncelleme(kitapid, kitapkodu, kitapadi, yazaradi, yayinevi, kitapturu, imagedata, this);
+            KitapGuncelleme kg = new KitapGuncelleme(kitapid, kitapkodu, kitapadi, yazaradi, yayinevi, kitapturu, kitapozeti, imagedata, this);
             kg.setVisible(true);
 
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public void GuncellemeFormKapatildi() {
-        KitaplarTabloVerileri(); 
     }
 
     public void DeleteKitap(int row, JTable tablo) {
@@ -559,6 +603,9 @@ public class AdminArayuzu extends javax.swing.JFrame {
         pnlResim = new javax.swing.JPanel();
         lblResim = new javax.swing.JLabel();
         btnKaydet = new javax.swing.JButton();
+        lblKitapResmi1 = new javax.swing.JLabel();
+        jScrollPane14 = new javax.swing.JScrollPane();
+        txtKitapOzet = new javax.swing.JTextArea();
         pnlKitapOnaylama = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         tblKitapOnay = new javax.swing.JTable();
@@ -735,8 +782,9 @@ public class AdminArayuzu extends javax.swing.JFrame {
         });
 
         pnlResim.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        pnlResim.add(lblResim, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 260, 240));
+        pnlResim.add(lblResim, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 260, 270));
 
+        btnKaydet.setForeground(new java.awt.Color(153, 255, 51));
         btnKaydet.setText("Kaydet");
         btnKaydet.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -744,44 +792,55 @@ public class AdminArayuzu extends javax.swing.JFrame {
             }
         });
 
+        lblKitapResmi1.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        lblKitapResmi1.setText("Kitap Özeti");
+
+        txtKitapOzet.setColumns(20);
+        txtKitapOzet.setRows(5);
+        jScrollPane14.setViewportView(txtKitapOzet);
+
         javax.swing.GroupLayout pnlKitapEklemeLayout = new javax.swing.GroupLayout(pnlKitapEkleme);
         pnlKitapEkleme.setLayout(pnlKitapEklemeLayout);
         pnlKitapEklemeLayout.setHorizontalGroup(
             pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
+                .addGap(21, 21, 21)
                 .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
-                        .addGap(95, 95, 95)
-                        .addComponent(btnKaydet, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane14)
+                        .addGap(333, 333, 333))
                     .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
-                        .addGap(21, 21, 21)
                         .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblYazarAdSoyad)
                             .addComponent(lblKitapAdi)
                             .addComponent(lblKitapKodu)
                             .addComponent(lblYayinEvi)
                             .addComponent(lblKitapTuru)
-                            .addComponent(lblKitapResmi))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cbKitapTuru, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlKitapEklemeLayout.createSequentialGroup()
-                            .addComponent(btnGoruntuSec)
-                            .addGap(54, 54, 54)
-                            .addComponent(pnlResim, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(txtYazarAdSoyad, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 648, Short.MAX_VALUE)
-                        .addComponent(txtKitapAdi, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(txtKitapKodu, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(txtYayinEvi, javax.swing.GroupLayout.Alignment.LEADING)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(lblKitapResmi1)
+                            .addComponent(lblKitapResmi))
+                        .addGap(16, 16, 16)
+                        .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtYazarAdSoyad)
+                            .addComponent(txtKitapAdi, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtKitapKodu, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtYayinEvi, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
+                                .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(cbKitapTuru, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
+                                        .addComponent(btnGoruntuSec)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnKaydet, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 64, Short.MAX_VALUE)
+                                .addComponent(pnlResim, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())))))
         );
         pnlKitapEklemeLayout.setVerticalGroup(
             pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtYazarAdSoyad, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(txtYazarAdSoyad, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblYazarAdSoyad))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -796,19 +855,22 @@ public class AdminArayuzu extends javax.swing.JFrame {
                     .addComponent(lblYayinEvi)
                     .addComponent(txtYayinEvi, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblKitapTuru)
-                    .addComponent(cbKitapTuru, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlResim, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
                         .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblKitapTuru)
+                            .addComponent(cbKitapTuru, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(14, 14, 14)
+                        .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblKitapResmi)
-                            .addComponent(btnGoruntuSec, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(80, 80, 80)
-                        .addComponent(btnKaydet, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(btnGoruntuSec, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnKaydet, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblKitapResmi1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane14, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pnlResim, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         lblYazarAdSoyad.getAccessibleContext().setAccessibleName("lblYazarAdSoyad");
@@ -2014,6 +2076,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             String yayinevi = txtYayinEvi.getText();
             int kitapkodu = Integer.parseInt(txtKitapKodu.getText());
             String kitapturu = cbKitapTuru.getSelectedItem().toString();
+            String kitapozet = txtKitapOzet.getText();
 
             String sqlkitapkodu = "Select COUNT(kitap_kodu) from public.kitaplik where kitap_kodu = ?;";
             pst = conn.prepareStatement(sqlkitapkodu);
@@ -2028,13 +2091,14 @@ public class AdminArayuzu extends javax.swing.JFrame {
             } else {
                 try {
                     fis = new FileInputStream(dosya);
-                    PreparedStatement ps = conn.prepareStatement("INSERT INTO kitaplik (yazar_adsoyad, kitap_adi, kitap_resim, kitap_kodu, yayin_evi, kitap_turu) VALUES (?, ?, ?, ?, ?, ?)");
+                    PreparedStatement ps = conn.prepareStatement("INSERT INTO kitaplik (yazar_adsoyad, kitap_adi, kitap_resim, kitap_kodu, yayin_evi, kitap_turu, kitap_ozet) VALUES (?, ?, ?, ?, ?, ?, ?)");
                     ps.setString(1, yazaradsoyad);
                     ps.setString(2, kitapadi);
                     ps.setBinaryStream(3, fis, dosya.length());
                     ps.setInt(4, kitapkodu);
                     ps.setString(5, yayinevi);
                     ps.setString(6, kitapturu);
+                    ps.setString(7, kitapozet);
                     int sonuc = ps.executeUpdate();
                     if (sonuc == 1) {
                         fis.close();
@@ -2565,6 +2629,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane12;
     private javax.swing.JScrollPane jScrollPane13;
+    private javax.swing.JScrollPane jScrollPane14;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -2584,6 +2649,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JLabel lblKitapAdi;
     private javax.swing.JLabel lblKitapKodu;
     private javax.swing.JLabel lblKitapResmi;
+    private javax.swing.JLabel lblKitapResmi1;
     private javax.swing.JLabel lblKitapTuru;
     private javax.swing.JLabel lblKutuphane;
     private javax.swing.JLabel lblRenk1Adi;
@@ -2636,6 +2702,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JTextField txtKitapAdi;
     private javax.swing.JTextField txtKitapArama;
     private javax.swing.JTextField txtKitapKodu;
+    private javax.swing.JTextArea txtKitapOzet;
     private javax.swing.JTextArea txtKitapReddetmeSebep;
     private javax.swing.JTextArea txtKonu;
     private javax.swing.JTextField txtRandevuIsteyenKisi;

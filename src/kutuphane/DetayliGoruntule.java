@@ -5,23 +5,18 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileSystemView;
 
-public class KitapGuncelleme extends javax.swing.JFrame {
+public class DetayliGoruntule extends javax.swing.JFrame {
 
     Connection conn = new Baglanti().getConnection();
     ResultSet rs = null;
@@ -34,22 +29,21 @@ public class KitapGuncelleme extends javax.swing.JFrame {
     String dosyaadi = null;
     File dosya;
     FileInputStream fis;
-    AdminArayuzu adm;
-
-    public KitapGuncelleme() {
+    
+    public DetayliGoruntule() {
         initComponents();
     }
 
-    public KitapGuncelleme(int kitapid, int kitapkodu, String kitapadi, String yazaradi, String yayinevi, String kitapturu, String kitapozeti,  byte[] imagedata, AdminArayuzu adm) {
+    public DetayliGoruntule(int kitapkodu, String kitapadi, String yazaradi, String yayinevi, String kitapturu, String kitapozeti,  byte[] imagedata, int toplamkitapsayisi, int eldeolankitapsayisi) {
         initComponents();
-        this.adm = adm;
-        this.kitapid = kitapid;
         txtKitapKodu.setText(String.valueOf(kitapkodu));
         txtKitapAdi.setText(kitapadi);
         txtYazarAdSoyad.setText(yazaradi);
         txtYayinEvi.setText(yayinevi);
-        cbKitapTuru.setSelectedItem(kitapturu);
-        txtKitapOzet.setText(kitapozeti);
+        txtKitapTuru.setText(kitapturu);
+        txtKitapOzeti.setText(kitapozeti);
+        txtToplamKitap.setText(String.valueOf(toplamkitapsayisi));
+        txtEldeOlanSayisi.setText(String.valueOf(eldeolankitapsayisi));
         this.imagedata = imagedata;
         InputStream input = new ByteArrayInputStream(imagedata);
         BufferedImage image = null;
@@ -58,13 +52,11 @@ public class KitapGuncelleme extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(ResimKoyma.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         ImageIcon icon = new ImageIcon(image);
         Image resim = icon.getImage().getScaledInstance(pnlResim.getWidth(), pnlResim.getHeight(), Image.SCALE_SMOOTH);
         ImageIcon boyutlanmisresim = new ImageIcon(resim);
         lblResim.setIcon(boyutlanmisresim);
     }
-
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -79,30 +71,27 @@ public class KitapGuncelleme extends javax.swing.JFrame {
         txtKitapAdi = new javax.swing.JTextField();
         txtKitapKodu = new javax.swing.JTextField();
         txtYayinEvi = new javax.swing.JTextField();
-        cbKitapTuru = new javax.swing.JComboBox<>();
-        lblKitapResmi = new javax.swing.JLabel();
-        btnGoruntuSec = new javax.swing.JButton();
         pnlResim = new javax.swing.JPanel();
         lblResim = new javax.swing.JLabel();
-        btnKaydet = new javax.swing.JButton();
-        lblKitapResmi1 = new javax.swing.JLabel();
+        lblKitapTuru1 = new javax.swing.JLabel();
+        lblKitapTuru2 = new javax.swing.JLabel();
+        txtEldeOlanSayisi = new javax.swing.JTextField();
+        txtKitapTuru = new javax.swing.JTextField();
+        txtToplamKitap = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        txtKitapOzet = new javax.swing.JTextArea();
+        txtKitapOzeti = new javax.swing.JTextArea();
+        lblKitapTuru3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                formWindowClosing(evt);
-            }
-        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblYazarAdSoyad.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         lblYazarAdSoyad.setText("Yazar Ad Soyad");
 
+        txtYazarAdSoyad.setEnabled(false);
         txtYazarAdSoyad.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                txtPropertyChange(evt);
+                txtYazarAdSoyadtxtPropertyChange(evt);
             }
         });
 
@@ -118,34 +107,36 @@ public class KitapGuncelleme extends javax.swing.JFrame {
         lblKitapTuru.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
         lblKitapTuru.setText("Kitap Türü");
 
-        cbKitapTuru.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Hikaye", "Roman", "Masal", "Biyografi", "Anı", "Gezi Yazısı" }));
+        txtKitapAdi.setEnabled(false);
 
-        lblKitapResmi.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
-        lblKitapResmi.setText("Kitap Kapağı");
+        txtKitapKodu.setEnabled(false);
 
-        btnGoruntuSec.setText("Görüntü Seçiniz");
-        btnGoruntuSec.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGoruntuSecActionPerformed(evt);
-            }
-        });
+        txtYayinEvi.setEnabled(false);
 
         pnlResim.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        pnlResim.add(lblResim, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 240, 250));
+        pnlResim.add(lblResim, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 240, 260));
 
-        btnKaydet.setText("Kaydet");
-        btnKaydet.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnKaydetActionPerformed(evt);
-            }
-        });
+        lblKitapTuru1.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        lblKitapTuru1.setText("Toplam Kitap Sayısı");
 
-        lblKitapResmi1.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
-        lblKitapResmi1.setText("Kitap Özeti");
+        lblKitapTuru2.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        lblKitapTuru2.setText("Elde Olan Kitap Sayısı");
 
-        txtKitapOzet.setColumns(20);
-        txtKitapOzet.setRows(5);
-        jScrollPane1.setViewportView(txtKitapOzet);
+        txtEldeOlanSayisi.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtEldeOlanSayisi.setEnabled(false);
+
+        txtKitapTuru.setEnabled(false);
+
+        txtToplamKitap.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtToplamKitap.setEnabled(false);
+
+        txtKitapOzeti.setColumns(20);
+        txtKitapOzeti.setRows(5);
+        txtKitapOzeti.setEnabled(false);
+        jScrollPane1.setViewportView(txtKitapOzeti);
+
+        lblKitapTuru3.setFont(new java.awt.Font("Verdana", 0, 15)); // NOI18N
+        lblKitapTuru3.setText("Kitap Özeti");
 
         javax.swing.GroupLayout pnlKitapEklemeLayout = new javax.swing.GroupLayout(pnlKitapEkleme);
         pnlKitapEkleme.setLayout(pnlKitapEklemeLayout);
@@ -154,28 +145,32 @@ public class KitapGuncelleme extends javax.swing.JFrame {
             .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblKitapTuru3)
                     .addComponent(lblKitapAdi)
                     .addComponent(lblKitapKodu)
                     .addComponent(lblYayinEvi)
                     .addComponent(lblKitapTuru)
-                    .addComponent(lblKitapResmi)
                     .addComponent(lblYazarAdSoyad)
-                    .addComponent(lblKitapResmi1)
-                    .addComponent(btnKaydet, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(75, 75, 75)
+                    .addComponent(lblKitapTuru1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
                         .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnGoruntuSec)
-                            .addComponent(cbKitapTuru, 0, 315, Short.MAX_VALUE)
                             .addComponent(txtYayinEvi)
                             .addComponent(txtKitapKodu)
                             .addComponent(txtKitapAdi)
-                            .addComponent(txtYazarAdSoyad))
-                        .addGap(12, 12, 12)
-                        .addComponent(pnlResim, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE))
+                            .addComponent(txtYazarAdSoyad)
+                            .addComponent(txtKitapTuru)
+                            .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
+                                .addComponent(txtToplamKitap, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(26, 26, 26)
+                                .addComponent(lblKitapTuru2)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtEldeOlanSayisi, javax.swing.GroupLayout.PREFERRED_SIZE, 58, Short.MAX_VALUE)))
+                        .addGap(34, 34, 34)
+                        .addComponent(pnlResim, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE))
                     .addComponent(jScrollPane1))
-                .addContainerGap())
+                .addGap(19, 19, 19))
         );
         pnlKitapEklemeLayout.setVerticalGroup(
             pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -201,78 +196,31 @@ public class KitapGuncelleme extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblKitapTuru)
-                            .addComponent(cbKitapTuru, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtKitapTuru, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblKitapResmi)
-                            .addComponent(btnGoruntuSec, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(lblKitapTuru1)
+                            .addComponent(txtToplamKitap, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblKitapTuru2)
+                            .addComponent(txtEldeOlanSayisi, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(2, 2, 2))
                     .addComponent(pnlResim, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
-                        .addComponent(lblKitapResmi1)
-                        .addGap(41, 41, 41)
-                        .addComponent(btnKaydet, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(104, 104, 104))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblKitapTuru3))
+                .addGap(82, 82, 82))
         );
 
-        getContentPane().add(pnlKitapEkleme, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 788, 450));
+        getContentPane().add(pnlKitapEkleme, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 788, 480));
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnGoruntuSecActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoruntuSecActionPerformed
-        JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        chooser.showOpenDialog(null);
-        dosya = chooser.getSelectedFile();
-        String eskidosyaadi = dosya.getAbsolutePath();
-        dosyaadi = eskidosyaadi.replace("\\", "\\\\");
-        ImageIcon resim = new ImageIcon(dosyaadi);
-        Image image = resim.getImage().getScaledInstance(pnlResim.getWidth(), pnlResim.getHeight(), Image.SCALE_SMOOTH);
-        ImageIcon boyutlanmisresim = new ImageIcon(image);
-        lblResim.setIcon(boyutlanmisresim);
-        goruntudurum = true;
-    }//GEN-LAST:event_btnGoruntuSecActionPerformed
+    private void txtYazarAdSoyadtxtPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtYazarAdSoyadtxtPropertyChange
 
-    private void btnKaydetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKaydetActionPerformed
-        try {
-            
-            String sql = "UPDATE public.kitaplik SET kitap_kodu=?, kitap_adi=?, kitap_resim=?, yazar_adsoyad=?, yayin_evi=?, kitap_turu=? WHERE kitap_id = ?;";
-            pst = conn.prepareStatement(sql);
-            pst.setInt(1, Integer.parseInt(txtKitapKodu.getText()));
-            pst.setString(2, txtKitapAdi.getText());
-            if (goruntudurum == false) {
-                pst.setBytes(3, imagedata);
-            } else if (goruntudurum == true) {
-                fis = new FileInputStream(dosya);
-                pst.setBinaryStream(3, fis, dosya.length());
-            }
-            pst.setString(4, txtYazarAdSoyad.getText());
-            pst.setString(5, txtYayinEvi.getText());
-            pst.setString(6, cbKitapTuru.getSelectedItem().toString());
-            pst.setInt(7, kitapid);
-            int sonuc = pst.executeUpdate();
-            if (sonuc == 1) {
-                JOptionPane.showMessageDialog(null, "Güncellem Başarılı");
-            }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(KitapGuncelleme.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println(ex);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(KitapGuncelleme.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnKaydetActionPerformed
-
-    private void txtPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtPropertyChange
-
-    }//GEN-LAST:event_txtPropertyChange
-
-    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        adm.KitaplarTabloVerileri();
-    }//GEN-LAST:event_formWindowClosing
+    }//GEN-LAST:event_txtYazarAdSoyadtxtPropertyChange
 
     /**
      * @param args the command line arguments
@@ -291,42 +239,43 @@ public class KitapGuncelleme extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(KitapGuncelleme.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DetayliGoruntule.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(KitapGuncelleme.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DetayliGoruntule.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(KitapGuncelleme.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DetayliGoruntule.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(KitapGuncelleme.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DetayliGoruntule.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new KitapGuncelleme().setVisible(true);
+                new DetayliGoruntule().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnGoruntuSec;
-    private javax.swing.JButton btnKaydet;
-    private javax.swing.JComboBox<String> cbKitapTuru;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblKitapAdi;
     private javax.swing.JLabel lblKitapKodu;
-    private javax.swing.JLabel lblKitapResmi;
-    private javax.swing.JLabel lblKitapResmi1;
     private javax.swing.JLabel lblKitapTuru;
+    private javax.swing.JLabel lblKitapTuru1;
+    private javax.swing.JLabel lblKitapTuru2;
+    private javax.swing.JLabel lblKitapTuru3;
     private javax.swing.JLabel lblResim;
     private javax.swing.JLabel lblYayinEvi;
     private javax.swing.JLabel lblYazarAdSoyad;
     private javax.swing.JPanel pnlKitapEkleme;
     private javax.swing.JPanel pnlResim;
+    private javax.swing.JTextField txtEldeOlanSayisi;
     private javax.swing.JTextField txtKitapAdi;
     private javax.swing.JTextField txtKitapKodu;
-    private javax.swing.JTextArea txtKitapOzet;
+    private javax.swing.JTextArea txtKitapOzeti;
+    private javax.swing.JTextField txtKitapTuru;
+    private javax.swing.JTextField txtToplamKitap;
     private javax.swing.JTextField txtYayinEvi;
     private javax.swing.JTextField txtYazarAdSoyad;
     // End of variables declaration//GEN-END:variables
