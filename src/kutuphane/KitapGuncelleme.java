@@ -131,7 +131,7 @@ public class KitapGuncelleme extends javax.swing.JFrame {
         });
 
         pnlResim.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        pnlResim.add(lblResim, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 240, 250));
+        pnlResim.add(lblResim, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 240, 410));
 
         btnKaydet.setText("Kaydet");
         btnKaydet.addActionListener(new java.awt.event.ActionListener() {
@@ -144,6 +144,7 @@ public class KitapGuncelleme extends javax.swing.JFrame {
         lblKitapResmi1.setText("Kitap Özeti");
 
         txtKitapOzet.setColumns(20);
+        txtKitapOzet.setLineWrap(true);
         txtKitapOzet.setRows(5);
         jScrollPane1.setViewportView(txtKitapOzet);
 
@@ -163,18 +164,16 @@ public class KitapGuncelleme extends javax.swing.JFrame {
                     .addComponent(lblKitapResmi1)
                     .addComponent(btnKaydet, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(75, 75, 75)
-                .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
-                        .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnGoruntuSec)
-                            .addComponent(cbKitapTuru, 0, 315, Short.MAX_VALUE)
-                            .addComponent(txtYayinEvi)
-                            .addComponent(txtKitapKodu)
-                            .addComponent(txtKitapAdi)
-                            .addComponent(txtYazarAdSoyad))
-                        .addGap(12, 12, 12)
-                        .addComponent(pnlResim, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE))
+                .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnGoruntuSec)
+                    .addComponent(cbKitapTuru, 0, 315, Short.MAX_VALUE)
+                    .addComponent(txtYayinEvi)
+                    .addComponent(txtKitapKodu)
+                    .addComponent(txtKitapAdi)
+                    .addComponent(txtYazarAdSoyad)
                     .addComponent(jScrollPane1))
+                .addGap(12, 12, 12)
+                .addComponent(pnlResim, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pnlKitapEklemeLayout.setVerticalGroup(
@@ -205,15 +204,15 @@ public class KitapGuncelleme extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblKitapResmi)
-                            .addComponent(btnGoruntuSec, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(btnGoruntuSec, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
+                                .addComponent(lblKitapResmi1)
+                                .addGap(41, 41, 41)
+                                .addComponent(btnKaydet, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(pnlResim, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(pnlKitapEklemeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlKitapEklemeLayout.createSequentialGroup()
-                        .addComponent(lblKitapResmi1)
-                        .addGap(41, 41, 41)
-                        .addComponent(btnKaydet, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(104, 104, 104))
         );
 

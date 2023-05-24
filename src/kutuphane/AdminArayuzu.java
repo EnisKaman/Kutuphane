@@ -22,12 +22,9 @@ import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -47,19 +44,13 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javaswingdev.chart.ModelPieChart;
-import javaswingdev.chart.PieChart;
-import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -71,8 +62,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import net.sourceforge.tess4j.Tesseract;
@@ -107,7 +96,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     Object belgeturu;
     int belgeonaylaindex;
     HashMap<Integer, Integer> BelgeIDToOnaylamaTabloRow = new HashMap<>();
-    String tarananbelgesonuclari;
+    String tarananbelgesonuclari = null;
     String taranacakbelgeyolu;
     File taranacakbelge;
 
@@ -647,14 +636,15 @@ public class AdminArayuzu extends javax.swing.JFrame {
         pnlDuyurular = new javax.swing.JPanel();
         pnlDashboard = new javax.swing.JPanel();
         pieChart1 = new javaswingdev.chart.PieChart();
+        pnlPastaBilgiler = new javax.swing.JPanel();
+        lblRenk4Adi = new javax.swing.JLabel();
+        lblRenk3Adi = new javax.swing.JLabel();
+        lblRenk2Adi = new javax.swing.JLabel();
+        lblRenk1Adi = new javax.swing.JLabel();
         pnlRenk1 = new javax.swing.JPanel();
         pnlRenk2 = new javax.swing.JPanel();
         pnlRenk3 = new javax.swing.JPanel();
         pnlRenk4 = new javax.swing.JPanel();
-        lblRenk1Adi = new javax.swing.JLabel();
-        lblRenk2Adi = new javax.swing.JLabel();
-        lblRenk3Adi = new javax.swing.JLabel();
-        lblRenk4Adi = new javax.swing.JLabel();
         tabArsiv = new javax.swing.JTabbedPane();
         pnlBelgeEkle = new javax.swing.JPanel();
         lblBelgeAdi = new javax.swing.JLabel();
@@ -1198,6 +1188,14 @@ public class AdminArayuzu extends javax.swing.JFrame {
 
         tabDiger.addTab("Duyurular", null, pnlDuyurular, "Yeni Duyuru Ekleyebilirsiniz");
 
+        lblRenk4Adi.setText("jLabel6");
+
+        lblRenk3Adi.setText("jLabel6");
+
+        lblRenk2Adi.setText("jLabel6");
+
+        lblRenk1Adi.setText("jLabel6");
+
         javax.swing.GroupLayout pnlRenk1Layout = new javax.swing.GroupLayout(pnlRenk1);
         pnlRenk1.setLayout(pnlRenk1Layout);
         pnlRenk1Layout.setHorizontalGroup(
@@ -1208,9 +1206,6 @@ public class AdminArayuzu extends javax.swing.JFrame {
             pnlRenk1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 20, Short.MAX_VALUE)
         );
-
-        pieChart1.add(pnlRenk1);
-        pnlRenk1.setBounds(590, 20, 20, 20);
 
         javax.swing.GroupLayout pnlRenk2Layout = new javax.swing.GroupLayout(pnlRenk2);
         pnlRenk2.setLayout(pnlRenk2Layout);
@@ -1223,9 +1218,6 @@ public class AdminArayuzu extends javax.swing.JFrame {
             .addGap(0, 20, Short.MAX_VALUE)
         );
 
-        pieChart1.add(pnlRenk2);
-        pnlRenk2.setBounds(590, 50, 20, 20);
-
         javax.swing.GroupLayout pnlRenk3Layout = new javax.swing.GroupLayout(pnlRenk3);
         pnlRenk3.setLayout(pnlRenk3Layout);
         pnlRenk3Layout.setHorizontalGroup(
@@ -1236,9 +1228,6 @@ public class AdminArayuzu extends javax.swing.JFrame {
             pnlRenk3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 20, Short.MAX_VALUE)
         );
-
-        pieChart1.add(pnlRenk3);
-        pnlRenk3.setBounds(590, 80, 20, 20);
 
         javax.swing.GroupLayout pnlRenk4Layout = new javax.swing.GroupLayout(pnlRenk4);
         pnlRenk4.setLayout(pnlRenk4Layout);
@@ -1251,24 +1240,56 @@ public class AdminArayuzu extends javax.swing.JFrame {
             .addGap(0, 20, Short.MAX_VALUE)
         );
 
-        pieChart1.add(pnlRenk4);
-        pnlRenk4.setBounds(590, 110, 20, 20);
+        javax.swing.GroupLayout pnlPastaBilgilerLayout = new javax.swing.GroupLayout(pnlPastaBilgiler);
+        pnlPastaBilgiler.setLayout(pnlPastaBilgilerLayout);
+        pnlPastaBilgilerLayout.setHorizontalGroup(
+            pnlPastaBilgilerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPastaBilgilerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlPastaBilgilerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlPastaBilgilerLayout.createSequentialGroup()
+                        .addComponent(pnlRenk1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addComponent(lblRenk1Adi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(pnlPastaBilgilerLayout.createSequentialGroup()
+                        .addComponent(pnlRenk2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addComponent(lblRenk2Adi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(pnlPastaBilgilerLayout.createSequentialGroup()
+                        .addComponent(pnlRenk3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addComponent(lblRenk3Adi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlPastaBilgilerLayout.createSequentialGroup()
+                        .addComponent(pnlRenk4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblRenk4Adi, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(6, 6, 6))
+        );
+        pnlPastaBilgilerLayout.setVerticalGroup(
+            pnlPastaBilgilerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPastaBilgilerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlPastaBilgilerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlRenk1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblRenk1Adi))
+                .addGap(10, 10, 10)
+                .addGroup(pnlPastaBilgilerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlRenk2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblRenk2Adi))
+                .addGap(10, 10, 10)
+                .addGroup(pnlPastaBilgilerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlRenk3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblRenk3Adi))
+                .addGap(10, 10, 10)
+                .addGroup(pnlPastaBilgilerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlRenk4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblRenk4Adi))
+                .addContainerGap(14, Short.MAX_VALUE))
+        );
 
-        lblRenk1Adi.setText("jLabel6");
-        pieChart1.add(lblRenk1Adi);
-        lblRenk1Adi.setBounds(620, 20, 37, 16);
-
-        lblRenk2Adi.setText("jLabel6");
-        pieChart1.add(lblRenk2Adi);
-        lblRenk2Adi.setBounds(620, 50, 37, 16);
-
-        lblRenk3Adi.setText("jLabel6");
-        pieChart1.add(lblRenk3Adi);
-        lblRenk3Adi.setBounds(620, 80, 37, 16);
-
-        lblRenk4Adi.setText("jLabel6");
-        pieChart1.add(lblRenk4Adi);
-        lblRenk4Adi.setBounds(620, 110, 37, 16);
+        pieChart1.add(pnlPastaBilgiler);
+        pnlPastaBilgiler.setBounds(570, 10, 210, 130);
 
         javax.swing.GroupLayout pnlDashboardLayout = new javax.swing.GroupLayout(pnlDashboard);
         pnlDashboard.setLayout(pnlDashboardLayout);
@@ -2458,20 +2479,34 @@ public class AdminArayuzu extends javax.swing.JFrame {
             int belgekodu = Integer.parseInt(txtBelgeKodu.getText());
             String adver = "(Select adsoyad from public.kullanicilar where email = ?)";
 
-            String sql = "INSERT INTO public.arsiv(belge_adi, belge_yayinlayan_kisi, belge_kodu, belge_yayin_yili, belge_turu, belge_nushasi, belge_ekleyen_adsoyad, belge_ekleyen_email,belge_nushasi_adi) VALUES (?, ?, ?, ?, ?, ?, " + adver + ", ?, ?);";
+            String sql = "INSERT INTO public.arsiv(belge_adi, belge_yayinlayan_kisi, belge_kodu, belge_yayin_yili, belge_turu, belge_nushasi, belge_ekleyen_adsoyad, belge_ekleyen_email,belge_nushasi_adi, belge_tarama, belge_kayit_turu) VALUES (?, ?, ?, ?, ?, ?, " + adver + ", ?, ?, ?, ?);";
             pst = conn.prepareStatement(sql);
             pst.setString(1, belgeadi);
             pst.setString(2, yayinlayanadi);
             pst.setInt(3, belgekodu);
             pst.setInt(4, yayinyili);
             pst.setString(5, belgeturu.toString());
-            pst.setBinaryStream(6, new FileInputStream(dosyayolu));
+            if (dosyayolu != null) {
+                pst.setBinaryStream(6, new FileInputStream(dosyayolu));
+            }else if (dosyayolu == null) {
+                pst.setBinaryStream(6, null);
+            }
+            
             pst.setString(7, email);
             pst.setString(8, email);
             pst.setString(9, dosyaadi);
+            pst.setString(10, tarananbelgesonuclari);
+            if (tarananbelgesonuclari != null && dosyayolu != null) {
+                pst.setString(11, "İkiside");
+            }else if (dosyayolu != null) {
+                pst.setString(11, "PDF");
+            }else if (tarananbelgesonuclari != null) {
+                pst.setString(11, "Taranmış");
+            }
             int sonuc = pst.executeUpdate();
             if (sonuc == 1) {
                 JOptionPane.showMessageDialog(null, "Belge Eklendi");
+                ArsivTabloVerileri();
             }
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
@@ -2584,7 +2619,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
             tesseract.setLanguage("tur");
             String result = tesseract.doOCR(new File(taranacakbelgeyolu));
             //System.out.println(result);
-            txtTarananBelge.setText(result);
+            tarananbelgesonuclari = result;
+            txtTarananBelge.setText(tarananbelgesonuclari);
         } catch (TesseractException e) {
             System.err.println(e.getMessage());
         }
@@ -2671,6 +2707,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JPanel pnlKitapEkleme;
     private javax.swing.JPanel pnlKitapOnaylama;
     private javax.swing.JPanel pnlKitaplar;
+    private javax.swing.JPanel pnlPastaBilgiler;
     private javax.swing.JPanel pnlRandevular;
     private javax.swing.JPanel pnlRenk1;
     private javax.swing.JPanel pnlRenk2;
