@@ -57,10 +57,13 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import raven.cell.TableActionCellEditor;
+import raven.cell.TableActionCellEditorBelgeOkumaBirlikte;
 import raven.cell.TableActionCellEditorView;
 import raven.cell.TableActionCellRender;
+import raven.cell.TableActionCellRenderBelgeOkumaBirlikte;
 import raven.cell.TableActionCellRenderView;
 import raven.cell.TableActionEvent;
+import raven.cell.TableActionEventBelgeOkumaBirlikte;
 import raven.cell.TableActionEventKullanici;
 
 public class KullaniciArayuz extends javax.swing.JFrame {
@@ -238,14 +241,16 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             model.addColumn("Belge Kodu");
             model.addColumn("Yayın Yılı");
             model.addColumn("Belge Türü");
+            model.addColumn("İşlem");
             
             while (rs.next()) {
-                Object[] row = new Object[5];
+                Object[] row = new Object[6];
                 row[0] = rs.getString("belge_adi");
                 row[1] = rs.getString("belge_yayinlayan_kisi");
                 row[2] = rs.getInt("belge_kodu");
                 row[3] = rs.getInt("belge_yayin_yili");
                 row[4] = rs.getString("belge_turu");
+                row[5] = rs.getString("belge_turu");
                 model.addRow(row);
             }
             
@@ -255,6 +260,19 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             tblBelgeIste.setRowSorter(shorter);
             tblBelgeIste.setDefaultRenderer(Object.class, centerRenderer);
             tblBelgeIste.setModel(model);
+            TableActionEventBelgeOkumaBirlikte event = new TableActionEventBelgeOkumaBirlikte() {
+                @Override
+                public void PdfOkuma(int row) {
+                    JOptionPane.showMessageDialog(null, "PDF " + row);
+                }
+
+                @Override
+                public void TaranmisOkuma(int row) {
+                    JOptionPane.showMessageDialog(null, "Taranmiş " + row);
+                }
+            };
+            tblBelgeIste.getColumnModel().getColumn(5).setCellRenderer(new TableActionCellRenderBelgeOkumaBirlikte());
+            tblBelgeIste.getColumnModel().getColumn(5).setCellEditor(new TableActionCellEditorBelgeOkumaBirlikte(event));
             
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
@@ -924,6 +942,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblBelgeIste.setRowHeight(40);
         tblBelgeIste.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblBelgeIsteMouseClicked(evt);
