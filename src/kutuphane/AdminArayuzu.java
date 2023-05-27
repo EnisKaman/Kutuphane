@@ -2497,11 +2497,11 @@ public class AdminArayuzu extends javax.swing.JFrame {
             pst.setString(9, dosyaadi);
             pst.setString(10, tarananbelgesonuclari);
             if (tarananbelgesonuclari != null && dosyayolu != null) {
-                pst.setString(11, "İkiside");
+                pst.setInt(11, 2);
             }else if (dosyayolu != null) {
-                pst.setString(11, "PDF");
+                pst.setInt(11, 0);
             }else if (tarananbelgesonuclari != null) {
-                pst.setString(11, "Taranmış");
+                pst.setInt(11, 1);
             }
             int sonuc = pst.executeUpdate();
             if (sonuc == 1) {
