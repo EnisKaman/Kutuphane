@@ -652,6 +652,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
         }
     }
 
+    
+
     public AdminArayuzu() {
         initComponents();
     }

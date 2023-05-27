@@ -200,7 +200,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                 int belgekayitturu = rs.getInt("belge_kayit_turu");
                 row[2] = belgekodu;
                 row[3] = rs.getInt("arsiv_istek_kabul_yayin_yili");
-                row[4] = rs.getString("belge_turu");                
+                row[4] = rs.getString("belge_turu");
                 row[5] = belgekayitturu;
                 model.addRow(row);
                 BelgeKoduToKayitTuruBelgelerimTabloRow.put(belgekodu, belgekayitturu);
@@ -437,8 +437,8 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void TaranmisBelgeGoster(int belgekodu){
+
+    public void TaranmisBelgeGoster(int belgekodu) {
         try {
             String sql = "SELECT belge_tarama FROM public.arsiv WHERE belge_kodu = ?";
             pst = conn.prepareStatement(sql);
@@ -452,7 +452,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         }
     }
 
-    public void PDFGoster(int belgekodu)  {
+    public void PDFGoster(int belgekodu) {
         try {
             String sql = "SELECT belge_nushasi,belge_nushasi_adi FROM public.arsiv WHERE belge_kodu = ?";
             pst = conn.prepareStatement(sql);
@@ -643,6 +643,38 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         }
     }
 
+    public void KitapSuresiBul(String email) {
+        try {
+            int years, months, days, hours, minutes;
+            String adsoyad;
+            String sql = "SELECT *,\n"
+                    + "       EXTRACT(YEAR FROM date_difference) AS years,\n"
+                    + "       EXTRACT(MONTH FROM date_difference) AS months,\n"
+                    + "       EXTRACT(DAY FROM date_difference) AS days,\n"
+                    + "	   EXTRACT(HOUR FROM date_difference) AS hours,\n"
+                    + "	   EXTRACT(MINUTE FROM date_difference) AS minutes\n"
+                    + "FROM (SELECT *, AGE(kitap_al_kabul_geri_getirme_tarihi, CURRENT_TIMESTAMP) AS date_difference\n"
+                    + "  FROM public.kitap_al_kabul WHERE kitap_al_kabul_isteyen_email = ?\n"
+                    + ") AS subquery;";
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, email);
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                years = rs.getInt("years");
+                months = rs.getInt("months");
+                days = rs.getInt("days");
+                hours = rs.getInt("hours");
+                minutes = rs.getInt("minutes");
+                adsoyad = rs.getString("kitap_al_kabul_isteyen_ad_soyad");
+                
+                String mesaj = adsoyad + "";
+                JOptionPane.showMessageDialog(null, mesaj);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public KullaniciArayuz() {
         initComponents();
     }
@@ -662,6 +694,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         ArsivBelgelerimTabloVerileri();
         ArsivBelgeIsteTabloVerileri();
         AldigimKitaplarTabloVerileri();
+        KitapSuresiBul(email);
     }
 
     @SuppressWarnings("unchecked")
