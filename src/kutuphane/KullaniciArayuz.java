@@ -59,12 +59,14 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import raven.cell.TableActionCellEditor;
 import raven.cell.TableActionCellEditorBelgeOkumaBirlikte;
+import raven.cell.TableActionCellEditorBelgeOkumaTarama;
 import raven.cell.TableActionCellEditorView;
 import raven.cell.TableActionCellRender;
 import raven.cell.TableActionCellRenderBelgeOkumaBirlikte;
 import raven.cell.TableActionCellRenderView;
 import raven.cell.TableActionEvent;
 import raven.cell.TableActionEventBelgeOkumaBirlikte;
+import raven.cell.TableActionEventBelgeOkumaTarama;
 import raven.cell.TableActionEventKullanici;
 
 public class KullaniciArayuz extends javax.swing.JFrame {
@@ -84,6 +86,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     String arayuzdurumu = "kutuphane";
     List<byte[]> resimler = new ArrayList<>();
     HashMap<Integer, Integer> BelgeKoduToKayitTuruBelgeIsteTabloRow = new HashMap<>();
+    HashMap<Integer, Integer> BelgeKoduToKayitTuruBelgelerimTabloRow = new HashMap<>();
 
     public void KitaplarTabloVerileri() {
         try {
@@ -175,7 +178,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
     public void ArsivBelgelerimTabloVerileri() {
         try {
-            String sql = "SELECT aik.*,(SELECT belge_turu FROM public.arsiv a WHERE a.belge_kodu = aik.arsiv_istek_kabul_belge_kodu) FROM public.arsiv_istek_kabul aik WHERE aik.arsiv_istek_kabul_isteyen_email = ?;";
+            String sql = "SELECT aik.*,(SELECT a.belge_turu FROM public.arsiv a WHERE a.belge_kodu = aik.arsiv_istek_kabul_belge_kodu), (SELECT a.belge_kayit_turu FROM public.arsiv a WHERE a.belge_kodu = aik.arsiv_istek_kabul_belge_kodu) FROM public.arsiv_istek_kabul aik WHERE aik.arsiv_istek_kabul_isteyen_email = ?;";
             pst = conn.prepareStatement(sql);
             pst.setString(1, email);
             rs = pst.executeQuery();
@@ -193,11 +196,14 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                 Object[] row = new Object[6];
                 row[0] = rs.getString("arsiv_istek_kabul_belge_adi");
                 row[1] = rs.getString("arsiv_istek_kabul_yayinlayan_adi");
-                row[2] = rs.getInt("arsiv_istek_kabul_belge_kodu");
+                int belgekodu = rs.getInt("arsiv_istek_kabul_belge_kodu");
+                int belgekayitturu = rs.getInt("belge_kayit_turu");
+                row[2] = belgekodu;
                 row[3] = rs.getInt("arsiv_istek_kabul_yayin_yili");
-                row[4] = rs.getString("belge_turu");
-                row[5] = null;
+                row[4] = rs.getString("belge_turu");                
+                row[5] = belgekayitturu;
                 model.addRow(row);
+                BelgeKoduToKayitTuruBelgelerimTabloRow.put(belgekodu, belgekayitturu);
             }
 
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -206,25 +212,33 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             tblBelgelerim.setRowSorter(shorter);
             tblBelgelerim.setModel(model);
             tblBelgelerim.setDefaultRenderer(Object.class, centerRenderer);
-            TableActionEvent event = new TableActionEvent() {
+            TableActionEventBelgeOkumaBirlikte event = new TableActionEventBelgeOkumaBirlikte() {
                 @Override
-                public void onEdit(int row) {
-                    System.out.println("Edit row : " + row);
+                public void PdfOkuma(int row) {
+                    int belgekodu = (int) tblBelgelerim.getValueAt(row, 2);
+                    int kayitturu = BelgeKoduToKayitTuruBelgelerimTabloRow.get(belgekodu);
+                    if (kayitturu == 2 || kayitturu == 0) {
+                        PDFGoster(belgekodu);
+                    }
+                    if (kayitturu == 1) {
+                        JOptionPane.showMessageDialog(null, "Bu belgede yalnızca taranmış bir belge vardır.");
+                    }
                 }
 
                 @Override
-                public void onDelete(int row) {
-
-                    System.out.println("Delete row : " + row);
-                }
-
-                @Override
-                public void onView(int row) {
-                    System.out.println("View row : " + row);
+                public void TaranmisOkuma(int row) {
+                    int belgekodu = (int) tblBelgelerim.getValueAt(row, 2);
+                    int kayitturu = BelgeKoduToKayitTuruBelgelerimTabloRow.get(belgekodu);
+                    if (kayitturu == 2 || kayitturu == 1) {
+                        TaranmisBelgeGoster(belgekodu);
+                    }
+                    if (kayitturu == 0) {
+                        JOptionPane.showMessageDialog(null, "Bu belgede yalnızca PDF vardır.");
+                    }
                 }
             };
-            tblBelgelerim.getColumnModel().getColumn(5).setCellRenderer(new TableActionCellRender());
-            tblBelgelerim.getColumnModel().getColumn(5).setCellEditor(new TableActionCellEditor(event));
+            tblBelgelerim.getColumnModel().getColumn(5).setCellRenderer(new TableActionCellRenderBelgeOkumaBirlikte());
+            tblBelgelerim.getColumnModel().getColumn(5).setCellEditor(new TableActionCellEditorBelgeOkumaBirlikte(event));
 
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
@@ -271,11 +285,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                     int belgekodu = (int) tblBelgeIste.getValueAt(row, 2);
                     int kayitturu = BelgeKoduToKayitTuruBelgeIsteTabloRow.get(belgekodu);
                     if (kayitturu == 2 || kayitturu == 0) {
-                        try {
-                            PDFGoster(belgekodu);
-                        } catch (IOException ex) {
-                            Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        PDFGoster(belgekodu);
                     }
                     if (kayitturu == 1) {
                         JOptionPane.showMessageDialog(null, "Bu belgede yalnızca taranmış bir belge vardır.");
@@ -284,7 +294,14 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
                 @Override
                 public void TaranmisOkuma(int row) {
-                    JOptionPane.showMessageDialog(null, "Taranmiş " + row);
+                    int belgekodu = (int) tblBelgeIste.getValueAt(row, 2);
+                    int kayitturu = BelgeKoduToKayitTuruBelgeIsteTabloRow.get(belgekodu);
+                    if (kayitturu == 2 || kayitturu == 1) {
+                        TaranmisBelgeGoster(belgekodu);
+                    }
+                    if (kayitturu == 0) {
+                        JOptionPane.showMessageDialog(null, "Bu belgede yalnızca PDF vardır.");
+                    }
                 }
             };
             tblBelgeIste.getColumnModel().getColumn(5).setCellRenderer(new TableActionCellRenderBelgeOkumaBirlikte());
@@ -420,8 +437,22 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public void TaranmisBelgeGoster(int belgekodu){
+        try {
+            String sql = "SELECT belge_tarama FROM public.arsiv WHERE belge_kodu = ?";
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1, belgekodu);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                JOptionPane.showMessageDialog(null, rs.getString("belge_tarama"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
-    public void PDFGoster(int belgekodu) throws FileNotFoundException, IOException {
+    public void PDFGoster(int belgekodu)  {
         try {
             String sql = "SELECT belge_nushasi,belge_nushasi_adi FROM public.arsiv WHERE belge_kodu = ?";
             pst = conn.prepareStatement(sql);
@@ -449,6 +480,10 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             }
 
         } catch (SQLException ex) {
+            Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

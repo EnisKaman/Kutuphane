@@ -22,6 +22,7 @@ import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Image;
@@ -67,8 +68,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 import raven.cell.TableActionCellEditor;
+import raven.cell.TableActionCellEditorBelgeOkumaBirlikte;
 import raven.cell.TableActionCellRender;
+import raven.cell.TableActionCellRenderBelgeOkumaBirlikte;
 import raven.cell.TableActionEvent;
+import raven.cell.TableActionEventBelgeOkumaBirlikte;
 
 /**
  *
@@ -99,6 +103,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     String tarananbelgesonuclari = null;
     String taranacakbelgeyolu;
     File taranacakbelge;
+    HashMap<Integer, Integer> BelgeKoduToKayitTuruBelgelerimTabloRow = new HashMap<>();
 
     public void KitaplarTabloVerileri() {
         try {
@@ -216,7 +221,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
 
     public void ArsivTabloVerileri() {
         try {
-            String sql = "SELECT DISTINCT belge_adi,belge_yayinlayan_kisi,belge_kodu,belge_yayin_yili,belge_turu FROM public.arsiv;";
+            String sql = "SELECT DISTINCT belge_adi,belge_yayinlayan_kisi,belge_kodu,belge_yayin_yili,belge_turu, belge_kayit_turu FROM public.arsiv;";
             pst = conn.prepareStatement(sql);
             rs = pst.executeQuery();
 
@@ -232,11 +237,14 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 Object[] row = new Object[6];
                 row[0] = rs.getString("belge_adi");
                 row[1] = rs.getString("belge_yayinlayan_kisi");
-                row[2] = rs.getInt("belge_kodu");
+                int belgekodu = rs.getInt("belge_kodu");
+                int belgekayitturu = rs.getInt("belge_kayit_turu");
+                row[2] = belgekodu;
                 row[3] = rs.getInt("belge_yayin_yili");
                 row[4] = rs.getString("belge_turu");
-                row[5] = "Gör";
+                row[5] = belgekayitturu;
                 model.addRow(row);
+                BelgeKoduToKayitTuruBelgelerimTabloRow.put(belgekodu, belgekayitturu);
             }
 
             DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -245,6 +253,33 @@ public class AdminArayuzu extends javax.swing.JFrame {
             tblBelgeler.setRowSorter(shorter);
             tblBelgeler.setDefaultRenderer(Object.class, centerRenderer);
             tblBelgeler.setModel(model);
+            TableActionEventBelgeOkumaBirlikte event = new TableActionEventBelgeOkumaBirlikte() {
+                @Override
+                public void PdfOkuma(int row) {
+                    int belgekodu = (int) tblBelgeler.getValueAt(row, 2);
+                    int kayitturu = BelgeKoduToKayitTuruBelgelerimTabloRow.get(belgekodu);
+                    if (kayitturu == 2 || kayitturu == 0) {
+                        PDFGoster(belgekodu);
+                    }
+                    if (kayitturu == 1) {
+                        JOptionPane.showMessageDialog(null, "Bu belgede yalnızca taranmış bir belge vardır.");
+                    }
+                }
+
+                @Override
+                public void TaranmisOkuma(int row) {
+                    int belgekodu = (int) tblBelgeler.getValueAt(row, 2);
+                    int kayitturu = BelgeKoduToKayitTuruBelgelerimTabloRow.get(belgekodu);
+                    if (kayitturu == 2 || kayitturu == 1) {
+                        TaranmisBelgeGoster(belgekodu);
+                    }
+                    if (kayitturu == 0) {
+                        JOptionPane.showMessageDialog(null, "Bu belgede yalnızca PDF vardır.");
+                    }
+                }
+            };
+            tblBelgeler.getColumnModel().getColumn(5).setCellRenderer(new TableActionCellRenderBelgeOkumaBirlikte());
+            tblBelgeler.getColumnModel().getColumn(5).setCellEditor(new TableActionCellEditorBelgeOkumaBirlikte(event));
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -358,6 +393,78 @@ public class AdminArayuzu extends javax.swing.JFrame {
         }
     }
 
+    public void TaranmisBelgeGoster(int belgekodu) {
+        try {
+            String sql = "SELECT belge_tarama FROM public.arsiv WHERE belge_kodu = ?";
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1, belgekodu);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                JOptionPane.showMessageDialog(null, rs.getString("belge_tarama"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void PDFGoster(int belgekodu) {
+        try {
+            String sql = "SELECT belge_nushasi,belge_nushasi_adi FROM public.arsiv WHERE belge_kodu = ?";
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1, belgekodu);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                //JOptionPane.showMessageDialog(null, "asdfas");
+                byte[] pdfData = rs.getBytes("belge_nushasi");
+                String belgenushasiadi = rs.getString("belge_nushasi_adi");
+                String dosyaAdi = belgenushasiadi;
+
+                // Byte dizisini PDF dosyasına yazma işlemi
+                String dosyaYolu = "C:\\Users\\ekmn2\\OneDrive\\Belgeler\\New Folder\\Kutuphane\\pdf\\" + dosyaAdi;
+                FileOutputStream fos = new FileOutputStream(dosyaYolu);
+                fos.write(pdfData);
+                fos.close();
+                Desktop.getDesktop().open(new File(dosyaYolu));
+
+                /*File dosya = new File(dosyaAdi);                
+                if (dosya.exists()) {
+                    dosya.delete();
+                    System.out.println("Dosya silindi: " + dosyaAdi);
+                }*/
+                // PDF dosyasını varsayılan PDF görüntüleyici ile açma
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void DosyaSilme() {
+        String klasorYolu = "C:\\Users\\ekmn2\\OneDrive\\Belgeler\\New Folder\\Kutuphane\\pdf\\";
+        File klasor = new File(klasorYolu);
+
+        if (klasor.exists()) {
+            File[] dosyalar = klasor.listFiles();
+            if (dosyalar != null) {
+                for (File dosya : dosyalar) {
+                    if (dosya.isFile()) {
+                        if (dosya.delete()) {
+                            System.out.println(dosya.getName() + " dosyası başarıyla silindi.");
+                        } else {
+                            System.out.println(dosya.getName() + " dosyası silinirken bir hata oluştu.");
+                        }
+                    }
+                }
+            }
+        } else {
+            System.out.println("Belirtilen klasör bulunamadı.");
+        }
+    }
+
     public Color Renkler(int index) {
         Color[] color = new Color[]{new Color(255, 102, 102), new Color(29, 184, 80), new Color(206, 215, 33), new Color(55, 55, 227), new Color(0, 255, 51)};
         return color[index];
@@ -463,7 +570,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 kitapozeti = rs.getString("kitap_ozet");
                 imagedata = rs.getBytes("kitap_resim");
             }
-            
+
             String sqlkitapsayisi = "SELECT kitap_sayisi, elde_olan FROM public.kitap_envanter WHERE kitap_adi = ? AND kitap_yayinevi = ?;";
             pst = conn.prepareStatement(sqlkitapsayisi);
             pst.setString(1, kitapadi);
@@ -1596,6 +1703,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblBelgeler.setRowHeight(40);
         jScrollPane9.setViewportView(tblBelgeler);
 
         jLabel7.setText("Tabloda Arama Yapın");
@@ -2014,6 +2122,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
 
 ///////////////////////////////////////////////// Çıkış Log Kaydı Başlangıç /////////////////////////////////////////////////    
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        DosyaSilme();
         try {
             InetAddress ip;
             ip = InetAddress.getLocalHost();
@@ -2488,19 +2597,19 @@ public class AdminArayuzu extends javax.swing.JFrame {
             pst.setString(5, belgeturu.toString());
             if (dosyayolu != null) {
                 pst.setBinaryStream(6, new FileInputStream(dosyayolu));
-            }else if (dosyayolu == null) {
+            } else if (dosyayolu == null) {
                 pst.setBinaryStream(6, null);
             }
-            
+
             pst.setString(7, email);
             pst.setString(8, email);
             pst.setString(9, dosyaadi);
             pst.setString(10, tarananbelgesonuclari);
             if (tarananbelgesonuclari != null && dosyayolu != null) {
                 pst.setInt(11, 2);
-            }else if (dosyayolu != null) {
+            } else if (dosyayolu != null) {
                 pst.setInt(11, 0);
-            }else if (tarananbelgesonuclari != null) {
+            } else if (tarananbelgesonuclari != null) {
                 pst.setInt(11, 1);
             }
             int sonuc = pst.executeUpdate();
@@ -2590,9 +2699,12 @@ public class AdminArayuzu extends javax.swing.JFrame {
             int cevap = pst.executeUpdate();
             if (cevap == 1) {
                 JOptionPane.showMessageDialog(null, "İnsert Oldu");
+                BelgeOnayTabloVerileri();
             }
 
         } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnBelgeOnaylamaKabulEtActionPerformed
