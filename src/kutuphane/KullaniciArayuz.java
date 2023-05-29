@@ -645,8 +645,8 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
     public void KitapSuresiBul(String email) {
         try {
-            int years, months, days, hours, minutes;
-            String adsoyad;
+            int years, months, days, hours, minutes, kitapkodu = 0;
+            String adsoyad, kitapadi, tarih, mesaj = null;
             String sql = "SELECT *,\n"
                     + "       EXTRACT(YEAR FROM date_difference) AS years,\n"
                     + "       EXTRACT(MONTH FROM date_difference) AS months,\n"
@@ -666,9 +666,21 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                 hours = rs.getInt("hours");
                 minutes = rs.getInt("minutes");
                 adsoyad = rs.getString("kitap_al_kabul_isteyen_ad_soyad");
-                
-                String mesaj = adsoyad + "";
-                JOptionPane.showMessageDialog(null, mesaj);
+                kitapadi = rs.getString("kitap_al_kabul_kitap_adi");
+                kitapkodu = rs.getInt("kitap_al_kabul_kitap_kodu");
+                tarih = rs.getString("kitap_al_kabul_geri_getirme_tarihi");
+
+                if (days <= 0 && hours <= 0 && minutes <= 0) {
+                    mesaj = "Sayın " + adsoyad + ";\n\nAdı: " + kitapadi + "\nKodu: " + kitapkodu + " olan kitabın \n" + tarih + " tarihli son getirme süresi geçmiştir.\nDetayları bildirim kısmından görüntüleyebilirsiniz.";
+                    JOptionPane.showMessageDialog(null, mesaj);
+                }
+                if (days <= 0 && hours >= 0 && minutes >= 0) {
+                    mesaj = "Sayın " + adsoyad + ";\n\nAdı: " + kitapadi + "\nKodu: " + kitapkodu + " olan kitabın \n" + tarih + " tarihli son getirme gününe girmiş bulunmaktasınız."
+                            + "\nKitap iadesi için: " + hours + " saat, " + minutes + " dakika süre kalmıştır."
+                            + "\nDetayları bildirim kısmından görüntüleyebilirsiniz.";
+                    JOptionPane.showMessageDialog(null, mesaj);
+                }
+
             }
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
@@ -684,7 +696,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         this.sifre = sifre;
         this.tema = tema;
         initComponents();
-        pnlSettings.setVisible(false);
+        KitapSuresiBul(email);
         TemaRengi();
         AdminCekme();
         BekleyenRandevuTabloVerileri();
@@ -694,7 +706,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         ArsivBelgelerimTabloVerileri();
         ArsivBelgeIsteTabloVerileri();
         AldigimKitaplarTabloVerileri();
-        KitapSuresiBul(email);
+        pnlSettings.setVisible(false);
     }
 
     @SuppressWarnings("unchecked")
