@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.management.Notification;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -68,6 +69,8 @@ import raven.cell.TableActionEvent;
 import raven.cell.TableActionEventBelgeOkumaBirlikte;
 import raven.cell.TableActionEventBelgeOkumaTarama;
 import raven.cell.TableActionEventKullanici;
+import raven.glasspanepopup.GlassPanePopup;
+import sample.notification.Notifications;
 
 public class KullaniciArayuz extends javax.swing.JFrame {
 
@@ -686,6 +689,23 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public void BildirimSayisi(){
+        try {
+            int count = 0;
+            String sql = "SELECT COUNT(bildirim_email) FROM public.bildirim WHERE bildirim_email = ? AND bildirim_durum = ?;";
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, email);
+            pst.setString(2, "Beklemede");
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+            badgeButton1.setText(String.valueOf(count));
+        } catch (SQLException ex) {
+            Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     public KullaniciArayuz() {
         initComponents();
@@ -696,7 +716,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         this.sifre = sifre;
         this.tema = tema;
         initComponents();
-
+        GlassPanePopup.install(this);
         KitapSuresiBul(email);
         TemaRengi();
         AdminCekme();
@@ -707,6 +727,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         ArsivBelgelerimTabloVerileri();
         ArsivBelgeIsteTabloVerileri();
         AldigimKitaplarTabloVerileri();
+        BildirimSayisi();
         pnlSettings.setVisible(false);
         badgeButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
     }
@@ -853,11 +874,6 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane7)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitapAlmaLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel9)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtKitapAlmaArama, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlKitapAlmaLayout.createSequentialGroup()
                         .addComponent(txtKitapAdi, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
@@ -867,9 +883,15 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(cbKutuphaneci, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitapAlmaLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 356, Short.MAX_VALUE)
-                        .addComponent(btnKitapAl, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(312, 312, 312)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitapAlmaLayout.createSequentialGroup()
+                                .addComponent(jLabel9)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtKitapAlmaArama, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitapAlmaLayout.createSequentialGroup()
+                                .addComponent(btnKitapAl, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(312, 312, 312)))))
                 .addContainerGap())
         );
         pnlKitapAlmaLayout.setVerticalGroup(
@@ -997,6 +1019,11 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         badgeButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 badgeButton1MouseClicked(evt);
+            }
+        });
+        badgeButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                badgeButton1ActionPerformed(evt);
             }
         });
         getContentPane().add(badgeButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 20, -1, -1));
@@ -1809,8 +1836,12 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     }//GEN-LAST:event_txtBelgelerimAramaPropertyChange
 
     private void badgeButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_badgeButton1MouseClicked
-        JOptionPane.showMessageDialog(null, "asd");
+        //JOptionPane.showMessageDialog(null, "asd");
     }//GEN-LAST:event_badgeButton1MouseClicked
+
+    private void badgeButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_badgeButton1ActionPerformed
+        GlassPanePopup.showPopup(new Notifications(email));
+    }//GEN-LAST:event_badgeButton1ActionPerformed
 
     public void TemaRengi() {
         if (tema == 0) {
