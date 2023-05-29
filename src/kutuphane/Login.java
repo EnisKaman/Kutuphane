@@ -21,9 +21,7 @@ import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 
-import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -43,10 +41,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -93,7 +88,7 @@ public class Login extends javax.swing.JFrame {
         pnlSettings.setVisible(false);
         txtSifre.addActionListener(action);
         txtEmail.addActionListener(action2);
-
+        
         ////////////////////////////////METİN BELGESİ OKUMA BAŞLANGIÇ///////////////////////////
         try {
             File dosya = new File(dosyayolu);

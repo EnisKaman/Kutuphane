@@ -696,6 +696,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         this.sifre = sifre;
         this.tema = tema;
         initComponents();
+
         KitapSuresiBul(email);
         TemaRengi();
         AdminCekme();
@@ -707,15 +708,13 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         ArsivBelgeIsteTabloVerileri();
         AldigimKitaplarTabloVerileri();
         pnlSettings.setVisible(false);
+        badgeButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
     }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lblKutuphane = new javax.swing.JLabel();
-        lblArsiv = new javax.swing.JLabel();
-        lblDiger = new javax.swing.JLabel();
         tabKutuphane = new javax.swing.JTabbedPane();
         pnlKitapAlma = new javax.swing.JPanel();
         jScrollPane7 = new javax.swing.JScrollPane();
@@ -733,6 +732,10 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         txtAldigimKitaplarArama = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         lblSettings = new javax.swing.JLabel();
+        lblDiger = new javax.swing.JLabel();
+        lblArsiv = new javax.swing.JLabel();
+        lblKutuphane = new javax.swing.JLabel();
+        badgeButton1 = new raven.notibutton.BadgeButton();
         pnlSettings = new javax.swing.JPanel();
         pnlSettingsKapat = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -798,39 +801,6 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        lblKutuphane.setFont(new java.awt.Font("Verdana", 1, 36)); // NOI18N
-        lblKutuphane.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/icons8_literature_64px.png"))); // NOI18N
-        lblKutuphane.setText("Kütüphane");
-        lblKutuphane.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        lblKutuphane.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblKutuphaneMouseClicked(evt);
-            }
-        });
-        getContentPane().add(lblKutuphane, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 10, -1, -1));
-
-        lblArsiv.setFont(new java.awt.Font("Verdana", 0, 36)); // NOI18N
-        lblArsiv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/icons8_view_64px.png"))); // NOI18N
-        lblArsiv.setText("Arşiv");
-        lblArsiv.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        lblArsiv.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblArsivMouseClicked(evt);
-            }
-        });
-        getContentPane().add(lblArsiv, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 10, -1, -1));
-
-        lblDiger.setFont(new java.awt.Font("Verdana", 0, 36)); // NOI18N
-        lblDiger.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/icons8_flicker_free_64px.png"))); // NOI18N
-        lblDiger.setText("Diğer");
-        lblDiger.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        lblDiger.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblDigerMouseClicked(evt);
-            }
-        });
-        getContentPane().add(lblDiger, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 10, -1, -1));
-
         tblKitapAl.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -884,7 +854,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                 .addGroup(pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane7)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitapAlmaLayout.createSequentialGroup()
-                        .addGap(0, 457, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel9)
                         .addGap(18, 18, 18)
                         .addComponent(txtKitapAlmaArama, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -897,7 +867,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(cbKutuphaneci, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitapAlmaLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 356, Short.MAX_VALUE)
                         .addComponent(btnKitapAl, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(312, 312, 312)))
                 .addContainerGap())
@@ -987,6 +957,49 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             }
         });
         getContentPane().add(lblSettings, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
+
+        lblDiger.setFont(new java.awt.Font("Verdana", 0, 36)); // NOI18N
+        lblDiger.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/icons8_flicker_free_64px.png"))); // NOI18N
+        lblDiger.setText("Diğer");
+        lblDiger.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblDiger.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblDigerMouseClicked(evt);
+            }
+        });
+        getContentPane().add(lblDiger, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 10, -1, -1));
+
+        lblArsiv.setFont(new java.awt.Font("Verdana", 0, 36)); // NOI18N
+        lblArsiv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/icons8_view_64px.png"))); // NOI18N
+        lblArsiv.setText("Arşiv");
+        lblArsiv.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblArsiv.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblArsivMouseClicked(evt);
+            }
+        });
+        getContentPane().add(lblArsiv, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 10, -1, -1));
+
+        lblKutuphane.setFont(new java.awt.Font("Verdana", 1, 36)); // NOI18N
+        lblKutuphane.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/icons8_literature_64px.png"))); // NOI18N
+        lblKutuphane.setText("Kütüphane");
+        lblKutuphane.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblKutuphane.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblKutuphaneMouseClicked(evt);
+            }
+        });
+        getContentPane().add(lblKutuphane, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 10, -1, -1));
+
+        badgeButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/zil.png"))); // NOI18N
+        badgeButton1.setText("0");
+        badgeButton1.setBadgeColor(new java.awt.Color(0, 153, 51));
+        badgeButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                badgeButton1MouseClicked(evt);
+            }
+        });
+        getContentPane().add(badgeButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 20, -1, -1));
 
         pnlSettings.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -1391,6 +1404,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         lblArsiv.setVisible(true);
         lblDiger.setVisible(true);
         lblKutuphane.setVisible(true);
+        badgeButton1.setVisible(true);
     }//GEN-LAST:event_pnlSettingsKapatMouseClicked
 ///////////////////////////////////////////////// Ayarlar Kapatama Butonu Bitiş /////////////////////////////////////////////////  
 
@@ -1430,6 +1444,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         lblArsiv.setVisible(false);
         lblDiger.setVisible(false);
         lblKutuphane.setVisible(false);
+        badgeButton1.setVisible(false);
     }//GEN-LAST:event_lblSettingsMouseClicked
 ///////////////////////////////////////////////// Ayarlar Açma Butonu Bitiş ///////////////////////////////////////////////// 
 
@@ -1793,135 +1808,167 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtBelgelerimAramaPropertyChange
 
+    private void badgeButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_badgeButton1MouseClicked
+        JOptionPane.showMessageDialog(null, "asd");
+    }//GEN-LAST:event_badgeButton1MouseClicked
+
     public void TemaRengi() {
         if (tema == 0) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    //FlatAnimatedLafChange.showSnapshot();
+                    var ui = badgeButton1.getUI();
+                    FlatAnimatedLafChange.showSnapshot();
                     FlatIntelliJLaf.setup();
                     FlatLaf.updateUI();
-                    //FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (tema == 1) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    //FlatAnimatedLafChange.showSnapshot();
+                    var ui = badgeButton1.getUI();
+                    FlatAnimatedLafChange.showSnapshot();
                     FlatDarkLaf.setup();
                     FlatLaf.updateUI();
-                    //FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (tema == 2) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     FlatAnimatedLafChange.showSnapshot();
                     FlatMacLightLaf.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (tema == 3) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    //FlatAnimatedLafChange.showSnapshot();
+                    var ui = badgeButton1.getUI();
+                    FlatAnimatedLafChange.showSnapshot();
                     FlatMacDarkLaf.setup();
                     FlatLaf.updateUI();
-                    //FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (tema == 4) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     FlatAnimatedLafChange.showSnapshot();
                     FlatArcOrangeIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (tema == 5) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
+
                     FlatAnimatedLafChange.showSnapshot();
                     FlatArcDarkOrangeIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
+
                 }
             });
         } else if (tema == 6) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     FlatAnimatedLafChange.showSnapshot();
                     FlatSolarizedLightIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (tema == 7) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     FlatAnimatedLafChange.showSnapshot();
                     FlatSolarizedDarkIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (tema == 8) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     FlatAnimatedLafChange.showSnapshot();
                     FlatCyanLightIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (tema == 9) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     FlatAnimatedLafChange.showSnapshot();
                     FlatCarbonIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (tema == 10) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     FlatAnimatedLafChange.showSnapshot();
                     FlatGitHubIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (tema == 11) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     FlatAnimatedLafChange.showSnapshot();
                     FlatGitHubDarkIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (tema == 12) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     FlatAnimatedLafChange.showSnapshot();
                     FlatMonokaiProIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         }
@@ -1932,143 +1979,169 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     tema = 0;
                     FlatAnimatedLafChange.showSnapshot();
                     FlatIntelliJLaf.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (lstRenk.isSelectedIndex(1)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     tema = 1;
                     FlatAnimatedLafChange.showSnapshot();
                     FlatDarkLaf.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (lstRenk.isSelectedIndex(2)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     tema = 2;
                     FlatAnimatedLafChange.showSnapshot();
                     FlatMacLightLaf.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (lstRenk.isSelectedIndex(3)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     tema = 3;
                     FlatAnimatedLafChange.showSnapshot();
                     FlatMacDarkLaf.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (lstRenk.isSelectedIndex(4)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     tema = 4;
                     FlatAnimatedLafChange.showSnapshot();
                     FlatArcOrangeIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (lstRenk.isSelectedIndex(5)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     tema = 5;
                     FlatAnimatedLafChange.showSnapshot();
                     FlatArcDarkOrangeIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (lstRenk.isSelectedIndex(6)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     tema = 6;
                     FlatAnimatedLafChange.showSnapshot();
                     FlatSolarizedLightIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (lstRenk.isSelectedIndex(7)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     tema = 7;
                     FlatAnimatedLafChange.showSnapshot();
                     FlatSolarizedDarkIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (lstRenk.isSelectedIndex(8)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     tema = 8;
                     FlatAnimatedLafChange.showSnapshot();
                     FlatCyanLightIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (lstRenk.isSelectedIndex(9)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     tema = 9;
                     FlatAnimatedLafChange.showSnapshot();
                     FlatCarbonIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (lstRenk.isSelectedIndex(10)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     tema = 10;
                     FlatAnimatedLafChange.showSnapshot();
                     FlatGitHubIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (lstRenk.isSelectedIndex(11)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     tema = 11;
                     FlatAnimatedLafChange.showSnapshot();
                     FlatGitHubDarkIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         } else if (lstRenk.isSelectedIndex(12)) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    var ui = badgeButton1.getUI();
                     tema = 12;
                     FlatAnimatedLafChange.showSnapshot();
                     FlatMonokaiProIJTheme.setup();
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                    badgeButton1.setUI(ui);
                 }
             });
         }
@@ -2103,6 +2176,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.toedter.calendar.JDateChooser KitapAlTarihSecici;
+    private raven.notibutton.BadgeButton badgeButton1;
     private javax.swing.JButton btnBelgeIste;
     private javax.swing.JButton btnKitapAl;
     private javax.swing.JButton btnPDFAc;
