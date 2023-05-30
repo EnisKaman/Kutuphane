@@ -50,11 +50,12 @@ public class Notifications extends javax.swing.JPanel {
 
     private void loadNoti(String email) {
         try {
-            String bildirimturu, aciklama, durum = null, kitapadi = null, yayinevi = null;
+            String bildirimturu, aciklama, durum = null, kitapadi = null, yayinevi = null, bildirimdurumu;
             int ustid = 0;
             String sqlkitapadi = "(SELECT kitap_bildirim_kitap_adi FROM public.kitap_bildirim WHERE kitap_bildirim_id = b.bildirim_ustid)";
             String sqlyayinevi = "(SELECT kitap_bildirim_kitap_yayin_evi FROM public.kitap_bildirim WHERE kitap_bildirim_id = b.bildirim_ustid)";
-            String sql = "SELECT b.*," + sqlkitapadi + "," + sqlyayinevi + " FROM public.bildirim b WHERE b.bildirim_email = ?";
+            String sqlbildirimdurumu = "(SELECT kitap_bildirim_durum FROM public.kitap_bildirim WHERE kitap_bildirim_id = b.bildirim_ustid)";
+            String sql = "SELECT b.*," + sqlkitapadi + "," + sqlyayinevi + ","+sqlbildirimdurumu+" FROM public.bildirim b WHERE b.bildirim_email = ?";
             pst = conn.prepareStatement(sql);
             pst.setString(1, email);
             rs = pst.executeQuery();
@@ -64,7 +65,8 @@ public class Notifications extends javax.swing.JPanel {
                 aciklama = rs.getString("bildirim_aciklama");
                 kitapadi = rs.getString("kitap_bildirim_kitap_adi");
                 yayinevi = rs.getString("kitap_bildirim_kitap_yayin_evi");
-                panel.add(new Item(bildirimturu, aciklama, kitapadi, yayinevi));
+                bildirimdurumu = rs.getString("kitap_bildirim_durum");
+                panel.add(new Item(bildirimdurumu, aciklama, kitapadi, yayinevi));
             }
 
         } catch (SQLException ex) {
@@ -104,7 +106,7 @@ public class Notifications extends javax.swing.JPanel {
 
         jLabel1.setFont(new java.awt.Font("sansserif", 1, 15)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(117, 117, 117));
-        jLabel1.setText("Notifications");
+        jLabel1.setText("Bildirimler");
 
         scroll.setBorder(null);
         scroll.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);

@@ -648,8 +648,8 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
     public void KitapSuresiBul(String email) {
         try {
-            int years, months, days, hours, minutes, kitapkodu = 0;
-            String adsoyad, kitapadi, tarih, mesaj = null;
+            int years, months, days, hours, minutes, kitapkodu = 0, count = 0, ustid = 0;
+            String adsoyad, kitapadi, tarih, mesaj = null, yayinevi = null;
             String sql = "SELECT *,\n"
                     + "       EXTRACT(YEAR FROM date_difference) AS years,\n"
                     + "       EXTRACT(MONTH FROM date_difference) AS months,\n"
@@ -672,26 +672,69 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                 kitapadi = rs.getString("kitap_al_kabul_kitap_adi");
                 kitapkodu = rs.getInt("kitap_al_kabul_kitap_kodu");
                 tarih = rs.getString("kitap_al_kabul_geri_getirme_tarihi");
+                yayinevi = rs.getString("kitap_al_kabul_kitap_yayinevi");
 
                 if (days <= 0 && hours <= 0 && minutes <= 0) {
+                    Timestamp timestamp = Timestamp.valueOf(tarih);
                     mesaj = "Sayın " + adsoyad + ";\n\nAdı: " + kitapadi + "\nKodu: " + kitapkodu + " olan kitabın \n" + tarih + " tarihli son getirme süresi geçmiştir.\nDetayları bildirim kısmından görüntüleyebilirsiniz.";
                     JOptionPane.showMessageDialog(null, mesaj);
-                    
-                    String sqlgecti = "INSERT INTO public.kitap_bildirim"
-                            + "(kitap_bildirim_kitap_adi, kitap_bildirim_kitap_kodu, kitap_bildirim_ilgili_email, kitap_bildirim_ilgili_adsoyad, kitap_bildirim_durum, kitap_bildirim_getirme_tarihi) "
-                            + "VALUES (?, ?, ?, ?, ?, ?);";
-                    pst = conn.prepareStatement(sqlgecti);
-                    pst.setString(1, kitapadi);
-                    pst.setInt(2, kitapkodu);
-                    pst.setString(3, email);
-                    pst.setString(4, adsoyad);
-                    pst.setString(5, "Tarih Geçti");
-                    Timestamp timestamp = Timestamp.valueOf(tarih);
-                    pst.setTimestamp(6, timestamp);
-                    int sonuc = pst.executeUpdate();
-                    if (sonuc == 1) {
-                        JOptionPane.showMessageDialog(null, "başarılı");
+
+                    String sqlbidirimkitapbul = "SELECT COUNT(*) FROM public.kitap_bildirim WHERE \n"
+                            + "kitap_bildirim_kitap_kodu = ? AND \n"
+                            + "kitap_bildirim_ilgili_email = ? AND \n"
+                            + "kitap_bildirim_getirme_tarihi = ?;";
+                    pst = conn.prepareStatement(sqlbidirimkitapbul);
+                    pst.setInt(1, kitapkodu);
+                    pst.setString(2, email);
+                    pst.setTimestamp(3, timestamp);
+                    rs = pst.executeQuery();
+                    if (rs.next()) {
+                        count = rs.getInt("count");
+                        if (count == 0) {
+                            String sqlgecti = "INSERT INTO public.kitap_bildirim"
+                                    + "(kitap_bildirim_kitap_adi, kitap_bildirim_kitap_kodu, kitap_bildirim_ilgili_email, kitap_bildirim_ilgili_adsoyad, kitap_bildirim_durum, kitap_bildirim_getirme_tarihi, kitap_bildirim_kitap_yayin_evi) "
+                                    + "VALUES (?, ?, ?, ?, ?, ?,?);";
+                            pst = conn.prepareStatement(sqlgecti);
+                            pst.setString(1, kitapadi);
+                            pst.setInt(2, kitapkodu);
+                            pst.setString(3, email);
+                            pst.setString(4, adsoyad);
+                            pst.setString(5, "Kitabın Geri Getirme Tarihi Geçti");
+
+                            pst.setTimestamp(6, timestamp);
+                            pst.setString(7, yayinevi);
+                            int sonuc = pst.executeUpdate();
+                            if (sonuc == 1) {
+
+                                JOptionPane.showMessageDialog(null, "Bildirim Kitap Eklendi");
+
+                                String sqlbildirimcek = "SELECT * FROM public.kitap_bildirim ORDER BY kitap_bildirim_id DESC LIMIT 1;";
+                                pst = conn.prepareStatement(sqlbildirimcek);
+                                rs = pst.executeQuery();
+                                if (rs.next()) {
+                                    kitapadi = rs.getString("kitap_bildirim_kitap_adi");
+                                    kitapkodu = rs.getInt("kitap_bildirim_kitap_kodu");
+                                    tarih = rs.getString("kitap_bildirim_getirme_tarihi");
+                                    ustid = rs.getInt("kitap_bildirim_id");
+                                }
+
+                                String sqlbildirimekle = "INSERT INTO public.bildirim(\n"
+                                        + "	bildirim_turu, bildirim_aciklama, bildirim_email, bildirim_durum, bildirim_ustid)\n"
+                                        + "	VALUES (?, ?, ?, ?, ?);";
+                                pst = conn.prepareStatement(sqlbildirimekle);
+                                pst.setString(1, "Kitap");
+                                pst.setString(2, kitapkodu + " kodlu, " + kitapadi + " adlı kitabın geri getirme süresi " + tarih + "'da bitmiştir.");
+                                pst.setString(3, email);
+                                pst.setString(4, "Beklemede");
+                                pst.setInt(5, ustid);
+                                int cevap  = pst.executeUpdate();
+                                if (cevap == 1) {
+                                    JOptionPane.showMessageDialog(null, "Bildirim Eklendi");
+                                }
+                            }
+                        }
                     }
+
                 }
                 if (days <= 0 && hours >= 0 && minutes >= 0) {
                     mesaj = "Sayın " + adsoyad + ";\n\nAdı: " + kitapadi + "\nKodu: " + kitapkodu + " olan kitabın \n" + tarih + " tarihli son getirme gününe girmiş bulunmaktasınız."
@@ -706,8 +749,8 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, ex);
         }
     }
-    
-    public void BildirimSayisi(){
+
+    public void BildirimSayisi() {
         try {
             int count = 0;
             String sql = "SELECT COUNT(bildirim_email) FROM public.bildirim WHERE bildirim_email = ? AND bildirim_durum = ?;";
