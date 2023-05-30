@@ -1,18 +1,41 @@
 package sample.notification;
 
 import java.awt.Color;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
+import javax.swing.JOptionPane;
+import kutuphane.AdminArayuzu;
+import kutuphane.Baglanti;
+import kutuphane.KullaniciKitapDetayliGoruntule;
 
 /**
  *
  * @author RAVEN
  */
-public class Item extends javax.swing.JPanel {
 
-    public Item(String name, String des) {
+
+public class Item extends javax.swing.JPanel {
+    
+    Connection conn = new Baglanti().getConnection();
+    ResultSet rs = null;
+    CallableStatement proc = null;
+    PreparedStatement pst = null;
+    String kitapadi;
+    String yayinevi;
+
+    public Item(String name, String des, String kitapadi, String yayinevi) {
         initComponents();
         lbName.setText(name);
         lbDes.setText(des);
+        this.kitapadi = kitapadi;
+        this.yayinevi = yayinevi;
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
     }
 
     /**
@@ -28,6 +51,11 @@ public class Item extends javax.swing.JPanel {
         lbDes = new javax.swing.JLabel();
 
         setOpaque(false);
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+        });
 
         lbName.setFont(new java.awt.Font("sansserif", 1, 13)); // NOI18N
         lbName.setForeground(new java.awt.Color(106, 106, 106));
@@ -59,6 +87,48 @@ public class Item extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        ViewKitapGonder(kitapadi, yayinevi);
+    }//GEN-LAST:event_formMouseClicked
+
+    public void ViewKitapGonder(String kitapadi, String yayinevi) {
+        try {
+            String yazaradi = null;
+            String kitapturu = null;
+            String kitapozeti = null;
+            byte[] imagedata = null;
+            int toplamkitapsayisi = 0;
+            int eldeolankitapsayisi = 0;
+
+            String sql = "Select * FROM public.kitaplik WHERE kitap_adi = ? AND yayin_evi = ?";
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, kitapadi);
+            pst.setString(2, yayinevi);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                yazaradi = rs.getString("yazar_adsoyad");
+                kitapturu = rs.getString("kitap_turu");
+                kitapozeti = rs.getString("kitap_ozet");
+                imagedata = rs.getBytes("kitap_resim");
+            }
+
+            String sqlkitapsayisi = "SELECT kitap_sayisi, elde_olan FROM public.kitap_envanter WHERE kitap_adi = ? AND kitap_yayinevi = ?;";
+            pst = conn.prepareStatement(sqlkitapsayisi);
+            pst.setString(1, kitapadi);
+            pst.setString(2, yayinevi);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                toplamkitapsayisi = rs.getInt("kitap_sayisi");
+                eldeolankitapsayisi = rs.getInt("elde_olan");
+            }
+
+            KullaniciKitapDetayliGoruntule kdg = new KullaniciKitapDetayliGoruntule(kitapadi, yazaradi, yayinevi, kitapturu, kitapozeti, imagedata, toplamkitapsayisi, eldeolankitapsayisi);
+            kdg.setVisible(true);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lbDes;

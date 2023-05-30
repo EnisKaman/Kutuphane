@@ -676,6 +676,22 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                 if (days <= 0 && hours <= 0 && minutes <= 0) {
                     mesaj = "Sayın " + adsoyad + ";\n\nAdı: " + kitapadi + "\nKodu: " + kitapkodu + " olan kitabın \n" + tarih + " tarihli son getirme süresi geçmiştir.\nDetayları bildirim kısmından görüntüleyebilirsiniz.";
                     JOptionPane.showMessageDialog(null, mesaj);
+                    
+                    String sqlgecti = "INSERT INTO public.kitap_bildirim"
+                            + "(kitap_bildirim_kitap_adi, kitap_bildirim_kitap_kodu, kitap_bildirim_ilgili_email, kitap_bildirim_ilgili_adsoyad, kitap_bildirim_durum, kitap_bildirim_getirme_tarihi) "
+                            + "VALUES (?, ?, ?, ?, ?, ?);";
+                    pst = conn.prepareStatement(sqlgecti);
+                    pst.setString(1, kitapadi);
+                    pst.setInt(2, kitapkodu);
+                    pst.setString(3, email);
+                    pst.setString(4, adsoyad);
+                    pst.setString(5, "Tarih Geçti");
+                    Timestamp timestamp = Timestamp.valueOf(tarih);
+                    pst.setTimestamp(6, timestamp);
+                    int sonuc = pst.executeUpdate();
+                    if (sonuc == 1) {
+                        JOptionPane.showMessageDialog(null, "başarılı");
+                    }
                 }
                 if (days <= 0 && hours >= 0 && minutes >= 0) {
                     mesaj = "Sayın " + adsoyad + ";\n\nAdı: " + kitapadi + "\nKodu: " + kitapkodu + " olan kitabın \n" + tarih + " tarihli son getirme gününe girmiş bulunmaktasınız."
@@ -687,6 +703,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             }
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, ex);
         }
     }
     

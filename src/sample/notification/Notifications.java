@@ -33,7 +33,7 @@ public class Notifications extends javax.swing.JPanel {
     ResultSet rs = null;
     CallableStatement proc = null;
     PreparedStatement pst = null;
-    
+
     public Notifications(String email) {
         initComponents();
         setOpaque(false);
@@ -50,22 +50,23 @@ public class Notifications extends javax.swing.JPanel {
 
     private void loadNoti(String email) {
         try {
-            String ad, aciklama, durum;
-            String sql = "SELECT * FROM public.bildirim WHERE bildirim_email = ?";
+            String bildirimturu, aciklama, durum = null, kitapadi = null, yayinevi = null;
+            int ustid = 0;
+            String sqlkitapadi = "(SELECT kitap_bildirim_kitap_adi FROM public.kitap_bildirim WHERE kitap_bildirim_id = b.bildirim_ustid)";
+            String sqlyayinevi = "(SELECT kitap_bildirim_kitap_yayin_evi FROM public.kitap_bildirim WHERE kitap_bildirim_id = b.bildirim_ustid)";
+            String sql = "SELECT b.*," + sqlkitapadi + "," + sqlyayinevi + " FROM public.bildirim b WHERE b.bildirim_email = ?";
             pst = conn.prepareStatement(sql);
             pst.setString(1, email);
             rs = pst.executeQuery();
-            while (rs.next()) {                
-                ad = rs.getString("bildirim_email");
+            while (rs.next()) {
+                bildirimturu = rs.getString("bildirim_turu");
+                ustid = rs.getInt("bildirim_ustid");
                 aciklama = rs.getString("bildirim_aciklama");
-                durum = rs.getString("bildirim_durum");
-                panel.add(new Item(ad, aciklama));
-                if (durum == "Beklemede") {
-                    panel.setBackground(Color.red);
-                }
+                kitapadi = rs.getString("kitap_bildirim_kitap_adi");
+                yayinevi = rs.getString("kitap_bildirim_kitap_yayin_evi");
+                panel.add(new Item(bildirimturu, aciklama, kitapadi, yayinevi));
             }
-            
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(Notifications.class.getName()).log(Level.SEVERE, null, ex);
         }
