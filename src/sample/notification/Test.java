@@ -63,7 +63,7 @@ public class Test extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cmdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdActionPerformed
-        GlassPanePopup.showPopup(new Notifications(email), new DefaultOption() {
+        GlassPanePopup.showPopup(new Notifications(email,null), new DefaultOption() {
             @Override
             public float opacity() {
                 return 0;

@@ -648,7 +648,8 @@ public class KullaniciArayuz extends javax.swing.JFrame {
 
     public void KitapSuresiBul(String email) {
         try {
-            int years, months, days, hours, minutes, kitapkodu = 0, count = 0, ustid = 0;
+            boolean bildirimekleme = false;
+            int years, months, days = 0, hours = 0, minutes = 0, kitapkodu = 0, count = 0, ustid = 0;
             String adsoyad = null, kitapadi = null, tarih, mesaj = null, yayinevi = null;
             Timestamp timestamp = null;
             String sql = "SELECT *,\n"
@@ -674,29 +675,31 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                 kitapkodu = rs.getInt("kitap_al_kabul_kitap_kodu");
                 tarih = rs.getString("kitap_al_kabul_geri_getirme_tarihi");
                 yayinevi = rs.getString("kitap_al_kabul_kitap_yayinevi");
-                
+
                 if (days <= 0 && hours <= 0 && minutes <= 0) {
                     timestamp = Timestamp.valueOf(tarih);
                     mesaj = "Sayın " + adsoyad + ";\n\nAdı: " + kitapadi + "\nKodu: " + kitapkodu + " olan kitabın \n" + tarih + " tarihli son getirme süresi geçmiştir.\nDetayları bildirim kısmından görüntüleyebilirsiniz.";
                     JOptionPane.showMessageDialog(null, mesaj);
-                    
+                    bildirimekleme = true;
                 }
                 if (days <= 0 && hours >= 0 && minutes >= 0) {
                     mesaj = "Sayın " + adsoyad + ";\n\nAdı: " + kitapadi + "\nKodu: " + kitapkodu + " olan kitabın \n" + tarih + " tarihli son getirme gününe girmiş bulunmaktasınız."
                             + "\nKitap iadesi için: " + hours + " saat, " + minutes + " dakika süre kalmıştır.";
                     JOptionPane.showMessageDialog(null, mesaj);
                 }
-                
+
             }
-            KitapBildirimEkle(timestamp, kitapkodu, count, kitapadi, adsoyad, yayinevi, ustid);
-            
+            if (days <= 0 && hours <= 0 && minutes <= 0 && bildirimekleme == true) {
+                KitapBildirimEkle(timestamp, kitapkodu, count, kitapadi, adsoyad, yayinevi, ustid);
+            }
+
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, ex);
         }
     }
-    
-    public void KitapBildirimEkle(Timestamp timestamp, int kitapkodu, int count, String kitapadi, String adsoyad, String yayinevi, int ustid){
+
+    public void KitapBildirimEkle(Timestamp timestamp, int kitapkodu, int count, String kitapadi, String adsoyad, String yayinevi, int ustid) {
         try {
             String sqlbidirimkitapbul = "SELECT COUNT(*) FROM public.kitap_bildirim WHERE \n"
                     + "kitap_bildirim_kitap_kodu = ? AND \n"
@@ -719,14 +722,14 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                     pst.setString(3, email);
                     pst.setString(4, adsoyad);
                     pst.setString(5, "Kitabın Geri Getirme Tarihi Geçti");
-                    
+
                     pst.setTimestamp(6, timestamp);
                     pst.setString(7, yayinevi);
                     int sonuc = pst.executeUpdate();
                     if (sonuc == 1) {
-                        
+
                         JOptionPane.showMessageDialog(null, "Bildirim Kitap Eklendi");
-                        
+
                         String sqlbildirimcek = "SELECT * FROM public.kitap_bildirim ORDER BY kitap_bildirim_id DESC LIMIT 1;";
                         pst = conn.prepareStatement(sqlbildirimcek);
                         rs = pst.executeQuery();
@@ -747,7 +750,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                         pst.setString(4, "Beklemede");
                         pst.setInt(5, ustid);
                         pst.setString(6, "Bireysel");
-                        int cevap  = pst.executeUpdate();
+                        int cevap = pst.executeUpdate();
                         if (cevap == 1) {
                             JOptionPane.showMessageDialog(null, "Bildirim Eklendi");
                         }
@@ -1909,7 +1912,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
     }//GEN-LAST:event_badgeButton1MouseClicked
 
     private void badgeButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_badgeButton1ActionPerformed
-        GlassPanePopup.showPopup(new Notifications(email));
+        GlassPanePopup.showPopup(new Notifications(email, this));
     }//GEN-LAST:event_badgeButton1ActionPerformed
 
     public void TemaRengi() {

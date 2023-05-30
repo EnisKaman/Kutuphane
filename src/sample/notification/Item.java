@@ -12,7 +12,9 @@ import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import kutuphane.AdminArayuzu;
 import kutuphane.Baglanti;
+import kutuphane.KullaniciArayuz;
 import kutuphane.KullaniciKitapDetayliGoruntule;
+import kutuphane.KullaniciKitapIade;
 
 /**
  *
@@ -28,10 +30,14 @@ public class Item extends javax.swing.JPanel {
     PreparedStatement pst = null;
     String kitapadi;
     String yayinevi;
+    int kitapkodu;
+    KullaniciArayuz kul; 
+    String email;
     
-    
-    public Item(String name, String des, String kitapadi, String yayinevi, String bildirimturu,String duyurukonu) {
+    public Item(String name, String des, String kitapadi, String yayinevi, String bildirimturu,String duyurukonu, int kitapkodu, KullaniciArayuz kul, String email) {
         initComponents();
+        this.kul=kul;
+        this.email=email;
         if (bildirimturu.equalsIgnoreCase("Kitap")) {
             lbName.setText(name);
             this.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -43,6 +49,7 @@ public class Item extends javax.swing.JPanel {
         txtDes.setText(des);
         this.kitapadi = kitapadi;
         this.yayinevi = yayinevi;
+        this.kitapkodu = kitapkodu;
     }
 
     /**
@@ -119,8 +126,6 @@ public class Item extends javax.swing.JPanel {
             String kitapturu = null;
             String kitapozeti = null;
             byte[] imagedata = null;
-            int toplamkitapsayisi = 0;
-            int eldeolankitapsayisi = 0;
 
             String sql = "Select * FROM public.kitaplik WHERE kitap_adi = ? AND yayin_evi = ?";
             pst = conn.prepareStatement(sql);
@@ -134,18 +139,9 @@ public class Item extends javax.swing.JPanel {
                 imagedata = rs.getBytes("kitap_resim");
             }
 
-            String sqlkitapsayisi = "SELECT kitap_sayisi, elde_olan FROM public.kitap_envanter WHERE kitap_adi = ? AND kitap_yayinevi = ?;";
-            pst = conn.prepareStatement(sqlkitapsayisi);
-            pst.setString(1, kitapadi);
-            pst.setString(2, yayinevi);
-            rs = pst.executeQuery();
-            if (rs.next()) {
-                toplamkitapsayisi = rs.getInt("kitap_sayisi");
-                eldeolankitapsayisi = rs.getInt("elde_olan");
-            }
 
-            KullaniciKitapDetayliGoruntule kdg = new KullaniciKitapDetayliGoruntule(kitapadi, yazaradi, yayinevi, kitapturu, kitapozeti, imagedata, toplamkitapsayisi, eldeolankitapsayisi);
-            kdg.setVisible(true);
+            KullaniciKitapIade kki = new KullaniciKitapIade(email,kitapkodu, kitapadi, yazaradi, yayinevi, kitapturu, kitapozeti, imagedata, yayinevi,txtDes.getText(), kul);
+            kki.setVisible(true);
 
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);

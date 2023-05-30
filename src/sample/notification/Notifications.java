@@ -20,6 +20,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
 import kutuphane.Baglanti;
+import kutuphane.KullaniciArayuz;
 import net.miginfocom.swing.MigLayout;
 import sample.swing.ModernScrollBarUI;
 
@@ -33,9 +34,13 @@ public class Notifications extends javax.swing.JPanel {
     ResultSet rs = null;
     CallableStatement proc = null;
     PreparedStatement pst = null;
+    KullaniciArayuz kul;
+    String email;
 
-    public Notifications(String email) {
+    public Notifications(String email, KullaniciArayuz kul) {
         initComponents();
+        this.kul = kul;
+        this.email=email;
         setOpaque(false);
         JScrollBar sb = scroll.getVerticalScrollBar();
         sb.setOpaque(false);
@@ -46,17 +51,19 @@ public class Notifications extends javax.swing.JPanel {
         scroll.setViewportBorder(null);
         panel.setLayout(new MigLayout("inset 0, fillx, wrap", "[fill]"));
         loadNoti(email);
+        
     }
 
     private void loadNoti(String email) {
         try {
             String bildirimturu, aciklama, durum = null, kitapadi = null, yayinevi = null, bildirimdurumu, duyurukonu;
-            int ustid = 0;
+            int ustid = 0, kitapkodu = 0;
+            String sqlkitapkodu = "(SELECT kitap_bildirim_kitap_kodu FROM public.kitap_bildirim WHERE kitap_bildirim_id = b.bildirim_ustid)";
             String sqlkitapadi = "(SELECT kitap_bildirim_kitap_adi FROM public.kitap_bildirim WHERE kitap_bildirim_id = b.bildirim_ustid)";
             String sqlyayinevi = "(SELECT kitap_bildirim_kitap_yayin_evi FROM public.kitap_bildirim WHERE kitap_bildirim_id = b.bildirim_ustid)";
             String sqlbildirimdurumu = "(SELECT kitap_bildirim_durum FROM public.kitap_bildirim WHERE kitap_bildirim_id = b.bildirim_ustid)";
             String sqlduyurubasligi = "(SELECT duyuru_konu FROM public.duyuru WHERE b.bildirim_turu = 'Duyuru' AND duyuru_id = b.bildirim_ustid)";
-            String sql = "SELECT b.*," + sqlkitapadi + "," + sqlyayinevi + ","+sqlbildirimdurumu+","+sqlduyurubasligi+" FROM public.bildirim b WHERE b.bildirim_email = ? OR b.bildirim_email = ?";
+            String sql = "SELECT b.*," + sqlkitapadi + "," + sqlyayinevi + "," + sqlbildirimdurumu + "," + sqlduyurubasligi + ", " + sqlkitapkodu + " FROM public.bildirim b WHERE b.bildirim_email = ? OR b.bildirim_email = ?";
             pst = conn.prepareStatement(sql);
             pst.setString(1, email);
             pst.setString(2, "Herkes");
@@ -69,7 +76,8 @@ public class Notifications extends javax.swing.JPanel {
                 yayinevi = rs.getString("kitap_bildirim_kitap_yayin_evi");
                 bildirimdurumu = rs.getString("kitap_bildirim_durum");
                 duyurukonu = rs.getString("duyuru_konu");
-                panel.add(new Item(bildirimdurumu, aciklama, kitapadi, yayinevi,bildirimturu,duyurukonu));
+                kitapkodu = rs.getInt("kitap_bildirim_kitap_kodu");
+                panel.add(new Item(bildirimdurumu, aciklama, kitapadi, yayinevi, bildirimturu, duyurukonu, kitapkodu,kul,email));
             }
 
         } catch (SQLException ex) {
