@@ -28,14 +28,21 @@ public class Item extends javax.swing.JPanel {
     PreparedStatement pst = null;
     String kitapadi;
     String yayinevi;
-
-    public Item(String name, String des, String kitapadi, String yayinevi) {
+    
+    
+    public Item(String name, String des, String kitapadi, String yayinevi, String bildirimturu,String duyurukonu) {
         initComponents();
-        lbName.setText(name);
-        lbDes.setText(des);
+        if (bildirimturu.equalsIgnoreCase("Kitap")) {
+            lbName.setText(name);
+            this.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        }
+        if (bildirimturu.equalsIgnoreCase("Duyuru")) {
+            lbName.setText(duyurukonu);
+            lbDes.setText("");
+        }
+        txtDes.setText(des);
         this.kitapadi = kitapadi;
         this.yayinevi = yayinevi;
-        this.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
     }
 
     /**
@@ -49,6 +56,7 @@ public class Item extends javax.swing.JPanel {
 
         lbName = new javax.swing.JLabel();
         lbDes = new javax.swing.JLabel();
+        txtDes = new javax.swing.JTextPane();
 
         setOpaque(false);
         addMouseListener(new java.awt.event.MouseAdapter() {
@@ -63,7 +71,12 @@ public class Item extends javax.swing.JPanel {
 
         lbDes.setFont(new java.awt.Font("sansserif", 0, 13)); // NOI18N
         lbDes.setForeground(new java.awt.Color(134, 134, 134));
-        lbDes.setText("Description");
+        lbDes.setText("İade Etmek İçin Tıklayın");
+
+        txtDes.setBackground(new java.awt.Color(255, 255, 255));
+        txtDes.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        txtDes.setForeground(new java.awt.Color(133, 133, 133));
+        txtDes.setText("This is part of a series of short tutorials about specific elements, components, or interactions. We’ll cover the UX, the UI, and the construction inside of Sketch. Plus, there’s a freebie for you at the end!");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -72,23 +85,32 @@ public class Item extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbName)
-                    .addComponent(lbDes))
-                .addContainerGap(191, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lbName)
+                        .addGap(18, 18, 18)
+                        .addComponent(lbDes)
+                        .addGap(0, 145, Short.MAX_VALUE))
+                    .addComponent(txtDes, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lbName)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbDes)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbName)
+                    .addComponent(lbDes))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(txtDes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
-        ViewKitapGonder(kitapadi, yayinevi);
+        if (lbName.getText().equalsIgnoreCase("Kitabın Geri Getirme Tarihi Geçti")) {
+            ViewKitapGonder(kitapadi, yayinevi);
+        }
+        
     }//GEN-LAST:event_formMouseClicked
 
     public void ViewKitapGonder(String kitapadi, String yayinevi) {
@@ -133,5 +155,6 @@ public class Item extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lbDes;
     private javax.swing.JLabel lbName;
+    private javax.swing.JTextPane txtDes;
     // End of variables declaration//GEN-END:variables
 }

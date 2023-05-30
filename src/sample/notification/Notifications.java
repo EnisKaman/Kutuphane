@@ -50,14 +50,16 @@ public class Notifications extends javax.swing.JPanel {
 
     private void loadNoti(String email) {
         try {
-            String bildirimturu, aciklama, durum = null, kitapadi = null, yayinevi = null, bildirimdurumu;
+            String bildirimturu, aciklama, durum = null, kitapadi = null, yayinevi = null, bildirimdurumu, duyurukonu;
             int ustid = 0;
             String sqlkitapadi = "(SELECT kitap_bildirim_kitap_adi FROM public.kitap_bildirim WHERE kitap_bildirim_id = b.bildirim_ustid)";
             String sqlyayinevi = "(SELECT kitap_bildirim_kitap_yayin_evi FROM public.kitap_bildirim WHERE kitap_bildirim_id = b.bildirim_ustid)";
             String sqlbildirimdurumu = "(SELECT kitap_bildirim_durum FROM public.kitap_bildirim WHERE kitap_bildirim_id = b.bildirim_ustid)";
-            String sql = "SELECT b.*," + sqlkitapadi + "," + sqlyayinevi + ","+sqlbildirimdurumu+" FROM public.bildirim b WHERE b.bildirim_email = ?";
+            String sqlduyurubasligi = "(SELECT duyuru_konu FROM public.duyuru WHERE b.bildirim_turu = 'Duyuru' AND duyuru_id = b.bildirim_ustid)";
+            String sql = "SELECT b.*," + sqlkitapadi + "," + sqlyayinevi + ","+sqlbildirimdurumu+","+sqlduyurubasligi+" FROM public.bildirim b WHERE b.bildirim_email = ? OR b.bildirim_email = ?";
             pst = conn.prepareStatement(sql);
             pst.setString(1, email);
+            pst.setString(2, "Herkes");
             rs = pst.executeQuery();
             while (rs.next()) {
                 bildirimturu = rs.getString("bildirim_turu");
@@ -66,7 +68,8 @@ public class Notifications extends javax.swing.JPanel {
                 kitapadi = rs.getString("kitap_bildirim_kitap_adi");
                 yayinevi = rs.getString("kitap_bildirim_kitap_yayin_evi");
                 bildirimdurumu = rs.getString("kitap_bildirim_durum");
-                panel.add(new Item(bildirimdurumu, aciklama, kitapadi, yayinevi));
+                duyurukonu = rs.getString("duyuru_konu");
+                panel.add(new Item(bildirimdurumu, aciklama, kitapadi, yayinevi,bildirimturu,duyurukonu));
             }
 
         } catch (SQLException ex) {

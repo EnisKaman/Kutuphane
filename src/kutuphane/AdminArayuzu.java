@@ -105,6 +105,34 @@ public class AdminArayuzu extends javax.swing.JFrame {
     File taranacakbelge;
     HashMap<Integer, Integer> BelgeKoduToKayitTuruBelgelerimTabloRow = new HashMap<>();
 
+    public void KullaniciCekme() {
+        try {
+            String sql = "SELECT * FROM public.kullanicilar WHERE yetkituru = ?;";
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1, 0);
+            rs = pst.executeQuery();
+            DefaultTableModel model = new DefaultTableModel();
+            model.addColumn("Email");
+            model.addColumn("Ad Soyad");
+
+            while (rs.next()) {
+                Object[] row = new Object[2];
+                row[0] = rs.getString("email");
+                row[1] = rs.getString("adsoyad");
+                model.addRow(row);
+            }
+            DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+            centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            TableRowSorter shorter = new TableRowSorter(model);
+            tblKullanicilar.setRowSorter(shorter);
+            tblKullanicilar.setDefaultRenderer(Object.class, centerRenderer);
+            tblKullanicilar.setModel(model);
+        } catch (SQLException ex) {
+            Logger.getLogger(KullaniciArayuz.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
     public void KitaplarTabloVerileri() {
         try {
             String sql = "SELECT DISTINCT kitap_adi,kitap_kodu,yazar_adsoyad,yayin_evi,kitap_turu,kitap_durum FROM public.kitaplik ORDER BY kitap_kodu ASC;";
@@ -652,8 +680,6 @@ public class AdminArayuzu extends javax.swing.JFrame {
         }
     }
 
-    
-
     public AdminArayuzu() {
         initComponents();
     }
@@ -671,9 +697,12 @@ public class AdminArayuzu extends javax.swing.JFrame {
         TemaRengi();
         ArsivTabloVerileri();
         BelgeOnayTabloVerileri();
+        KullaniciCekme();
         pnlSettings.setVisible(false);
         tabArsiv.setVisible(false);
         tabDiger.setVisible(false);
+        txtKullaniciBul.enable(false);
+        tblKullanicilar.enable(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -743,6 +772,17 @@ public class AdminArayuzu extends javax.swing.JFrame {
         jScrollPane5 = new javax.swing.JScrollPane();
         txtKonu = new javax.swing.JTextArea();
         pnlDuyurular = new javax.swing.JPanel();
+        cbDuyuruKisi = new javax.swing.JComboBox<>();
+        txtKullaniciBul = new javax.swing.JTextField();
+        jScrollPane15 = new javax.swing.JScrollPane();
+        tblKullanicilar = new javax.swing.JTable();
+        jScrollPane16 = new javax.swing.JScrollPane();
+        txtDuyuru = new javax.swing.JTextArea();
+        txtDuyuruBaslik = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        btnDuyuruYayinla = new javax.swing.JButton();
         pnlDashboard = new javax.swing.JPanel();
         pieChart1 = new javaswingdev.chart.PieChart();
         pnlPastaBilgiler = new javax.swing.JPanel();
@@ -1284,15 +1324,103 @@ public class AdminArayuzu extends javax.swing.JFrame {
 
         tabDiger.addTab("Randevular", null, pnlRandevular, "Kullanıcılardan Gelen Randevu Taleplerini Cevaplayabilirsiniz");
 
+        cbDuyuruKisi.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bütün Kullanıcılar", "Belirli Bir Kullanıcı" }));
+        cbDuyuruKisi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbDuyuruKisiActionPerformed(evt);
+            }
+        });
+
+        tblKullanicilar.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2"
+            }
+        ));
+        tblKullanicilar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblKullanicilarMouseClicked(evt);
+            }
+        });
+        jScrollPane15.setViewportView(tblKullanicilar);
+
+        txtDuyuru.setColumns(20);
+        txtDuyuru.setRows(5);
+        jScrollPane16.setViewportView(txtDuyuru);
+
+        jLabel8.setText("Duyurunun Başlığı");
+
+        jLabel9.setText("Kullanıcı Arama");
+
+        jLabel10.setText("Gönderilecek Kişi");
+
+        btnDuyuruYayinla.setText("Duyuruyu Yayınla");
+        btnDuyuruYayinla.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDuyuruYayinlaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlDuyurularLayout = new javax.swing.GroupLayout(pnlDuyurular);
         pnlDuyurular.setLayout(pnlDuyurularLayout);
         pnlDuyurularLayout.setHorizontalGroup(
             pnlDuyurularLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 788, Short.MAX_VALUE)
+            .addGroup(pnlDuyurularLayout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addGroup(pnlDuyurularLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlDuyurularLayout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel10)
+                        .addGap(142, 142, 142)
+                        .addComponent(jLabel9)
+                        .addGap(100, 100, 100))
+                    .addGroup(pnlDuyurularLayout.createSequentialGroup()
+                        .addGroup(pnlDuyurularLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(pnlDuyurularLayout.createSequentialGroup()
+                                .addComponent(txtDuyuruBaslik, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(cbDuyuruKisi, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane16, javax.swing.GroupLayout.PREFERRED_SIZE, 465, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlDuyurularLayout.createSequentialGroup()
+                                .addGap(149, 149, 149)
+                                .addComponent(btnDuyuruYayinla, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(pnlDuyurularLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlDuyurularLayout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane15, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(25, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlDuyurularLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtKullaniciBul, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(68, 68, 68))))))
         );
         pnlDuyurularLayout.setVerticalGroup(
             pnlDuyurularLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 509, Short.MAX_VALUE)
+            .addGroup(pnlDuyurularLayout.createSequentialGroup()
+                .addContainerGap(45, Short.MAX_VALUE)
+                .addGroup(pnlDuyurularLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel10))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlDuyurularLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtKullaniciBul, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbDuyuruKisi, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtDuyuruBaslik, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlDuyurularLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane15, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(pnlDuyurularLayout.createSequentialGroup()
+                        .addComponent(jScrollPane16, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(43, 43, 43)
+                        .addComponent(btnDuyuruYayinla, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         tabDiger.addTab("Duyurular", null, pnlDuyurular, "Yeni Duyuru Ekleyebilirsiniz");
@@ -2101,6 +2229,26 @@ public class AdminArayuzu extends javax.swing.JFrame {
             }
 
         });
+        txtKullaniciBul.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                KullaniciCekme();
+                search(tblKullanicilar, txtKullaniciBul);
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                KullaniciCekme();
+                search(tblKullanicilar, txtKullaniciBul);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                KullaniciCekme();
+                search(tblKullanicilar, txtKullaniciBul);
+            }
+
+        });
     }//GEN-LAST:event_formWindowActivated
 ///////////////////////////////////////////////// Şeçilen Rengi Veritabanına Kaydetme Başlangıç /////////////////////////////////////////////////        
     private void btnSettingsKaydetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingsKaydetActionPerformed
@@ -2748,6 +2896,82 @@ public class AdminArayuzu extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtBelgeAramaPropertyChange
 
+    private void cbDuyuruKisiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbDuyuruKisiActionPerformed
+        if (cbDuyuruKisi.getSelectedItem().toString() == "Belirli Bir Kullanıcı") {
+            txtKullaniciBul.enable(true);
+            tblKullanicilar.enable(true);
+        }
+        if (cbDuyuruKisi.getSelectedItem().toString() == "Bütün Kullanıcılar") {
+            txtKullaniciBul.enable(false);
+            tblKullanicilar.enable(false);
+            txtKullaniciBul.setText("");
+        }
+    }//GEN-LAST:event_cbDuyuruKisiActionPerformed
+
+    private void btnDuyuruYayinlaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDuyuruYayinlaActionPerformed
+        try {
+            int ustid = 0;
+
+            String sqladsoyad = "(SELECT adsoyad FROM public.kullanicilar WHERE email = ?)";
+            String sql = "INSERT INTO public.duyuru(duyuru_yayinlayan_email, duyuru_yayinlayan_adsoyad, duyuru_konu, duyuru_metin, duyuru_gidecek_kisi) VALUES (?, " + sqladsoyad + ", ?, ?, ?);";
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, email);
+            pst.setString(2, email);
+            pst.setString(3, txtDuyuruBaslik.getText());
+            pst.setString(4, txtDuyuru.getText());
+            if (cbDuyuruKisi.getSelectedItem().toString() == "Belirli Bir Kullanıcı") {
+                pst.setString(5, txtKullaniciBul.getText());
+            }
+            if (cbDuyuruKisi.getSelectedItem().toString() == "Bütün Kullanıcılar") {
+                pst.setString(5, "Herkes");
+            }
+            int sonuc = pst.executeUpdate();
+            if (sonuc == 1) {
+                JOptionPane.showMessageDialog(null, "Duyuru Eklendi");
+            }
+
+            String sqlduyurubul = "SELECT * FROM public.duyuru ORDER BY duyuru_id DESC LIMIT 1;";
+            pst = conn.prepareStatement(sqlduyurubul);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                ustid = rs.getInt("duyuru_id");
+            }
+
+            String sqlbildirimekle = "INSERT INTO public.bildirim(\n"
+                    + "	bildirim_turu, bildirim_aciklama, bildirim_email, bildirim_durum, bildirim_ustid, bildirim_gonderim_tipi)\n"
+                    + "	VALUES (?, ?, ?, ?, ?, ?);";
+            pst = conn.prepareStatement(sqlbildirimekle);
+            pst.setString(1, "Duyuru");
+            pst.setString(2, txtDuyuru.getText());
+            if (cbDuyuruKisi.getSelectedItem().toString() == "Belirli Bir Kullanıcı") {
+                pst.setString(3, txtKullaniciBul.getText());
+            }
+            if (cbDuyuruKisi.getSelectedItem().toString() == "Bütün Kullanıcılar") {
+                pst.setString(3, "Herkes");
+            }
+            pst.setString(4, "Beklemede");
+            pst.setInt(5, ustid);
+            if (cbDuyuruKisi.getSelectedItem().toString() == "Belirli Bir Kullanıcı") {
+                pst.setString(6, "Bireysel");
+            }
+            if (cbDuyuruKisi.getSelectedItem().toString() == "Bütün Kullanıcılar") {
+                pst.setString(6, "Herkes");
+            }
+            int cevap = pst.executeUpdate();
+            if (cevap == 1) {
+                JOptionPane.showMessageDialog(null, "Bildirim Eklendi");
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnDuyuruYayinlaActionPerformed
+
+    private void tblKullanicilarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblKullanicilarMouseClicked
+        int kisiindex = tblKullanicilar.getSelectedRow();
+        txtKullaniciBul.setText((String) tblKullanicilar.getValueAt(kisiindex, 0));
+    }//GEN-LAST:event_tblKullanicilarMouseClicked
+
     public static void main(String args[]) {
 
     }
@@ -2757,6 +2981,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JButton btnBelgeOnaylamaKabulEt;
     private javax.swing.JButton btnBelgeOnaylamaReddet;
     private javax.swing.JButton btnBelgeSec;
+    private javax.swing.JButton btnDuyuruYayinla;
     private javax.swing.JButton btnGoruntuSec;
     private javax.swing.JButton btnKabul;
     private javax.swing.JButton btnKaydet;
@@ -2765,21 +2990,27 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JButton btnRet;
     private javax.swing.JButton btnSettingsKaydet;
     private javax.swing.JButton btnTaranacakBelge;
+    private javax.swing.JComboBox<String> cbDuyuruKisi;
     private javax.swing.JComboBox<String> cbKitapKodları;
     private javax.swing.JComboBox<String> cbKitapTuru;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane12;
     private javax.swing.JScrollPane jScrollPane13;
     private javax.swing.JScrollPane jScrollPane14;
+    private javax.swing.JScrollPane jScrollPane15;
+    private javax.swing.JScrollPane jScrollPane16;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -2838,6 +3069,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JTable tblBelgeler;
     private javax.swing.JTable tblKitapOnay;
     private javax.swing.JTable tblKitaplar;
+    private javax.swing.JTable tblKullanicilar;
     private javax.swing.JTable tblRandevular;
     private javax.swing.JTree treeBelgeTuru;
     private javax.swing.JTextField txtBelgeAdi;
@@ -2848,6 +3080,8 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JTextField txtBelgeOnaylamaGuncellemeTarihi;
     private javax.swing.JTextField txtBelgeOnaylamaIsteyenAdi;
     private javax.swing.JTextArea txtBelgeOnaylamaReddetmeSebebi;
+    private javax.swing.JTextArea txtDuyuru;
+    private javax.swing.JTextField txtDuyuruBaslik;
     private javax.swing.JTextField txtEnvanterdeKalan;
     private javax.swing.JTextArea txtIstekSebebi;
     private javax.swing.JTextField txtKitapAdi;
@@ -2856,6 +3090,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
     private javax.swing.JTextArea txtKitapOzet;
     private javax.swing.JTextArea txtKitapReddetmeSebep;
     private javax.swing.JTextArea txtKonu;
+    private javax.swing.JTextField txtKullaniciBul;
     private javax.swing.JTextField txtRandevuIsteyenKisi;
     private javax.swing.JTextField txtRandevuTarih;
     private javax.swing.JTextArea txtSebep;
