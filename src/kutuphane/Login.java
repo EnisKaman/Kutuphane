@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package kutuphane;
+
 import entity.Kullanicilar;
 
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -53,9 +54,9 @@ public class Login extends javax.swing.JFrame {
     ResultSet rs = null;
     CallableStatement proc = null;
     PreparedStatement pst = null;
-    
+
     Kullanicilar kullanicilar = new Kullanicilar();
-    
+
     String email = "";
     String sifre = "";
     Boolean GirisDurum = false;
@@ -88,7 +89,7 @@ public class Login extends javax.swing.JFrame {
         pnlSettings.setVisible(false);
         txtSifre.addActionListener(action);
         txtEmail.addActionListener(action2);
-        
+
         ////////////////////////////////METİN BELGESİ OKUMA BAŞLANGIÇ///////////////////////////
         try {
             File dosya = new File(dosyayolu);
@@ -1138,6 +1139,11 @@ public class Login extends javax.swing.JFrame {
             System.out.println("sonuç: " + sonuc);
             if (sonuc == 1) {
                 JOptionPane.showConfirmDialog(null, "Kayıt Başarılı");
+                pnlHesapOlustur.setVisible(false);
+                pnlSifremiUnuttum.setVisible(false);
+                pnlSettings.setVisible(false);
+                pnlLoginLogo.setVisible(true);
+                txtEmail.setText(txtEmailKayit.getText());
 
             } else {
                 JOptionPane.showConfirmDialog(null, "Kayıt Başarısız");
@@ -1192,6 +1198,11 @@ public class Login extends javax.swing.JFrame {
             int sonuc = pst.executeUpdate();
             if (sonuc == 1) {
                 JOptionPane.showMessageDialog(rootPane, "Şifre Başarıyla Değişti");
+                pnlHesapOlustur.setVisible(false);
+                pnlSifremiUnuttum.setVisible(false);
+                pnlSettings.setVisible(false);
+                pnlLoginLogo.setVisible(true);
+                txtEmail.setText(txtEmailSifremiUnuttum.getText());
             } else {
                 JOptionPane.showMessageDialog(rootPane, "Şifre Değişmedi");
             }

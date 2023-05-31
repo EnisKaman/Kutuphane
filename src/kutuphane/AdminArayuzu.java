@@ -69,10 +69,13 @@ import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 import raven.cell.TableActionCellEditor;
 import raven.cell.TableActionCellEditorBelgeOkumaBirlikte;
+import raven.cell.TableActionCellEditorBelgeOkumaBirlikteSilmeli;
 import raven.cell.TableActionCellRender;
 import raven.cell.TableActionCellRenderBelgeOkumaBirlikte;
+import raven.cell.TableActionCellRenderBelgeOkumaBirlikteSilmeli;
 import raven.cell.TableActionEvent;
 import raven.cell.TableActionEventBelgeOkumaBirlikte;
+import raven.cell.TableActionEventBelgeOkumaBirlikteSilmeli;
 
 /**
  *
@@ -133,6 +136,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
         }
 
     }
+    
     public void KullaniciUyeCekme() {
         try {
             int yetki;
@@ -299,6 +303,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             model.addColumn("Yayın Yılı");
             model.addColumn("Belge Türü");
             model.addColumn("Belge Nüshası");
+            
 
             while (rs.next()) {
                 Object[] row = new Object[6];
@@ -320,7 +325,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
             tblBelgeler.setRowSorter(shorter);
             tblBelgeler.setDefaultRenderer(Object.class, centerRenderer);
             tblBelgeler.setModel(model);
-            TableActionEventBelgeOkumaBirlikte event = new TableActionEventBelgeOkumaBirlikte() {
+            TableActionEventBelgeOkumaBirlikteSilmeli event = new TableActionEventBelgeOkumaBirlikteSilmeli() {
                 @Override
                 public void PdfOkuma(int row) {
                     int belgekodu = (int) tblBelgeler.getValueAt(row, 2);
@@ -344,9 +349,21 @@ public class AdminArayuzu extends javax.swing.JFrame {
                         JOptionPane.showMessageDialog(null, "Bu belgede yalnızca PDF vardır.");
                     }
                 }
-            };
-            tblBelgeler.getColumnModel().getColumn(5).setCellRenderer(new TableActionCellRenderBelgeOkumaBirlikte());
-            tblBelgeler.getColumnModel().getColumn(5).setCellEditor(new TableActionCellEditorBelgeOkumaBirlikte(event));
+
+                @Override
+                public void PdfSilme(int row) {
+                    int belgekodu = (int) tblBelgeler.getValueAt(row, 2);
+                    int result = JOptionPane.showConfirmDialog(null, "Kodu: " + belgekodu + " Olan Belgeyi Silmek İstediğinizden Emin Misiniz ?");
+                    if (result == JOptionPane.YES_OPTION) {
+                        BelgeSil(belgekodu);
+                    } else if (result == JOptionPane.NO_OPTION) {
+                        JOptionPane.showMessageDialog(null, "Belgeyi Silmediniz");
+                    }
+                    
+                }
+            };           
+            tblBelgeler.getColumnModel().getColumn(5).setCellRenderer(new TableActionCellRenderBelgeOkumaBirlikteSilmeli());
+            tblBelgeler.getColumnModel().getColumn(5).setCellEditor(new TableActionCellEditorBelgeOkumaBirlikteSilmeli(event));
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -543,9 +560,6 @@ public class AdminArayuzu extends javax.swing.JFrame {
         pst.setString(1, durum);
         pst.setInt(2, secilenkitapid);
         int sonuc = pst.executeUpdate();
-        if (sonuc == 1) {
-            JOptionPane.showMessageDialog(null, "Silindi");
-        }
 
         if (kabul == true) {
             String sql = "UPDATE public.kitaplik SET kitap_durum = ? where kitap_kodu = ?;";
@@ -557,14 +571,10 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Kitap Şu anda " + kitapisteyenemail);
             }
 
-            System.out.println("asdasasdasd");
             String sqlupdate = "UPDATE public.kitap_envanter SET elde_olan = elde_olan - 1 WHERE kitap_adi=?;";
             pst = conn.prepareStatement(sqlupdate);
             pst.setString(1, kitapadi);
             int donus = pst.executeUpdate();
-            if (donus == 1) {
-                JOptionPane.showMessageDialog(null, "Azaldı");
-            }
         }
 
         txtEnvanterdeKalan.setText("");
@@ -710,10 +720,22 @@ public class AdminArayuzu extends javax.swing.JFrame {
             pst.setString(1, silinecekkitapadi);
             pst.setString(2, silinecekkitapyayinevi);
             int sonuc2 = pst.executeUpdate();
-            if (sonuc2 == 1) {
-                JOptionPane.showMessageDialog(null, "Envanterden 1 azaldı");
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void BelgeSil(int belgekodu){
+        try {
+            String sql = "DELETE FROM public.arsiv WHERE belge_kodu = ?;";
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1, belgekodu);
+            int sonuc = pst.executeUpdate();
+            if (sonuc == 1) {
+                JOptionPane.showMessageDialog(null, "Belge Silindi");
+                ArsivTabloVerileri();
             }
-
+            
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -2649,7 +2671,7 @@ public class AdminArayuzu extends javax.swing.JFrame {
                 pst.setString(7, "Kabul Edildi");
                 int sonucinsert = pst.executeUpdate();
                 if (sonucinsert == 1) {
-                    JOptionPane.showMessageDialog(null, "İnsert oldu");
+                    //JOptionPane.showMessageDialog(null, "İnsert oldu");
                 } else {
                     JOptionPane.showMessageDialog(null, "İnsert Olmadı");
                 }

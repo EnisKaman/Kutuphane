@@ -260,10 +260,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             model.addColumn("Belge Kodu");
             model.addColumn("Yayın Yılı");
             model.addColumn("Belge Türü");
-            model.addColumn("İşlem");
 
             while (rs.next()) {
-                Object[] row = new Object[6];
+                Object[] row = new Object[5];
                 row[0] = rs.getString("belge_adi");
                 row[1] = rs.getString("belge_yayinlayan_kisi");
                 int belgekodu = rs.getInt("belge_kodu");
@@ -271,7 +270,6 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                 row[2] = belgekodu;
                 row[3] = rs.getInt("belge_yayin_yili");
                 row[4] = rs.getString("belge_turu");
-                row[5] = belgekayitturu;
                 model.addRow(row);
                 BelgeKoduToKayitTuruBelgeIsteTabloRow.put(belgekodu, belgekayitturu);
             }
@@ -282,33 +280,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             tblBelgeIste.setRowSorter(shorter);
             tblBelgeIste.setDefaultRenderer(Object.class, centerRenderer);
             tblBelgeIste.setModel(model);
-            TableActionEventBelgeOkumaBirlikte event = new TableActionEventBelgeOkumaBirlikte() {
-                @Override
-                public void PdfOkuma(int row) {
-                    int belgekodu = (int) tblBelgeIste.getValueAt(row, 2);
-                    int kayitturu = BelgeKoduToKayitTuruBelgeIsteTabloRow.get(belgekodu);
-                    if (kayitturu == 2 || kayitturu == 0) {
-                        PDFGoster(belgekodu);
-                    }
-                    if (kayitturu == 1) {
-                        JOptionPane.showMessageDialog(null, "Bu belgede yalnızca taranmış bir belge vardır.");
-                    }
-                }
-
-                @Override
-                public void TaranmisOkuma(int row) {
-                    int belgekodu = (int) tblBelgeIste.getValueAt(row, 2);
-                    int kayitturu = BelgeKoduToKayitTuruBelgeIsteTabloRow.get(belgekodu);
-                    if (kayitturu == 2 || kayitturu == 1) {
-                        TaranmisBelgeGoster(belgekodu);
-                    }
-                    if (kayitturu == 0) {
-                        JOptionPane.showMessageDialog(null, "Bu belgede yalnızca PDF vardır.");
-                    }
-                }
-            };
-            tblBelgeIste.getColumnModel().getColumn(5).setCellRenderer(new TableActionCellRenderBelgeOkumaBirlikte());
-            tblBelgeIste.getColumnModel().getColumn(5).setCellEditor(new TableActionCellEditorBelgeOkumaBirlikte(event));
+            
 
         } catch (SQLException ex) {
             Logger.getLogger(AdminArayuzu.class.getName()).log(Level.SEVERE, null, ex);
@@ -728,7 +700,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                     int sonuc = pst.executeUpdate();
                     if (sonuc == 1) {
 
-                        JOptionPane.showMessageDialog(null, "Bildirim Kitap Eklendi");
+                        //JOptionPane.showMessageDialog(null, "Bildirim Kitap Eklendi");
 
                         String sqlbildirimcek = "SELECT * FROM public.kitap_bildirim ORDER BY kitap_bildirim_id DESC LIMIT 1;";
                         pst = conn.prepareStatement(sqlbildirimcek);
@@ -752,7 +724,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                         pst.setString(6, "Bireysel");
                         int cevap = pst.executeUpdate();
                         if (cevap == 1) {
-                            JOptionPane.showMessageDialog(null, "Bildirim Eklendi");
+                            //JOptionPane.showMessageDialog(null, "Bildirim Eklendi");
                         }
                     }
                 }
@@ -825,9 +797,9 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         txtAldigimKitaplarArama = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         lblSettings = new javax.swing.JLabel();
-        lblDiger = new javax.swing.JLabel();
-        lblArsiv = new javax.swing.JLabel();
         lblKutuphane = new javax.swing.JLabel();
+        lblArsiv = new javax.swing.JLabel();
+        lblDiger = new javax.swing.JLabel();
         badgeButton1 = new raven.notibutton.BadgeButton();
         pnlSettings = new javax.swing.JPanel();
         pnlSettingsKapat = new javax.swing.JLabel();
@@ -955,15 +927,12 @@ public class KullaniciArayuz extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(cbKutuphaneci, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitapAlmaLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(pnlKitapAlmaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitapAlmaLayout.createSequentialGroup()
-                                .addComponent(jLabel9)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtKitapAlmaArama, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitapAlmaLayout.createSequentialGroup()
-                                .addComponent(btnKitapAl, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(312, 312, 312)))))
+                        .addComponent(jLabel9)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtKitapAlmaArama, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlKitapAlmaLayout.createSequentialGroup()
+                        .addComponent(btnKitapAl, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(312, 312, 312)))
                 .addContainerGap())
         );
         pnlKitapAlmaLayout.setVerticalGroup(
@@ -1052,28 +1021,6 @@ public class KullaniciArayuz extends javax.swing.JFrame {
         });
         getContentPane().add(lblSettings, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
-        lblDiger.setFont(new java.awt.Font("Verdana", 0, 36)); // NOI18N
-        lblDiger.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/icons8_flicker_free_64px.png"))); // NOI18N
-        lblDiger.setText("Diğer");
-        lblDiger.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        lblDiger.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblDigerMouseClicked(evt);
-            }
-        });
-        getContentPane().add(lblDiger, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 10, -1, -1));
-
-        lblArsiv.setFont(new java.awt.Font("Verdana", 0, 36)); // NOI18N
-        lblArsiv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/icons8_view_64px.png"))); // NOI18N
-        lblArsiv.setText("Arşiv");
-        lblArsiv.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        lblArsiv.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblArsivMouseClicked(evt);
-            }
-        });
-        getContentPane().add(lblArsiv, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 10, -1, -1));
-
         lblKutuphane.setFont(new java.awt.Font("Verdana", 1, 36)); // NOI18N
         lblKutuphane.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/icons8_literature_64px.png"))); // NOI18N
         lblKutuphane.setText("Kütüphane");
@@ -1084,6 +1031,28 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             }
         });
         getContentPane().add(lblKutuphane, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 10, -1, -1));
+
+        lblArsiv.setFont(new java.awt.Font("Verdana", 0, 36)); // NOI18N
+        lblArsiv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/icons8_view_64px.png"))); // NOI18N
+        lblArsiv.setText("Arşiv");
+        lblArsiv.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblArsiv.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblArsivMouseClicked(evt);
+            }
+        });
+        getContentPane().add(lblArsiv, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 10, -1, -1));
+
+        lblDiger.setFont(new java.awt.Font("Verdana", 0, 36)); // NOI18N
+        lblDiger.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/icons8_flicker_free_64px.png"))); // NOI18N
+        lblDiger.setText("Diğer");
+        lblDiger.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblDiger.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblDigerMouseClicked(evt);
+            }
+        });
+        getContentPane().add(lblDiger, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 10, -1, -1));
 
         badgeButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ikon/zil.png"))); // NOI18N
         badgeButton1.setText("0");
@@ -1577,6 +1546,7 @@ public class KullaniciArayuz extends javax.swing.JFrame {
             int sonuc = pst.executeUpdate();
             if (sonuc == 1) {
                 JOptionPane.showMessageDialog(null, "Randevu Eklendi");
+                BekleyenRandevuTabloVerileri();
             } else {
                 JOptionPane.showMessageDialog(null, "Randevu Eklenmedi");
             }

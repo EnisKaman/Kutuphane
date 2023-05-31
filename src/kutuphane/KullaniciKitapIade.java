@@ -274,6 +274,12 @@ public class KullaniciKitapIade extends javax.swing.JFrame {
                     pst.setInt(2, Integer.parseInt(txtKitapKodu.getText()));
                     int cevap3 = pst.executeUpdate();
                     if (cevap3 == 1) {
+                        String sqlenvanter = "UPDATE public.kitap_envanter SET  elde_olan=elde_olan + 1 WHERE kitap_adi = ? AND kitap_yayinevi = ?;";
+                        pst = conn.prepareStatement(sqlenvanter);
+                        pst.setString(1, txtKitapAdi.getText());
+                        pst.setString(2, txtYayinEvi.getText());
+                        pst.executeUpdate();
+                        
                         String sqlupdate = "UPDATE public.kitaplik SET kitap_durum=? WHERE kitap_kodu = ?;";
                         pst = conn.prepareStatement(sqlupdate);
                         pst.setString(1, "Envanterde");
@@ -281,7 +287,9 @@ public class KullaniciKitapIade extends javax.swing.JFrame {
                         int cevap2 = pst.executeUpdate();
                         if (cevap2 == 1) {
                             JOptionPane.showMessageDialog(null, "Kitap Başarıyla İade Edildi", "Kitap İade", JOptionPane.PLAIN_MESSAGE);
+                            this.dispose();
                             kul.BildirimSayisi();
+                            kul.AldigimKitaplarTabloVerileri();
                         }
                     }
                 }
